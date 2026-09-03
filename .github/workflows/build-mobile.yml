@@ -134,7 +134,7 @@ jobs:
         with:
           ndk-version: ${{ env.ANDROID_NDK_VERSION }}
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: node-android-*
           merge-multiple: true
@@ -179,7 +179,7 @@ jobs:
         with:
           xcode-select-version: ${{ matrix.config.xcode }}
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: node-ios-*
           merge-multiple: true
