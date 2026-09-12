@@ -6,56 +6,58 @@
 
 ---
 
-## [22.14.0] - 2026-09-03
+
+## [22.23.2] - 2026-09-12
 
 ### 升级
-- **Node.js 内核**：从 v20.18.0 LTS 升级到 **v22.14.0 LTS**
-- **NODE_MODULE_VERSION**：从 115 升级到 127
+- 从 Node.js v18.20.4 LTS 升级到 v22.23.2 LTS
+- NODE_MODULE_VERSION 从 108 升级到 127
 
-### 修复
-- **V8 编译错误**：注释 `handles.h` 中的 `static_assert` 块，解决 Android 编译时 Clang 17+ 的静态断言失败问题
-- **trap-handler 补丁**：应用 `android-patches/trap-handler.h.patch`，强制关闭 V8 trap handler（Android 下不完全支持）
-- **宏冲突**：移除 `common.gypi` 中的 `ANDROID_CPU_FEATURES` 宏定义（v22 中不再需要，且会导致 V8 编译错误）
+### 新增
+- 支持 Android `arm64-v8a` 架构
+- 支持 Android `x86_64` 架构（用于模拟器）
+- 编译产物打包为 `arm64-v8a.zip` 和 `x86_64.zip`
+- 符号剥离：`arm64-v8a` 约 75M，`x86_64` 约 80M
 
-### 构建优化
-- **并行数调优**：建议使用 `make -j2` 或 `-j4`，避免 `-j$(nproc)` 导致资源耗尽（v22 V8 更庞大）
-- **产物体积**：剥离后 `libnode.so` 约 74 MB
+### 修改
+- **构建配置**
+  - `android-configure`：支持 Python 3.14
+  - `android_configure.py`：添加 `android_ndk_path` 到 GYP_DEFINES
+  - `node.gyp`：
+    - 添加 `deps/zlib` 到 include_dirs
+    - 添加 `deps/zlib/cpu-features.c` 到 sources
+    - 在 Android 条件块中添加符号导出选项（`-fvisibility=default`、`-Wl,--export-dynamic`、`-Wl,--whole-archive`）
+    - 定义 `V8_SHARED=1`、`BUILDING_V8_SHARED=1`、`V8_TRAP_HANDLER_SUPPORTED=0`、`V8_USE_SIMULATOR=0`
+- **V8 源码**
+  - `deps/v8/src/handles/handles.h`：注释掉静态断言块（Clang 17+）
+  - `deps/v8/src/trap-handler/trap-handler.h`：强制 `V8_TRAP_HANDLER_SUPPORTED false`
+  - `deps/v8/src/trap-handler/handler-outside.cc`：添加 `TryHandleSignal` 桩函数、禁用 `RegisterDefaultTrapHandler`
+  - `deps/v8/src/execution/arm64/simulator-arm64.cc`：添加 `v8_internal_simulator_ProbeMemory` 桩函数
+- **Node.js 源码**
+  - `lib/internal/modules/cjs/loader.js`：修改 `Module._load`，使 `require('rn-bridge')` 从 `NODE_PATH` 加载 JS 包装文件（适配 Node.js 20+ 模块解析机制）
+- **JNI 适配（Android 项目侧）**
+  - `node_modules/nodejs-mobile-react-native/android/libnode/include/node/v8-exception.h`：`Error`/`TypeError` 添加第二参数，匹配 v22 ABI
+  - `node_modules/nodejs-mobile-react-native/android/libnode/include/node/v8-persistent-handle.h`：`GlobalizeReference` 第二参数改为值传递，匹配 v22 ABI
+  - `node_modules/nodejs-mobile-react-native/android/src/main/cpp/rn-bridge.cpp`：
+    - `v8::Exception::TypeError` → `v8::Exception::Error`
+    - `v8::Persistent<v8::Function>` → `v8::Global<v8::Function>`
+    - 保持 `NODE_MODULE_LINKED(rn_bridge, Init)` 注册宏不变
+  - `node_modules/nodejs-mobile-react-native/android/build.gradle`：
+    - 支持 Windows 平台（`windows-x86_64`、`host_os=win32`）
+    - 修复 Gradle 9.0 `exec()` 缺失，改用 `providers.exec`
+    - 限制 `abiFilters` 为 `["arm64-v8a"]`（或 `["arm64-v8a", "x86_64"]`）
+  - `android/gradle.properties`：`reactNativeArchitectures=arm64-v8a`（或 `arm64-v8a,x86_64`）
 
-### 文档
-- 更新 `UPGRADE.md`，新增 v22 升级实战章节及编译资源调优建议
-
----
-
-## [20.18.0] - 2026-09-02
-
-### 升级
-- **Node.js 内核**：从 v18.20.4 LTS 升级到 **v20.18.0 LTS**
-- **Python 支持**：配置脚本现在支持 Python 3.14
-- **NDK 版本**：使用 Android NDK r26c（兼容 API 30+）
-
-### 修复
-- **链接错误**：修复 `undefined reference to android_getCpuFeatures` 问题，通过引入 NDK 的 `cpu-features.c` 源文件并添加 `ANDROID_CPU_FEATURES` 宏定义
-- **路径问题**：将 NDK CPU 特性源文件复制到 `deps/zlib/` 并使用相对路径，避免 GYP 路径拼接错误
-- **重复符号**：避免与 zlib 库重复编译 `cpu_features.c`
-
-### 构建优化
-- 支持 Python 3.14，更新 `android-configure` 中的 `acceptable_pythons` 列表
-- 在 `android_configure.py` 中添加 `android_ndk_path` 到 `GYP_DEFINES`
-- 剥离调试符号，减小 `libnode.so` 体积（从 69 MB 降至 54 MB）
-- 保留调试版本 `libnode.so.debug` 以供调试
-
-### 文档
-- 重写 `README.md`，提供项目概览和快速入门
-- 合并 `重要参考.md` 为 `UPGRADE.md`，详细记录升级过程
-- 精简文档结构，只保留核心文档（`README`、`BUILDING`、`CHANGELOG`、`UPGRADE`、`CONTRIBUTING`、`GOVERNANCE`、`SECURITY`、`CODE_OF_CONDUCT`）
-- 清理冗余的 API 文档、测试文档和第三方库文档
-
-### 打包
-- 提供预编译二进制文件 `libnode.so`（剥离版）和 `libnode.so.debug`（调试版）
-- 发布压缩包 `nodejs-mobile-v20.18.0-android-arm64.tar.gz`（包含源码、构建脚本、文档和预编译库）
+### 兼容性说明
+- **armeabi-v7a 已放弃**：V8 v22 官方不支持在 x64 主机上交叉编译 32 位 ARM 目标（`v8config.h:914` 硬性拒绝，且 Torque 工具会报 8 字节对齐错误）。如需 32 位 ARM 支持，请使用 Node.js v18 或 v20。
+- **V8 ABI 与 v18 不兼容**：升级后必须同步修改 JNI 头文件和源码，否则 JNI 库会因符号缺失而链接失败。
 
 ### 已知问题
-- 无重大已知问题。
+- 应用需重新编译所有原生 Node.js 模块（设置 `NODEJS_MOBILE_BUILD_NATIVE_MODULES=1`），否则会因 ABI 不匹配报 `NODE_MODULE_VERSION` 错误。
+
+### 文档
+- 详见 `UPGRADE.md`：完整升级流程、常见问题、长期维护策略
+- 详见 `自定义libnode指南.md`：替换 `libnode.so` 后的 Android 端适配操作
 
 ---
 
