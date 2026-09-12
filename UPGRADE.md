@@ -38,14 +38,10 @@
 │   ├── out/Release/
 │   │   ├── libnode.so                 # 编译产物（每次编译会覆盖）
 │   │   └── node                       # 编译产物软链接
+│   ├── out_android/                   # 最终产物集中保存目录（推荐，纳入版本控制）
+│   │   ├── arm64-v8a.zip              # arm64-v8a 产物压缩包（剥离后约 75M）
+│   │   └── x86_64.zip                 # x86_64 产物压缩包（剥离后约 80M）
 │   └── ... (其他官方源码)
-├── libnode-android/                    # 最终产物集中保存目录（推荐）
-│   ├── arm64-v8a/
-│   │   └── libnode.so                 # 75M（剥离后）
-│   └── x86_64/
-│       └── libnode.so                 # 80M（剥离后）
-├── libnode-x86_64.so                  # x86_64 未剥离产物（99M）
-├── libnode-x86_64-stripped.so         # x86_64 剥离后产物（80M）
 └── nodejs-mobile-build-backup/        # 备份目录（可选）
 ```
 
@@ -55,13 +51,14 @@
 D:\Extend_npm\node-mobile-app\
 ├── node_modules\nodejs-mobile-react-native\android\libnode\
 │   ├── bin\arm64-v8a\libnode.so       # 替换：编译产物
+│   ├── bin\x86_64\libnode.so          # 替换：编译产物（如支持 x86_64）
 │   └── include\node\
 │       ├── v8-exception.h             # 修改：ABI 匹配（Error/TypeError 添加第二参数）
 │       └── v8-persistent-handle.h     # 修改：ABI 匹配（GlobalizeReference 第二参数改为值传递）
 ├── node_modules\nodejs-mobile-react-native\android\
 │   ├── build.gradle                   # 修改：Windows 支持、Gradle 9.0、ABI 限制
 │   └── src\main\cpp\rn-bridge.cpp     # 修改：Error 替代 TypeError、Global 替代 Persistent；保持 NODE_MODULE_LINKED
-├── android\gradle.properties          # 修改：reactNativeArchitectures=arm64-v8a
+├── android\gradle.properties          # 修改：reactNativeArchitectures=arm64-v8a[,x86_64]
 └── nodejs-assets\nodejs-project\      # 无需修改（业务代码），但需重新安装原生模块
 ```
 
@@ -119,7 +116,7 @@ make -j2
 
 ## 四、升级到 v22.23.2（完整步骤）
 
-> **逻辑链提醒**：本章所有修改均在**编译 `libnode.so` 之前完成**，编译完成后产物直接用于第五章替换。
+> **逻辑链提醒**：本章所有修改均在**编译 `libnode.so` 之前完成**，编译完成后产物直接用于第六章替换。
 
 ### 4.1 下载并解压 v22.23.2
 ```bash
@@ -293,6 +290,15 @@ diff <(nm -D out/Release/libnode.so.bak | awk '{print $2, $3}' | sort) <(nm -D o
 ```
 若输出“符号表完全一致”，则剥离安全。
 
+### 4.16 保存 arm64-v8a 产物
+```bash
+mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
+cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+zip arm64-v8a.zip libnode.so && rm libnode.so
+ls -lh arm64-v8a.zip
+```
+
 ---
 
 ## 五、多架构编译（arm64-v8a / x86_64 / armeabi-v7a）
@@ -317,24 +323,27 @@ make -j4
 成功后（末尾出现 `ln -fs out/Release/node node`），剥离符号并保存：
 
 ```bash
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-x86_64.so
+cp out/Release/libnode.so out/Release/libnode.so.bak
 /mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-x86_64-stripped.so
+diff <(nm -D out/Release/libnode.so.bak | awk '{print $2, $3}' | sort) <(nm -D out/Release/libnode.so | awk '{print $2, $3}' | sort) && echo "符号表完全一致"
+mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
+cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+zip x86_64.zip libnode.so && rm libnode.so
+ls -lh x86_64.zip
 ```
 
-产物：
-- 未剥离：`/mnt/d/nodejs-mobile-build/libnode-x86_64.so`（约 99M）
-- 剥离后：`/mnt/d/nodejs-mobile-build/libnode-x86_64-stripped.so`（约 80M）
+### 5.3 最终产物目录结构
 
-### 5.3 集中保存最终产物
+所有架构的产物统一保存在 `nodejs-mobile/out_android/` 下：
 
-切换架构编译时，`rm -rf out` 会清空 `out` 目录，导致上一架构的产物丢失。因此**编译完一个架构后，必须立即把 `libnode.so` 复制到独立目录**：
-
-```bash
-mkdir -p /mnt/d/nodejs-mobile-build/libnode-android/{arm64-v8a,x86_64}
-cp /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/arm64-v8a/libnode.so /mnt/d/nodejs-mobile-build/libnode-android/arm64-v8a/libnode.so
-cp /mnt/d/nodejs-mobile-build/libnode-x86_64-stripped.so /mnt/d/nodejs-mobile-build/libnode-android/x86_64/libnode.so
 ```
+/mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
+├── arm64-v8a.zip              # arm64-v8a 产物（约 75M，剥离后）
+└── x86_64.zip                 # x86_64 产物（约 80M，剥离后）
+```
+
+每个 zip 包内包含对应架构的 `libnode.so`。
 
 ### 5.4 为什么放弃 armeabi-v7a
 
@@ -371,9 +380,50 @@ make -j4
 cp out/Release/libnode.so out/Release/libnode.so.bak
 /mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
 
-# 4. 立即保存产物到独立目录
-mkdir -p /mnt/d/nodejs-mobile-build/libnode-android/<arch>
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-android/<arch>/libnode.so
+# 4. 立即保存产物到 out_android 目录并打包为 zip
+mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
+cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+# 根据架构命名 zip（arm64 → arm64-v8a.zip，x86_64 → x86_64.zip）
+zip <arch>.zip libnode.so && rm libnode.so
+```
+
+### 5.6 一键编译所有架构（可选脚本）
+
+创建 `/mnt/d/nodejs-mobile-build/build-all-archs.sh`：
+
+```bash
+#!/bin/bash
+NDK=/mnt/d/nodejs-mobile-build/android-ndk-r27
+SRC=/mnt/d/nodejs-mobile-build/nodejs-mobile
+OUT=$SRC/out_android
+STRIP=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
+
+mkdir -p $OUT
+
+for ARCH in arm64 x86_64; do
+    echo "=== 编译 $ARCH ==="
+    cd $SRC
+    rm -rf out config.gypi config.mk config.status
+    ./android-configure $NDK 30 $ARCH
+    make -j4
+    $STRIP out/Release/libnode.so
+    cp out/Release/libnode.so $OUT/libnode.so
+    cd $OUT
+    if [ "$ARCH" = "arm64" ]; then
+        ZIP_NAME="arm64-v8a.zip"
+    else
+        ZIP_NAME="$ARCH.zip"
+    fi
+    zip $ZIP_NAME libnode.so && rm libnode.so
+done
+echo "=== 全部完成，产物位于 $OUT ==="
+```
+
+执行：
+```bash
+chmod +x /mnt/d/nodejs-mobile-build/build-all-archs.sh
+/mnt/d/nodejs-mobile-build/build-all-archs.sh
 ```
 
 ---
@@ -383,13 +433,18 @@ cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-android/<arch>/libn
 > **逻辑链提醒**：本章所有修改均在 **`libnode.so` 编译完成之后**、**重新编译 Android 项目之前**完成。
 
 ### 6.1 替换 `libnode.so`
-```bash
-cp /mnt/d/nodejs-mobile-build/libnode-android/arm64-v8a/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/arm64-v8a/libnode.so
-```
 
-若需支持 x86_64 模拟器：
+从 `out_android/` 解压 zip 并替换到 Android 项目：
+
 ```bash
-cp /mnt/d/nodejs-mobile-build/libnode-android/x86_64/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/x86_64/libnode.so
+# 解压 arm64-v8a
+cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
+unzip -o arm64-v8a.zip -d /tmp/arm64-v8a
+cp /tmp/arm64-v8a/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/arm64-v8a/libnode.so
+
+# 若需支持 x86_64 模拟器
+unzip -o x86_64.zip -d /tmp/x86_64
+cp /tmp/x86_64/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/x86_64/libnode.so
 ```
 
 ### 6.2 修改 JNI 头文件使其与 v22 ABI 匹配
@@ -490,6 +545,8 @@ Copy-Item $file "$file.bak5"
 } | Set-Content $file
 ```
 
+同时支持 arm64-v8a 和 x86_64 时，将上述 `["arm64-v8a"]` 改为 `["arm64-v8a", "x86_64"]`。
+
 ### 6.7 清理缓存并重新编译原生模块
 ```powershell
 cd D:\Extend_npm\node-mobile-app\android
@@ -516,9 +573,8 @@ npx react-native run-android
 
 ### 7.1 检查产物
 ```bash
-ls -lh out/Release/libnode.so
-strings out/Release/libnode.so | grep "v22.23.2"
-strings out/Release/libnode.so | grep NODE_MODULE_VERSION | head -1
+ls -lh /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
+unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/arm64-v8a.zip
 ```
 
 ### 7.2 手机日志验证
@@ -635,9 +691,10 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
 3. 应用固化补丁（编译前补丁）。
 4. 检查补丁是否全部成功；如失败，手动解决并重新生成补丁。
 5. 编译 `libnode.so`（arm64 + x86_64）。
-6. 替换到 Android 项目，应用 Android 侧补丁（JNI、build.gradle）。
-7. 重新编译 Android 项目。
-8. 验证运行。
+6. 剥离符号，打包为 `out_android/arm64-v8a.zip` 和 `out_android/x86_64.zip`。
+7. 替换到 Android 项目，应用 Android 侧补丁（JNI、build.gradle）。
+8. 重新编译 Android 项目。
+9. 验证运行。
 
 ### 9.4 每次升级 Node.js 大版本时对 `rn-bridge` 相关的重点检查清单
 
@@ -692,10 +749,11 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
 9. 替换后修改 JNI 头文件和源码，解决链接错误；**保持 `NODE_MODULE_LINKED` 注册宏**。
 10. 修改 `build.gradle`，解决 Windows 平台、Gradle 9.0、ABI 限制问题。
 11. 多架构支持：arm64-v8a（主目标）+ x86_64（模拟器）；armeabi-v7a 因 V8 v22 官方限制放弃。
-12. 将补丁固化，每次升级重新应用，并按 9.4 节的清单逐项检查 `rn-bridge` 相关的适配点。
+12. 产物统一保存到 `nodejs-mobile/out_android/`，打包为 `arm64-v8a.zip` 和 `x86_64.zip`。
+13. 将补丁固化，每次升级重新应用，并按 9.4 节的清单逐项检查 `rn-bridge` 相关的适配点。
 
 ---
 
-**文档版本**：10.0（新增多架构编译章节：arm64 + x86_64 支持、arm32 放弃原因；产物集中保存机制）
+**文档版本**：11.0（产物统一保存到 `nodejs-mobile/out_android/`，打包为 zip）
 **最后更新**：2026-09-12
 **作者**：根据实际升级过程整理
