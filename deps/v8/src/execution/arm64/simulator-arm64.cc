@@ -1,3 +1,4 @@
+#include <signal.h>
 // Copyright 2013 the V8 project authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -6734,3 +6735,5 @@ V8_EXPORT_PRIVATE extern bool _v8_internal_Simulator_ExecDebugCommand(
 #undef BRACKETS
 
 #endif  // USE_SIMULATOR
+
+extern "C" bool v8_internal_simulator_ProbeMemory(uintptr_t, uintptr_t) { return false; }

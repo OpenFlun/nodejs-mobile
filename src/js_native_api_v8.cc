@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <climits>  // INT_MAX
 #include <cmath>
+#ifndef NAPI_EXPERIMENTAL
 #define NAPI_EXPERIMENTAL
+#endif
 #include "env-inl.h"
 #include "js_native_api.h"
 #include "js_native_api_v8.h"
@@ -16,7 +18,7 @@
 #define CHECK_TO_NUMBER(env, context, result, src)                             \
   CHECK_TO_TYPE((env), Number, (context), (result), (src), napi_number_expected)
 
-// n-api defines NAPI_AUTO_LENGTH as the indicator that a string
+// Node-API defines NAPI_AUTO_LENGTH as the indicator that a string
 // is null terminated. For V8 the equivalent is -1. The assert
 // validates that our cast of NAPI_AUTO_LENGTH results in -1 as
 // needed by V8.
@@ -223,7 +225,7 @@ inline napi_status V8NameFromPropertyDescriptor(
   return napi_ok;
 }
 
-// convert from n-api property attributes to v8::PropertyAttribute
+// convert from Node-API property attributes to v8::PropertyAttribute
 inline v8::PropertyAttribute V8PropertyAttributesFromDescriptor(
     const napi_property_descriptor* descriptor) {
   unsigned int attribute_flags = v8::PropertyAttribute::None;
@@ -376,11 +378,10 @@ inline napi_status Unwrap(napi_env env,
 
 //=== Function napi_callback wrapper =================================
 
-// Use this data structure to associate callback data with each N-API function
-// exposed to JavaScript. The structure is stored in a v8::External which gets
-// passed into our callback wrapper. This reduces the performance impact of
-// calling through N-API.
-// Ref: benchmark/misc/function_call
+// Use this data structure to associate callback data with each Node-API
+// function exposed to JavaScript. The structure is stored in a v8::External
+// which gets passed into our callback wrapper. This reduces the performance
+// impact of calling through Node-API. Ref: benchmark/misc/function_call
 // Discussion (incl. perf. data): https://github.com/nodejs/node/pull/21072
 class CallbackBundle {
  public:
@@ -405,7 +406,7 @@ class CallbackBundle {
   }
 
  public:
-  napi_env env;   // Necessary to invoke C++ NAPI callback
+  napi_env env;   // Necessary to invoke C++ Node-API callback
   void* cb_data;  // The user provided callback data
   napi_callback cb;
 
@@ -2060,7 +2061,7 @@ napi_status NAPI_CDECL napi_get_null(napi_env env, napi_value* result) {
 
 // Gets all callback info in a single call. (Ugly, but faster.)
 napi_status NAPI_CDECL napi_get_cb_info(
-    napi_env env,               // [in] NAPI environment handle
+    napi_env env,               // [in] Node-API environment handle
     napi_callback_info cbinfo,  // [in] Opaque callback-info handle
     size_t* argc,      // [in-out] Specifies the size of the provided argv array
                        // and receives the actual count of args.
@@ -2771,7 +2772,8 @@ napi_status NAPI_CDECL napi_create_reference(napi_env env,
 // there are other references to it.
 // For a napi_reference returned from `napi_wrap`, this must be called in the
 // finalizer.
-napi_status NAPI_CDECL napi_delete_reference(napi_env env, napi_ref ref) {
+napi_status NAPI_CDECL napi_delete_reference(node_api_basic_env env,
+                                             napi_ref ref) {
   // Omit NAPI_PREAMBLE and GET_RETURN_STATUS because V8 calls here cannot throw
   // JS exceptions.
   CHECK_ENV(env);
@@ -3074,19 +3076,66 @@ napi_status NAPI_CDECL napi_get_arraybuffer_info(napi_env env,
   CHECK_ARG(env, arraybuffer);
 
   v8::Local<v8::Value> value = v8impl::V8LocalValueFromJsValue(arraybuffer);
-  RETURN_STATUS_IF_FALSE(env, value->IsArrayBuffer(), napi_invalid_arg);
 
-  v8::Local<v8::ArrayBuffer> ab = value.As<v8::ArrayBuffer>();
+  if (value->IsArrayBuffer()) {
+    v8::Local<v8::ArrayBuffer> ab = value.As<v8::ArrayBuffer>();
 
-  if (data != nullptr) {
-    *data = ab->Data();
-  }
+    if (data != nullptr) {
+      *data = ab->Data();
+    }
 
-  if (byte_length != nullptr) {
-    *byte_length = ab->ByteLength();
+    if (byte_length != nullptr) {
+      *byte_length = ab->ByteLength();
+    }
+  } else if (value->IsSharedArrayBuffer()) {
+    v8::Local<v8::SharedArrayBuffer> sab = value.As<v8::SharedArrayBuffer>();
+
+    if (data != nullptr) {
+      *data = sab->Data();
+    }
+
+    if (byte_length != nullptr) {
+      *byte_length = sab->ByteLength();
+    }
+  } else {
+    return napi_set_last_error(env, napi_invalid_arg);
   }
 
   return napi_clear_last_error(env);
+}
+
+napi_status NAPI_CDECL node_api_is_sharedarraybuffer(napi_env env,
+                                                     napi_value value,
+                                                     bool* result) {
+  CHECK_ENV_NOT_IN_GC(env);
+  CHECK_ARG(env, value);
+  CHECK_ARG(env, result);
+
+  v8::Local<v8::Value> val = v8impl::V8LocalValueFromJsValue(value);
+  *result = val->IsSharedArrayBuffer();
+
+  return napi_clear_last_error(env);
+}
+
+napi_status NAPI_CDECL node_api_create_sharedarraybuffer(napi_env env,
+                                                         size_t byte_length,
+                                                         void** data,
+                                                         napi_value* result) {
+  NAPI_PREAMBLE(env);
+  CHECK_ARG(env, result);
+
+  v8::Isolate* isolate = env->isolate;
+  v8::Local<v8::SharedArrayBuffer> buffer =
+      v8::SharedArrayBuffer::New(isolate, byte_length);
+
+  // Optionally return a pointer to the buffer's data, to avoid another call to
+  // retrieve it.
+  if (data != nullptr) {
+    *data = buffer->Data();
+  }
+
+  *result = v8impl::JsValueFromV8LocalValue(buffer);
+  return GET_RETURN_STATUS(env);
 }
 
 napi_status NAPI_CDECL napi_is_typedarray(napi_env env,

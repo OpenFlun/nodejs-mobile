@@ -1,7 +1,9 @@
 #include "async_context_frame.h"
 #include "async_wrap-inl.h"
 #include "env-inl.h"
+#ifndef NAPI_EXPERIMENTAL
 #define NAPI_EXPERIMENTAL
+#endif
 #include "js_native_api_v8.h"
 #include "memory_tracker-inl.h"
 #include "node_api.h"
@@ -19,6 +21,52 @@
 #include <atomic>
 #include <cstring>
 #include <memory>
+
+namespace v8impl {
+static void ThrowNodeApiVersionError(node::Environment* node_env,
+                                     const char* module_name,
+                                     int32_t module_api_version) {
+  std::string error_message;
+  error_message += module_name;
+  error_message += " requires Node-API version ";
+  error_message += std::to_string(module_api_version);
+  error_message += ", but this version of Node.js only supports version ";
+  error_message += NODE_STRINGIFY(NODE_API_SUPPORTED_VERSION_MAX) " add-ons.";
+  node_env->ThrowError(error_message.c_str());
+}
+}  // namespace v8impl
+
+/*static*/ napi_env node_napi_env__::New(v8::Local<v8::Context> context,
+                                         const std::string& module_filename,
+                                         int32_t module_api_version) {
+  node_napi_env result;
+
+  // Validate module_api_version.
+  if (module_api_version < NODE_API_DEFAULT_MODULE_API_VERSION) {
+    module_api_version = NODE_API_DEFAULT_MODULE_API_VERSION;
+  } else if (module_api_version > NODE_API_SUPPORTED_VERSION_MAX &&
+             module_api_version != NAPI_VERSION_EXPERIMENTAL) {
+    node::Environment* node_env = node::Environment::GetCurrent(context);
+    CHECK_NOT_NULL(node_env);
+    v8impl::ThrowNodeApiVersionError(
+        node_env, module_filename.c_str(), module_api_version);
+    return nullptr;
+  }
+
+  result = new node_napi_env__(context, module_filename, module_api_version);
+  // TODO(addaleax): There was previously code that tried to delete the
+  // napi_env when its v8::Context was garbage collected;
+  // However, as long as Node-API addons using this napi_env are in place,
+  // the Context needs to be accessible and alive.
+  // Ideally, we'd want an on-addon-unload hook that takes care of this
+  // once all Node-API addons using this napi_env are unloaded.
+  // For now, a per-Environment cleanup hook is the best we can do.
+  result->node_env()->AddCleanupHook(
+      [](void* arg) { static_cast<napi_env>(arg)->Unref(); },
+      static_cast<void*>(result));
+
+  return result;
+}
 
 node_napi_env__::node_napi_env__(v8::Local<v8::Context> context,
                                  const std::string& module_filename,
@@ -102,7 +150,7 @@ void node_napi_env__::CallbackIntoModule(T&& call) {
         !enforceUncaughtExceptionPolicy) {
       ProcessEmitDeprecationWarning(
           node_env,
-          "Uncaught N-API callback exception detected, please run node "
+          "Uncaught Node-API callback exception detected, please run node "
           "with option --force-node-api-uncaught-exceptions-policy=true "
           "to handle those exceptions properly.",
           "DEP0168");
@@ -151,50 +199,6 @@ class BufferFinalizer : private Finalizer {
 
   ~BufferFinalizer() { env()->Unref(); }
 };
-
-void ThrowNodeApiVersionError(node::Environment* node_env,
-                              const char* module_name,
-                              int32_t module_api_version) {
-  std::string error_message;
-  error_message += module_name;
-  error_message += " requires Node-API version ";
-  error_message += std::to_string(module_api_version);
-  error_message += ", but this version of Node.js only supports version ";
-  error_message += NODE_STRINGIFY(NODE_API_SUPPORTED_VERSION_MAX) " add-ons.";
-  node_env->ThrowError(error_message.c_str());
-}
-
-inline napi_env NewEnv(v8::Local<v8::Context> context,
-                       const std::string& module_filename,
-                       int32_t module_api_version) {
-  node_napi_env result;
-
-  // Validate module_api_version.
-  if (module_api_version < NODE_API_DEFAULT_MODULE_API_VERSION) {
-    module_api_version = NODE_API_DEFAULT_MODULE_API_VERSION;
-  } else if (module_api_version > NODE_API_SUPPORTED_VERSION_MAX &&
-             module_api_version != NAPI_VERSION_EXPERIMENTAL) {
-    node::Environment* node_env = node::Environment::GetCurrent(context);
-    CHECK_NOT_NULL(node_env);
-    ThrowNodeApiVersionError(
-        node_env, module_filename.c_str(), module_api_version);
-    return nullptr;
-  }
-
-  result = new node_napi_env__(context, module_filename, module_api_version);
-  // TODO(addaleax): There was previously code that tried to delete the
-  // napi_env when its v8::Context was garbage collected;
-  // However, as long as N-API addons using this napi_env are in place,
-  // the Context needs to be accessible and alive.
-  // Ideally, we'd want an on-addon-unload hook that takes care of this
-  // once all N-API addons using this napi_env are unloaded.
-  // For now, a per-Environment cleanup hook is the best we can do.
-  result->node_env()->AddCleanupHook(
-      [](void* arg) { static_cast<napi_env>(arg)->Unref(); },
-      static_cast<void*>(result));
-
-  return result;
-}
 
 class ThreadSafeFunction : public node::AsyncResource {
  public:
@@ -641,8 +645,8 @@ class AsyncContext {
 }  // end of namespace v8impl
 
 // Intercepts the Node-V8 module registration callback. Converts parameters
-// to NAPI equivalents and then calls the registration callback specified
-// by the NAPI module.
+// to Node-API equivalents and then calls the registration callback specified
+// by the Node-API module.
 static void napi_module_register_cb(v8::Local<v8::Object> exports,
                                     v8::Local<v8::Value> module,
                                     v8::Local<v8::Context> context,
@@ -702,9 +706,9 @@ void napi_module_register_by_symbol(v8::Local<v8::Object> exports,
                                     napi_addon_register_func init,
                                     int32_t module_api_version) {
   node::Environment* node_env = node::Environment::GetCurrent(context);
+  CHECK_NOT_NULL(node_env);
   std::string module_filename = "";
   if (init == nullptr) {
-    CHECK_NOT_NULL(node_env);
     node_env->ThrowError("Module has no declared entry point.");
     return;
   }
@@ -728,7 +732,8 @@ void napi_module_register_by_symbol(v8::Local<v8::Object> exports,
   }
 
   // Create a new napi_env for this specific module.
-  napi_env env = v8impl::NewEnv(context, module_filename, module_api_version);
+  napi_env env =
+      node_napi_env__::New(context, module_filename, module_api_version);
 
   napi_value _exports = nullptr;
   env->CallIntoModule([&](napi_env env) {
@@ -761,7 +766,7 @@ node_module napi_module_to_node_module(const napi_module* mod) {
 }
 }  // namespace node
 
-// Registers a NAPI module.
+// Registers a Node-API module.
 void NAPI_CDECL napi_module_register(napi_module* mod) {
   node::node_module* nm =
       new node::node_module(node::napi_module_to_node_module(mod));
@@ -804,7 +809,7 @@ struct napi_async_cleanup_hook_handle__ {
     if (done_cb_ != nullptr) done_cb_(done_data_);
 
     // Release the `env` handle asynchronously since it would be surprising if
-    // a call to a N-API function would destroy `env` synchronously.
+    // a call to a Node-API function would destroy `env` synchronously.
     static_cast<node_napi_env>(env_)->node_env()->SetImmediate(
         [env = env_](node::Environment*) { env->Unref(); });
   }
@@ -1055,8 +1060,7 @@ napi_create_external_buffer(napi_env env,
 
 #if defined(V8_ENABLE_SANDBOX)
   return napi_set_last_error(env, napi_no_external_buffers_allowed);
-#endif
-
+#else
   v8::Isolate* isolate = env->isolate;
 
   // The finalizer object will delete itself after invoking the callback.
@@ -1078,6 +1082,7 @@ napi_create_external_buffer(napi_env env,
   // as it will be deleted when the buffer to which it is associated
   // is finalized.
   // coverity[leaked_storage]
+#endif  // V8_ENABLE_SANDBOX
 }
 
 napi_status NAPI_CDECL napi_create_buffer_copy(napi_env env,

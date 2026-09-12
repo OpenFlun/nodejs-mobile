@@ -220,7 +220,6 @@ li.picker-header.expanded > .picker,
 :root:not(.has-js) li.picker-header:focus-within > .picker,
 :root:not(.has-js) li.picker-header:hover > .picker {
   display: block;
-  z-index: 1;
 }
 
 li.picker-header a span {
@@ -241,6 +240,7 @@ li.picker-header a span {
   max-width: 75vw;
   max-height: min(600px, 60vh);
   overflow-y: auto;
+  z-index: 10;
 }
 
 .picker > ul, .picker > ol {
@@ -294,6 +294,14 @@ li.picker-header a span {
   margin: 0 0 1rem;
   padding: 1rem;
   line-height: 1.5;
+
+  position: sticky;
+  top: 3rem;
+  z-index: 1;
+}
+
+#api-section-documentation .api_stability {
+  position: static;
 }
 
 .api_stability * {
@@ -364,6 +372,11 @@ p {
 #apicontent > *:last-child {
   margin-bottom: 0;
   padding-bottom: 2rem;
+}
+
+/* prevent the module-level sticky stability header from overlapping the section headers when clicked */
+#apicontent:has(> .api_stability) a {
+  scroll-margin-top: 50px;
 }
 
 table {
@@ -817,7 +830,7 @@ kbd {
 .header {
   position: sticky;
   top: -1px;
-  z-index: 1;
+  z-index: 10;
   padding-top: 1rem;
   background-color: var(--color-fill-app);
 }
@@ -826,6 +839,12 @@ kbd {
   .header {
     position: relative;
     top: 0;
+  }
+  .api_stability {
+    top: 0;
+  }
+  #apicontent a {
+    scroll-margin-top: 0;
   }
 }
 

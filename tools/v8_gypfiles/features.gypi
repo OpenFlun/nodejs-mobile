@@ -73,7 +73,7 @@
       }, {
         'v8_enable_etw_stack_walking': 0,
       }],
-      ['OS=="linux"', {
+      ['OS=="linux" or OS=="openharmony"', {
         # Sets -dV8_ENABLE_PRIVATE_MAPPING_FORK_OPTIMIZATION.
         #
         # This flag speeds up the performance of fork/execve on Linux systems for
@@ -193,6 +193,9 @@
     # Use Siphash as added protection against hash flooding attacks.
     'v8_use_siphash%': 0,
 
+    # Enable seeded array index hash.
+    'v8_enable_seeded_array_index_hash%': 1,
+
     # Use Perfetto (https://perfetto.dev) as the default TracingController. Not
     # currently implemented.
     'v8_use_perfetto%': 0,
@@ -251,6 +254,11 @@
     # Enable the experimental V8 sandbox.
     # Sets -DV8_ENABLE_SANDBOX.
     'v8_enable_sandbox%': 0,
+
+    # Enable support for external code range relative to the pointer compression
+    # cage.
+    # Sets -DV8_EXTERNAL_CODE_SPACE.
+    'v8_enable_external_code_space%': 0,
 
     # Experimental feature for collecting per-class zone memory stats.
     # Requires use_rtti = true
@@ -369,9 +377,6 @@
       ['v8_enable_pointer_compression_shared_cage==1', {
         'defines': ['V8_COMPRESS_POINTERS_IN_SHARED_CAGE'],
       }],
-      ['v8_enable_pointer_compression==1 and v8_enable_pointer_compression_shared_cage==0', {
-        'defines': ['V8_COMPRESS_POINTERS_IN_ISOLATE_CAGE'],
-      }],
       ['v8_enable_pointer_compression==1 or v8_enable_31bit_smis_on_64bit_arch==1', {
         'defines': ['V8_31BIT_SMIS_ON_64BIT_ARCH',],
       }],
@@ -383,6 +388,9 @@
       }],
       ['v8_enable_sandbox==1', {
         'defines': ['V8_ENABLE_SANDBOX',],
+      }],
+      ['v8_enable_external_code_space==1', {
+        'defines': ['V8_EXTERNAL_CODE_SPACE',],
       }],
       ['v8_enable_object_print==1', {
         'defines': ['OBJECT_PRINT',],
@@ -448,6 +456,9 @@
       }],
       ['v8_use_siphash==1', {
         'defines': ['V8_USE_SIPHASH',],
+      }],
+      ['v8_enable_seeded_array_index_hash==1', {
+        'defines': ['V8_ENABLE_SEEDED_ARRAY_INDEX_HASH',],
       }],
       ['v8_enable_shared_ro_heap==1', {
         'defines': ['V8_SHARED_RO_HEAP',],

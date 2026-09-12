@@ -332,6 +332,11 @@ class Parser : public AsyncWrap, public StreamListener {
 
     if (num_fields_ == num_values_) {
       // start of new field name
+      rv = TrackHeaderPair();
+      if (rv != 0) {
+        return rv;
+      }
+
       num_fields_++;
       if (num_fields_ == kMaxHeaderFieldsCount) {
         // ran out of space - flush to javascript land
@@ -416,6 +421,7 @@ class Parser : public AsyncWrap, public StreamListener {
 
     num_fields_ = 0;
     num_values_ = 0;
+    header_pairs_ = 0;
 
     // METHOD
     if (parser_.type == HTTP_REQUEST) {
@@ -509,6 +515,8 @@ class Parser : public AsyncWrap, public StreamListener {
     if (num_fields_)
       Flush();  // Flush trailing HTTP headers.
 
+    header_pairs_ = 0;
+
     Local<Object> obj = object();
     Local<Value> cb = obj->Get(env()->context(),
                                kOnMessageComplete).ToLocalChecked();
@@ -563,7 +571,7 @@ class Parser : public AsyncWrap, public StreamListener {
     new Parser(binding_data, args.This());
   }
 
-
+  // TODO(@anonrig): Add V8 Fast API
   static void Close(const FunctionCallbackInfo<Value>& args) {
     Parser* parser;
     ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
@@ -571,7 +579,7 @@ class Parser : public AsyncWrap, public StreamListener {
     delete parser;
   }
 
-
+  // TODO(@anonrig): Add V8 Fast API
   static void Free(const FunctionCallbackInfo<Value>& args) {
     Parser* parser;
     ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
@@ -582,6 +590,7 @@ class Parser : public AsyncWrap, public StreamListener {
     parser->EmitDestroy();
   }
 
+  // TODO(@anonrig): Add V8 Fast API
   static void Remove(const FunctionCallbackInfo<Value>& args) {
     Parser* parser;
     ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
@@ -694,6 +703,7 @@ class Parser : public AsyncWrap, public StreamListener {
     }
   }
 
+  // TODO(@anonrig): Add V8 Fast API
   template <bool should_pause>
   static void Pause(const FunctionCallbackInfo<Value>& args) {
     Environment* env = Environment::GetCurrent(args);
@@ -709,7 +719,7 @@ class Parser : public AsyncWrap, public StreamListener {
     }
   }
 
-
+  // TODO(@anonrig): Add V8 Fast API
   static void Consume(const FunctionCallbackInfo<Value>& args) {
     Parser* parser;
     ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
@@ -719,7 +729,7 @@ class Parser : public AsyncWrap, public StreamListener {
     stream->PushStreamListener(parser);
   }
 
-
+  // TODO(@anonrig): Add V8 Fast API
   static void Unconsume(const FunctionCallbackInfo<Value>& args) {
     Parser* parser;
     ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
@@ -742,26 +752,6 @@ class Parser : public AsyncWrap, public StreamListener {
         parser->current_buffer_len_).ToLocalChecked();
 
     args.GetReturnValue().Set(ret);
-  }
-
-  static void Duration(const FunctionCallbackInfo<Value>& args) {
-    Parser* parser;
-    ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
-
-    if (parser->last_message_start_ == 0) {
-      args.GetReturnValue().Set(0);
-      return;
-    }
-
-    double duration = (uv_hrtime() - parser->last_message_start_) / 1e6;
-    args.GetReturnValue().Set(duration);
-  }
-
-  static void HeadersCompleted(const FunctionCallbackInfo<Value>& args) {
-    Parser* parser;
-    ASSIGN_OR_RETURN_UNWRAP(&parser, args.This());
-
-    args.GetReturnValue().Set(parser->headers_completed_);
   }
 
  protected:
@@ -990,6 +980,7 @@ class Parser : public AsyncWrap, public StreamListener {
     got_exception_ = false;
     headers_completed_ = false;
     max_http_header_size_ = max_http_header_size;
+    header_pairs_ = 0;
   }
 
 
@@ -1002,6 +993,34 @@ class Parser : public AsyncWrap, public StreamListener {
     return 0;
   }
 
+  int TrackHeaderPair() {
+    if (parser_.type != HTTP_REQUEST) {
+      return 0;
+    }
+
+    header_pairs_ += 2;
+
+    Local<Value> max_header_pairs_v;
+    if (!object()
+             ->Get(env()->context(),
+                   FIXED_ONE_BYTE_STRING(env()->isolate(), "maxHeaderPairs"))
+             .ToLocal(&max_header_pairs_v)) {
+      got_exception_ = true;
+      return -1;
+    }
+
+    if (!max_header_pairs_v->IsNumber()) {
+      return 0;
+    }
+
+    const double max_header_pairs = max_header_pairs_v.As<Number>()->Value();
+    if (max_header_pairs > 0 && header_pairs_ > max_header_pairs) {
+      llhttp_set_error_reason(&parser_, "HPE_HEADER_OVERFLOW:Header overflow");
+      return HPE_USER;
+    }
+
+    return 0;
+  }
 
   int MaybePause() {
     if (!pending_pause_) {
@@ -1034,6 +1053,7 @@ class Parser : public AsyncWrap, public StreamListener {
   size_t current_buffer_len_;
   const char* current_buffer_data_;
   bool headers_completed_ = false;
+  size_t header_pairs_ = 0;
   bool pending_pause_ = false;
   uint64_t header_nread_ = 0;
   uint64_t chunk_extensions_nread_ = 0;
@@ -1203,6 +1223,10 @@ void ConnectionsList::Expired(const FunctionCallbackInfo<Value>& args) {
 
 const llhttp_settings_t Parser::settings = {
     Proxy<Call, &Parser::on_message_begin>::Raw,
+
+    // on_protocol
+    nullptr,
+
     Proxy<DataCall, &Parser::on_url>::Raw,
     Proxy<DataCall, &Parser::on_status>::Raw,
 
@@ -1222,6 +1246,8 @@ const llhttp_settings_t Parser::settings = {
     Proxy<DataCall, &Parser::on_body>::Raw,
     Proxy<Call, &Parser::on_message_complete>::Raw,
 
+    // on_protocol_complete
+    nullptr,
     // on_url_complete
     nullptr,
     // on_status_complete
@@ -1310,8 +1336,6 @@ void CreatePerIsolateProperties(IsolateData* isolate_data,
   SetProtoMethod(isolate, t, "consume", Parser::Consume);
   SetProtoMethod(isolate, t, "unconsume", Parser::Unconsume);
   SetProtoMethod(isolate, t, "getCurrentBuffer", Parser::GetCurrentBuffer);
-  SetProtoMethod(isolate, t, "duration", Parser::Duration);
-  SetProtoMethod(isolate, t, "headersCompleted", Parser::HeadersCompleted);
 
   SetConstructorFunction(isolate, target, "HTTPParser", t);
 
@@ -1381,8 +1405,6 @@ void RegisterExternalReferences(ExternalReferenceRegistry* registry) {
   registry->Register(Parser::Consume);
   registry->Register(Parser::Unconsume);
   registry->Register(Parser::GetCurrentBuffer);
-  registry->Register(Parser::Duration);
-  registry->Register(Parser::HeadersCompleted);
   registry->Register(ConnectionsList::New);
   registry->Register(ConnectionsList::All);
   registry->Register(ConnectionsList::Idle);

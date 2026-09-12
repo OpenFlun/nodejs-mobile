@@ -1,6 +1,10 @@
-import '../common/index.mjs';
+import * as common from '../common/index.mjs';
+if (!process.config.variables.node_use_amaro) {
+  common.skip('Requires Amaro');
+}
 import * as fixtures from '../common/fixtures.mjs';
 import * as snapshot from '../common/assertSnapshot.js';
+import { basename } from 'node:path';
 import { describe, it } from 'node:test';
 
 describe('eval output', { concurrency: true }, () => {
@@ -16,6 +20,7 @@ describe('eval output', { concurrency: true }, () => {
     snapshot.replaceNodeVersion,
     removeStackTraces,
     filterEmptyLines,
+    generalizeProcessName,
   );
 
   function removeStackTraces(output) {
@@ -24,6 +29,11 @@ describe('eval output', { concurrency: true }, () => {
 
   function filterEmptyLines(output) {
     return output.replaceAll(/^\s*$/gm, '');
+  }
+
+  function generalizeProcessName(output) {
+    const baseName = basename(process.argv0 || 'node', '.exe');
+    return output.replaceAll(`${baseName} --`, '* --');
   }
 
   const tests = [

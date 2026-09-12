@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>HTTPS | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>HTTPS | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="https" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -203,13 +203,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -267,12 +267,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/https.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/https.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/https.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/https.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/https.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/https.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/https.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/https.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/https.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/https.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/https.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/https.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/https.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/https.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/https.html">15.x</a></li>
@@ -356,7 +359,7 @@
         <h2>HTTPS<span><a class="mark" href="#https" id="https">#</a></span><a aria-hidden="true" class="legacy" id="https_https"></a></h2>
 
 <p></p><div class="api_stability api_stability_2"><a href="documentation.html#stability-index">Stability: 2</a> - Stable</div><p></p>
-<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.14.0/lib/https.js">lib/https.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.23.2/lib/https.js">lib/https.js</a></p>
 <p>HTTPS is the HTTP protocol over TLS/SSL. In Node.js this is implemented as a
 separate module.</p>
 <section><h3>Determining if crypto support is unavailable<span><a class="mark" href="#determining-if-crypto-support-is-unavailable" id="determining-if-crypto-support-is-unavailable">#</a></span><a aria-hidden="true" class="legacy" id="https_determining_if_crypto_support_is_unavailable"></a></h3>
@@ -399,11 +402,22 @@ of Node.js where crypto support is not enabled, consider using the
 </div>
 <p>An <a href="#class-httpsagent"><code>Agent</code></a> object for HTTPS similar to <a href="http.html#class-httpagent"><code>http.Agent</code></a>. See
 <a href="#httpsrequestoptions-callback"><code>https.request()</code></a> for more information.</p>
+<p>Like <code>http.Agent</code>, the <code>createConnection(options[, callback])</code> method can be overridden
+to customize how TLS connections are established.</p>
+<blockquote>
+<p>See <a href="http.html#agentcreateconnectionoptions-callback"><code>agent.createConnection()</code></a> for details on overriding this method,
+including asynchronous socket creation with a callback.</p>
+</blockquote>
+<div>
 <h4><code>new Agent([options])</code><span><a class="mark" href="#new-agentoptions" id="new-agentoptions">#</a></span><a aria-hidden="true" class="legacy" id="https_new_agent_options"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
 <table>
 <tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.21.0</td>
+<td><p>Add support for <code>proxyEnv</code>.</p></td></tr>
+<tr><td>v22.21.0</td>
+<td><p>Add support for <code>defaultPort</code> and <code>protocol</code>.</p></td></tr>
 <tr><td>v12.5.0</td>
 <td><p>do not automatically set servername if the target host was specified using an IP address.</p></td></tr>
 </tbody></table>
@@ -414,11 +428,11 @@ of Node.js where crypto support is not enabled, consider using the
 Can have the same fields as for <a href="http.html#new-agentoptions"><code>http.Agent(options)</code></a>, and
 <ul>
 <li>
-<p><code>maxCachedSessions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> maximum number of TLS cached sessions.
+<p><code>maxCachedSessions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> maximum number of TLS cached sessions.
 Use <code>0</code> to disable TLS session caching. <strong>Default:</strong> <code>100</code>.</p>
 </li>
 <li>
-<p><code>servername</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> the value of
+<p><code>servername</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> the value of
 <a href="https://en.wikipedia.org/wiki/Server_Name_Indication">Server Name Indication extension</a> to be sent to the server. Use
 empty string <code>''</code> to disable sending the extension.
 <strong>Default:</strong> host name of the target server, unless the target server
@@ -429,6 +443,10 @@ extension).</p>
 </ul>
 </li>
 </ul>
+<p>Requests that specify a custom <code>checkServerIdentity</code> option are not eligible
+for connection reuse or TLS session reuse by an <code>https.Agent</code>, unless the
+<code>checkServerIdentity</code> option was specified when constructing the Agent.</p>
+<div>
 <h5>Event: <code>'keylog'</code><span><a class="mark" href="#event-keylog" id="event-keylog">#</a></span><a aria-hidden="true" class="legacy" id="https_event_keylog"></a></h5>
 <div class="api_metadata">
 <span>Added in: v13.2.0, v12.16.0</span>
@@ -449,6 +467,7 @@ later used by software (such as Wireshark) to decrypt the traffic:</p>
 https.<span class="hljs-property">globalAgent</span>.<span class="hljs-title function_">on</span>(<span class="hljs-string">'keylog'</span>, <span class="hljs-function">(<span class="hljs-params">line, tlsSocket</span>) =></span> {
   fs.<span class="hljs-title function_">appendFileSync</span>(<span class="hljs-string">'/tmp/ssl-keys.log'</span>, line, { <span class="hljs-attr">mode</span>: <span class="hljs-number">0o600</span> });
 });</code> <button class="copy-button">copy</button></pre>
+</div></div>
 </section><section><h3>Class: <code>https.Server</code><span><a class="mark" href="#class-httpsserver" id="class-httpsserver">#</a></span><a aria-hidden="true" class="legacy" id="https_class_https_server"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.3.4</span>
@@ -457,6 +476,7 @@ https.<span class="hljs-property">globalAgent</span>.<span class="hljs-title fun
 <li>Extends: <a href="tls.html#class-tlsserver" class="type">&#x3C;tls.Server></a></li>
 </ul>
 <p>See <a href="http.html#class-httpserver"><code>http.Server</code></a> for more information.</p>
+<div>
 <h4><code>server.close([callback])</code><span><a class="mark" href="#serverclosecallback" id="serverclosecallback">#</a></span><a aria-hidden="true" class="legacy" id="https_server_close_callback"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.90</span>
@@ -466,6 +486,7 @@ https.<span class="hljs-property">globalAgent</span>.<span class="hljs-title fun
 <li>Returns: <a href="https.html#class-httpsserver" class="type">&#x3C;https.Server></a></li>
 </ul>
 <p>See <a href="http.html#serverclosecallback"><code>server.close()</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server[Symbol.asyncDispose]()</code><span><a class="mark" href="#serversymbolasyncdispose" id="serversymbolasyncdispose">#</a></span><a aria-hidden="true" class="legacy" id="https_server_symbol_asyncdispose"></a></h4>
 <div class="api_metadata">
 <span>Added in: v20.4.0</span>
@@ -473,32 +494,38 @@ https.<span class="hljs-property">globalAgent</span>.<span class="hljs-title fun
 <p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
 <p>Calls <a href="#serverclosecallback"><code>server.close()</code></a> and returns a promise that
 fulfills when the server has closed.</p>
+</div><div>
 <h4><code>server.closeAllConnections()</code><span><a class="mark" href="#servercloseallconnections" id="servercloseallconnections">#</a></span><a aria-hidden="true" class="legacy" id="https_server_closeallconnections"></a></h4>
 <div class="api_metadata">
 <span>Added in: v18.2.0</span>
 </div>
 <p>See <a href="http.html#servercloseallconnections"><code>server.closeAllConnections()</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.closeIdleConnections()</code><span><a class="mark" href="#servercloseidleconnections" id="servercloseidleconnections">#</a></span><a aria-hidden="true" class="legacy" id="https_server_closeidleconnections"></a></h4>
 <div class="api_metadata">
 <span>Added in: v18.2.0</span>
 </div>
 <p>See <a href="http.html#servercloseidleconnections"><code>server.closeIdleConnections()</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.headersTimeout</code><span><a class="mark" href="#serverheaderstimeout" id="serverheaderstimeout">#</a></span><a aria-hidden="true" class="legacy" id="https_server_headerstimeout"></a></h4>
 <div class="api_metadata">
 <span>Added in: v11.3.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>60000</code></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>60000</code></li>
 </ul>
 <p>See <a href="http.html#serverheaderstimeout"><code>server.headersTimeout</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.listen()</code><span><a class="mark" href="#serverlisten" id="serverlisten">#</a></span><a aria-hidden="true" class="legacy" id="https_server_listen"></a></h4>
 <p>Starts the HTTPS server listening for encrypted connections.
 This method is identical to <a href="net.html#serverlisten"><code>server.listen()</code></a> from <a href="net.html#class-netserver"><code>net.Server</code></a>.</p>
+</div><div>
 <h4><code>server.maxHeadersCount</code><span><a class="mark" href="#servermaxheaderscount" id="servermaxheaderscount">#</a></span><a aria-hidden="true" class="legacy" id="https_server_maxheaderscount"></a></h4>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>2000</code></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>2000</code></li>
 </ul>
 <p>See <a href="http.html#servermaxheaderscount"><code>server.maxHeadersCount</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.requestTimeout</code><span><a class="mark" href="#serverrequesttimeout" id="serverrequesttimeout">#</a></span><a aria-hidden="true" class="legacy" id="https_server_requesttimeout"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -512,19 +539,21 @@ This method is identical to <a href="net.html#serverlisten"><code>server.listen(
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>300000</code></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>300000</code></li>
 </ul>
 <p>See <a href="http.html#serverrequesttimeout"><code>server.requestTimeout</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.setTimeout([msecs][, callback])</code><span><a class="mark" href="#serversettimeoutmsecs-callback" id="serversettimeoutmsecs-callback">#</a></span><a aria-hidden="true" class="legacy" id="https_server_settimeout_msecs_callback"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.11.2</span>
 </div>
 <ul>
-<li><code>msecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>120000</code> (2 minutes)</li>
+<li><code>msecs</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>120000</code> (2 minutes)</li>
 <li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
 <li>Returns: <a href="https.html#class-httpsserver" class="type">&#x3C;https.Server></a></li>
 </ul>
 <p>See <a href="http.html#serversettimeoutmsecs-callback"><code>server.setTimeout()</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.timeout</code><span><a class="mark" href="#servertimeout" id="servertimeout">#</a></span><a aria-hidden="true" class="legacy" id="https_server_timeout"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -538,17 +567,19 @@ This method is identical to <a href="net.html#serverlisten"><code>server.listen(
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> 0 (no timeout)</li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> 0 (no timeout)</li>
 </ul>
 <p>See <a href="http.html#servertimeout"><code>server.timeout</code></a> in the <code>node:http</code> module.</p>
+</div><div>
 <h4><code>server.keepAliveTimeout</code><span><a class="mark" href="#serverkeepalivetimeout" id="serverkeepalivetimeout">#</a></span><a aria-hidden="true" class="legacy" id="https_server_keepalivetimeout"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.0.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>5000</code> (5 seconds)</li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>5000</code> (5 seconds)</li>
 </ul>
 <p>See <a href="http.html#serverkeepalivetimeout"><code>server.keepAliveTimeout</code></a> in the <code>node:http</code> module.</p>
+</div>
 </section><section><h3><code>https.createServer([options][, requestListener])</code><span><a class="mark" href="#httpscreateserveroptions-requestlistener" id="httpscreateserveroptions-requestlistener">#</a></span><a aria-hidden="true" class="legacy" id="https_https_createserver_options_requestlistener"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.3.4</span>
@@ -632,10 +663,11 @@ https.<span class="hljs-title function_">createServer</span>(options, <span clas
 </details>
 </div>
 <ul>
-<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a></li>
-<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> Accepts the same <code>options</code> as
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> Accepts the same <code>options</code> as
 <a href="#httpsrequestoptions-callback"><code>https.request()</code></a>, with the method set to GET by default.</li>
 <li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="http.html#class-httpclientrequest" class="type">&#x3C;http.ClientRequest></a></li>
 </ul>
 <p>Like <a href="http.html#httpgetoptions-callback"><code>http.get()</code></a> but for HTTPS.</p>
 <p><code>options</code> can be an object, a string, or a <a href="url.html#the-whatwg-url-api"><code>URL</code></a> object. If <code>options</code> is a
@@ -707,8 +739,8 @@ a <code>timeout</code> of 5 seconds.</p>
 </details>
 </div>
 <ul>
-<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a></li>
-<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> Accepts all <code>options</code> from
+<li><code>url</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a></li>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> Accepts all <code>options</code> from
 <a href="http.html#httprequestoptions-callback"><code>http.request()</code></a>, with some differences in default values:
 <ul>
 <li><code>protocol</code> <strong>Default:</strong> <code>'https:'</code></li>

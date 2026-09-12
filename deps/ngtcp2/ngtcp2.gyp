@@ -13,6 +13,7 @@
       'ngtcp2/lib/ngtcp2_cid.c',
       'ngtcp2/lib/ngtcp2_conn.c',
       'ngtcp2/lib/ngtcp2_conv.c',
+      'ngtcp2/lib/ngtcp2_dcidtr.c',
       'ngtcp2/lib/ngtcp2_crypto.c',
       'ngtcp2/lib/ngtcp2_err.c',
       'ngtcp2/lib/ngtcp2_frame_chain.c',
@@ -121,7 +122,7 @@
             },
           },
         }],
-        ['OS=="linux" or OS=="android"', {
+        ['OS=="linux" or OS=="android" or OS=="openharmony"', {
           'defines': [
             'HAVE_ARPA_INET_H',
             'HAVE_NETINET_IN_H',
@@ -174,7 +175,7 @@
         ['OS!="win"', {
           'defines': ['HAVE_UNISTD_H']
         }],
-        ['OS=="linux" or OS=="android"', {
+        ['OS=="linux" or OS=="android" or OS=="openharmony"', {
           'defines': [
             'HAVE_ARPA_INET_H',
             'HAVE_NETINET_IN_H',

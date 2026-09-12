@@ -399,6 +399,9 @@ class BuildRequirement {
     // Not using common.hasCrypto because of the global leak checks
     this.hasCrypto = Boolean(process.versions.openssl) &&
       !process.env.NODE_SKIP_CRYPTO;
+
+    // Not using common.hasInspector because of the global leak checks
+    this.hasInspector = Boolean(process.features.inspector);
   }
 
   /**
@@ -415,6 +418,9 @@ class BuildRequirement {
     }
     if (requires.has('crypto') && !this.hasCrypto) {
       return 'crypto';
+    }
+    if (requires.has('inspector') && !this.hasInspector) {
+      return 'inspector';
     }
     return false;
   }
@@ -513,6 +519,14 @@ const limit = (concurrency) => {
 
 class WPTRunner {
   constructor(path, { concurrency = os.availableParallelism() - 1 || 1 } = {}) {
+    // RISC-V has very limited virtual address space in the currently common
+    // sv39 mode, in which we can only create a very limited number of wasm
+    // memories(27 from a fresh node repl). Limit the concurrency to avoid
+    // creating too many wasm memories that would fail.
+    if (process.arch === 'riscv64' || process.arch === 'riscv32') {
+      concurrency = Math.min(10, concurrency);
+    }
+
     this.path = path;
     this.resource = new ResourceLoader(path);
     this.concurrency = concurrency;
@@ -595,7 +609,6 @@ class WPTRunner {
     switch (name) {
       case 'Window': {
         this.globalThisInitScripts.push('globalThis.Window = Object.getPrototypeOf(globalThis).constructor;');
-        this.loadLazyGlobals();
         break;
       }
 
@@ -607,32 +620,6 @@ class WPTRunner {
 
       default: throw new Error(`Invalid globalThis type ${name}.`);
     }
-  }
-
-  loadLazyGlobals() {
-    const lazyProperties = [
-      'DOMException',
-      'Performance', 'PerformanceEntry', 'PerformanceMark', 'PerformanceMeasure',
-      'PerformanceObserver', 'PerformanceObserverEntryList', 'PerformanceResourceTiming',
-      'Blob', 'atob', 'btoa',
-      'MessageChannel', 'MessagePort', 'MessageEvent',
-      'EventTarget', 'Event',
-      'AbortController', 'AbortSignal',
-      'performance',
-      'TransformStream', 'TransformStreamDefaultController',
-      'WritableStream', 'WritableStreamDefaultController', 'WritableStreamDefaultWriter',
-      'ReadableStream', 'ReadableStreamDefaultReader',
-      'ReadableStreamBYOBReader', 'ReadableStreamBYOBRequest',
-      'ReadableByteStreamController', 'ReadableStreamDefaultController',
-      'ByteLengthQueuingStrategy', 'CountQueuingStrategy',
-      'TextEncoder', 'TextDecoder', 'TextEncoderStream', 'TextDecoderStream',
-      'CompressionStream', 'DecompressionStream',
-    ];
-    if (Boolean(process.versions.openssl) && !process.env.NODE_SKIP_CRYPTO) {
-      lazyProperties.push('crypto', 'Crypto', 'CryptoKey', 'SubtleCrypto');
-    }
-    const script = lazyProperties.map((name) => `globalThis.${name};`).join('\n');
-    this.globalThisInitScripts.push(script);
   }
 
   // TODO(joyeecheung): work with the upstream to port more tests in .html

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>Process | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>Process | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="process" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -169,6 +169,7 @@
 <li><a href="#processarch"><code>process.arch</code></a></li>
 <li><a href="#processargv"><code>process.argv</code></a></li>
 <li><a href="#processargv0"><code>process.argv0</code></a></li>
+<li><a href="#processavailablememory"><code>process.availableMemory()</code></a></li>
 <li><a href="#processchannel"><code>process.channel</code></a>
 <ul>
 <li><a href="#processchannelref"><code>process.channel.ref()</code></a></li>
@@ -178,8 +179,7 @@
 <li><a href="#processchdirdirectory"><code>process.chdir(directory)</code></a></li>
 <li><a href="#processconfig"><code>process.config</code></a></li>
 <li><a href="#processconnected"><code>process.connected</code></a></li>
-<li><span class="stability_1"><a href="#processconstrainedmemory"><code>process.constrainedMemory()</code></a></span></li>
-<li><span class="stability_1"><a href="#processavailablememory"><code>process.availableMemory()</code></a></span></li>
+<li><a href="#processconstrainedmemory"><code>process.constrainedMemory()</code></a></li>
 <li><a href="#processcpuusagepreviousvalue"><code>process.cpuUsage([previousValue])</code></a></li>
 <li><a href="#processcwd"><code>process.cwd()</code></a></li>
 <li><a href="#processdebugport"><code>process.debugPort</code></a></li>
@@ -194,6 +194,7 @@
 <li><a href="#processenv"><code>process.env</code></a></li>
 <li><a href="#processexecargv"><code>process.execArgv</code></a></li>
 <li><a href="#processexecpath"><code>process.execPath</code></a></li>
+<li><span class="stability_1"><a href="#processexecvefile-args-env"><code>process.execve(file[, args[, env]])</code></a></span></li>
 <li><a href="#processexitcode"><code>process.exit([code])</code></a></li>
 <li><a href="#processexitcode_1"><code>process.exitCode</code></a></li>
 <li><a href="#processfeaturescached_builtins"><code>process.features.cached_builtins</code></a></li>
@@ -205,12 +206,12 @@
 <li><span class="stability_0"><a href="#processfeaturestls_alpn"><code>process.features.tls_alpn</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturestls_ocsp"><code>process.features.tls_ocsp</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturestls_sni"><code>process.features.tls_sni</code></a></span></li>
-<li><span class="stability_1"><a href="#processfeaturestypescript"><code>process.features.typescript</code></a></span></li>
+<li><span class="stability_1.2"><a href="#processfeaturestypescript"><code>process.features.typescript</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturesuv"><code>process.features.uv</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationregisterref-callback"><code>process.finalization.register(ref, callback)</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationregisterbeforeexitref-callback"><code>process.finalization.registerBeforeExit(ref, callback)</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationunregisterref"><code>process.finalization.unregister(ref)</code></a></span></li>
-<li><span class="stability_1"><a href="#processgetactiveresourcesinfo"><code>process.getActiveResourcesInfo()</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationregisterref-callback"><code>process.finalization.register(ref, callback)</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationregisterbeforeexitref-callback"><code>process.finalization.registerBeforeExit(ref, callback)</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationunregisterref"><code>process.finalization.unregister(ref)</code></a></span></li>
+<li><a href="#processgetactiveresourcesinfo"><code>process.getActiveResourcesInfo()</code></a></li>
 <li><a href="#processgetbuiltinmoduleid"><code>process.getBuiltinModule(id)</code></a></li>
 <li><a href="#processgetegid"><code>process.getegid()</code></a></li>
 <li><a href="#processgeteuid"><code>process.geteuid()</code></a></li>
@@ -222,9 +223,13 @@
 <li><a href="#processhrtimebigint"><code>process.hrtime.bigint()</code></a></li>
 <li><a href="#processinitgroupsuser-extragroup"><code>process.initgroups(user, extraGroup)</code></a></li>
 <li><a href="#processkillpid-signal"><code>process.kill(pid[, signal])</code></a></li>
-<li><span class="stability_1"><a href="#processloadenvfilepath"><code>process.loadEnvFile(path)</code></a></span></li>
+<li><a href="#processloadenvfilepath"><code>process.loadEnvFile(path)</code></a></li>
 <li><span class="stability_0"><a href="#processmainmodule"><code>process.mainModule</code></a></span></li>
-<li><a href="#processmemoryusage"><code>process.memoryUsage()</code></a></li>
+<li><a href="#processmemoryusage"><code>process.memoryUsage()</code></a>
+<ul>
+<li><a href="#a-note-on-process-memoryusage">A note on process memoryUsage</a></li>
+</ul>
+</li>
 <li><a href="#processmemoryusagerss"><code>process.memoryUsage.rss()</code></a></li>
 <li><span class="stability_3"><a href="#processnexttickcallback-args"><code>process.nextTick(callback[, ...args])</code></a></span>
 <ul>
@@ -283,8 +288,10 @@
 </ul>
 </li>
 <li><a href="#processthrowdeprecation"><code>process.throwDeprecation</code></a></li>
+<li><a href="#processthreadcpuusagepreviousvalue"><code>process.threadCpuUsage([previousValue])</code></a></li>
 <li><a href="#processtitle"><code>process.title</code></a></li>
 <li><a href="#processtracedeprecation"><code>process.traceDeprecation</code></a></li>
+<li><a href="#processtraceprocesswarnings"><code>process.traceProcessWarnings</code></a></li>
 <li><span class="stability_0"><a href="#processumask"><code>process.umask()</code></a></span></li>
 <li><a href="#processumaskmask"><code>process.umask(mask)</code></a></li>
 <li><span class="stability_1"><a href="#processunrefmayberefable"><code>process.unref(maybeRefable)</code></a></span></li>
@@ -326,13 +333,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -390,12 +397,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/process.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/process.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/process.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/process.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/process.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/process.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/process.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/process.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/process.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/process.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/process.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/process.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/process.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/process.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/process.html">15.x</a></li>
@@ -471,6 +481,7 @@
 <li><a href="#processarch"><code>process.arch</code></a></li>
 <li><a href="#processargv"><code>process.argv</code></a></li>
 <li><a href="#processargv0"><code>process.argv0</code></a></li>
+<li><a href="#processavailablememory"><code>process.availableMemory()</code></a></li>
 <li><a href="#processchannel"><code>process.channel</code></a>
 <ul>
 <li><a href="#processchannelref"><code>process.channel.ref()</code></a></li>
@@ -480,8 +491,7 @@
 <li><a href="#processchdirdirectory"><code>process.chdir(directory)</code></a></li>
 <li><a href="#processconfig"><code>process.config</code></a></li>
 <li><a href="#processconnected"><code>process.connected</code></a></li>
-<li><span class="stability_1"><a href="#processconstrainedmemory"><code>process.constrainedMemory()</code></a></span></li>
-<li><span class="stability_1"><a href="#processavailablememory"><code>process.availableMemory()</code></a></span></li>
+<li><a href="#processconstrainedmemory"><code>process.constrainedMemory()</code></a></li>
 <li><a href="#processcpuusagepreviousvalue"><code>process.cpuUsage([previousValue])</code></a></li>
 <li><a href="#processcwd"><code>process.cwd()</code></a></li>
 <li><a href="#processdebugport"><code>process.debugPort</code></a></li>
@@ -496,6 +506,7 @@
 <li><a href="#processenv"><code>process.env</code></a></li>
 <li><a href="#processexecargv"><code>process.execArgv</code></a></li>
 <li><a href="#processexecpath"><code>process.execPath</code></a></li>
+<li><span class="stability_1"><a href="#processexecvefile-args-env"><code>process.execve(file[, args[, env]])</code></a></span></li>
 <li><a href="#processexitcode"><code>process.exit([code])</code></a></li>
 <li><a href="#processexitcode_1"><code>process.exitCode</code></a></li>
 <li><a href="#processfeaturescached_builtins"><code>process.features.cached_builtins</code></a></li>
@@ -507,12 +518,12 @@
 <li><span class="stability_0"><a href="#processfeaturestls_alpn"><code>process.features.tls_alpn</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturestls_ocsp"><code>process.features.tls_ocsp</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturestls_sni"><code>process.features.tls_sni</code></a></span></li>
-<li><span class="stability_1"><a href="#processfeaturestypescript"><code>process.features.typescript</code></a></span></li>
+<li><span class="stability_1.2"><a href="#processfeaturestypescript"><code>process.features.typescript</code></a></span></li>
 <li><span class="stability_0"><a href="#processfeaturesuv"><code>process.features.uv</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationregisterref-callback"><code>process.finalization.register(ref, callback)</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationregisterbeforeexitref-callback"><code>process.finalization.registerBeforeExit(ref, callback)</code></a></span></li>
-<li><span class="stability_1"><a href="#processfinalizationunregisterref"><code>process.finalization.unregister(ref)</code></a></span></li>
-<li><span class="stability_1"><a href="#processgetactiveresourcesinfo"><code>process.getActiveResourcesInfo()</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationregisterref-callback"><code>process.finalization.register(ref, callback)</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationregisterbeforeexitref-callback"><code>process.finalization.registerBeforeExit(ref, callback)</code></a></span></li>
+<li><span class="stability_1.1"><a href="#processfinalizationunregisterref"><code>process.finalization.unregister(ref)</code></a></span></li>
+<li><a href="#processgetactiveresourcesinfo"><code>process.getActiveResourcesInfo()</code></a></li>
 <li><a href="#processgetbuiltinmoduleid"><code>process.getBuiltinModule(id)</code></a></li>
 <li><a href="#processgetegid"><code>process.getegid()</code></a></li>
 <li><a href="#processgeteuid"><code>process.geteuid()</code></a></li>
@@ -524,9 +535,13 @@
 <li><a href="#processhrtimebigint"><code>process.hrtime.bigint()</code></a></li>
 <li><a href="#processinitgroupsuser-extragroup"><code>process.initgroups(user, extraGroup)</code></a></li>
 <li><a href="#processkillpid-signal"><code>process.kill(pid[, signal])</code></a></li>
-<li><span class="stability_1"><a href="#processloadenvfilepath"><code>process.loadEnvFile(path)</code></a></span></li>
+<li><a href="#processloadenvfilepath"><code>process.loadEnvFile(path)</code></a></li>
 <li><span class="stability_0"><a href="#processmainmodule"><code>process.mainModule</code></a></span></li>
-<li><a href="#processmemoryusage"><code>process.memoryUsage()</code></a></li>
+<li><a href="#processmemoryusage"><code>process.memoryUsage()</code></a>
+<ul>
+<li><a href="#a-note-on-process-memoryusage">A note on process memoryUsage</a></li>
+</ul>
+</li>
 <li><a href="#processmemoryusagerss"><code>process.memoryUsage.rss()</code></a></li>
 <li><span class="stability_3"><a href="#processnexttickcallback-args"><code>process.nextTick(callback[, ...args])</code></a></span>
 <ul>
@@ -585,8 +600,10 @@
 </ul>
 </li>
 <li><a href="#processthrowdeprecation"><code>process.throwDeprecation</code></a></li>
+<li><a href="#processthreadcpuusagepreviousvalue"><code>process.threadCpuUsage([previousValue])</code></a></li>
 <li><a href="#processtitle"><code>process.title</code></a></li>
 <li><a href="#processtracedeprecation"><code>process.traceDeprecation</code></a></li>
+<li><a href="#processtraceprocesswarnings"><code>process.traceProcessWarnings</code></a></li>
 <li><span class="stability_0"><a href="#processumask"><code>process.umask()</code></a></span></li>
 <li><a href="#processumaskmask"><code>process.umask(mask)</code></a></li>
 <li><span class="stability_1"><a href="#processunrefmayberefable"><code>process.unref(maybeRefable)</code></a></span></li>
@@ -602,13 +619,14 @@
         <h2>Process<span><a class="mark" href="#process" id="process">#</a></span><a aria-hidden="true" class="legacy" id="process_process"></a></h2>
 
 
-<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.14.0/lib/process.js">lib/process.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.23.2/lib/process.js">lib/process.js</a></p>
 <p>The <code>process</code> object provides information about, and control over, the current
 Node.js process.</p>
 
 <pre class="with-40-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> process <span class="hljs-keyword">from</span> <span class="hljs-string">'node:process'</span>;</code><code class="language-js cjs"><span class="hljs-keyword">const</span> process = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);</code><button class="copy-button">copy</button></pre>
 <section><h3>Process events<span><a class="mark" href="#process-events" id="process-events">#</a></span><a aria-hidden="true" class="legacy" id="process_process_events"></a></h3>
 <p>The <code>process</code> object is an instance of <a href="events.html#class-eventemitter"><code>EventEmitter</code></a>.</p>
+<div>
 <h4>Event: <code>'beforeExit'</code><span><a class="mark" href="#event-beforeexit" id="event-beforeexit">#</a></span><a aria-hidden="true" class="legacy" id="process_event_beforeexit"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.11.12</span>
@@ -656,6 +674,7 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <span class="hljs-comment">// This message is displayed first.</span>
 <span class="hljs-comment">// Process beforeExit event with code: 0</span>
 <span class="hljs-comment">// Process exit event with code: 0</span></code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4>Event: <code>'disconnect'</code><span><a class="mark" href="#event-disconnect" id="event-disconnect">#</a></span><a aria-hidden="true" class="legacy" id="process_event_disconnect"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.7.7</span>
@@ -663,12 +682,13 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <p>If the Node.js process is spawned with an IPC channel (see the <a href="child_process.html">Child Process</a>
 and <a href="cluster.html">Cluster</a> documentation), the <code>'disconnect'</code> event will be emitted when
 the IPC channel is closed.</p>
+</div><div>
 <h4>Event: <code>'exit'</code><span><a class="mark" href="#event-exit" id="event-exit">#</a></span><a aria-hidden="true" class="legacy" id="process_event_exit"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.7</span>
 </div>
 <ul>
-<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p>The <code>'exit'</code> event is emitted when the Node.js process is about to exit as a
 result of either:</p>
@@ -709,12 +729,13 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'This will not run'</span>);
   }, <span class="hljs-number">0</span>);
 });</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4>Event: <code>'message'</code><span><a class="mark" href="#event-message" id="event-message">#</a></span><a aria-hidden="true" class="legacy" id="process_event_message"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.5.10</span>
 </div>
 <ul>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a> a parsed JSON object
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type" class="type">&#x3C;null></a> a parsed JSON object
 or a serializable primitive value.</li>
 <li><code>sendHandle</code> <a href="net.html#class-netserver" class="type">&#x3C;net.Server></a> | <a href="net.html#class-netsocket" class="type">&#x3C;net.Socket></a> a <a href="net.html#class-netserver"><code>net.Server</code></a> or <a href="net.html#class-netsocket"><code>net.Socket</code></a>
 object, or undefined.</li>
@@ -729,13 +750,14 @@ not be the same as what is originally sent.</p>
 process, the <code>message</code> argument can contain data that JSON is not able
 to represent.
 See <a href="child_process.html#advanced-serialization">Advanced serialization for <code>child_process</code></a> for more details.</p>
+</div><div>
 <h4>Event: <code>'multipleResolves'</code><span><a class="mark" href="#event-multipleresolves" id="event-multipleresolves">#</a></span><a aria-hidden="true" class="legacy" id="process_event_multipleresolves"></a></h4>
 <div class="api_metadata">
 <span>Added in: v10.12.0</span><span>Deprecated since: v17.6.0, v16.15.0</span>
 </div>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated</div><p></p>
 <ul>
-<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The resolution type. One of <code>'resolve'</code> or <code>'reject'</code>.</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The resolution type. One of <code>'resolve'</code> or <code>'reject'</code>.</li>
 <li><code>promise</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="type">&#x3C;Promise></a> The promise that resolved or rejected more than once.</li>
 <li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The value with which the promise was either resolved or
 rejected after the original resolve.</li>
@@ -805,6 +827,7 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <span class="hljs-comment">//     at new Promise (&#x3C;anonymous>)</span>
 <span class="hljs-comment">//     at main (*)</span>
 <span class="hljs-comment">// First call</span></code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4>Event: <code>'rejectionHandled'</code><span><a class="mark" href="#event-rejectionhandled" id="event-rejectionhandled">#</a></span><a aria-hidden="true" class="legacy" id="process_event_rejectionhandled"></a></h4>
 <div class="api_metadata">
 <span>Added in: v1.4.1</span>
@@ -853,16 +876,18 @@ reflecting rejections that start unhandled and then become handled. It is
 possible to record such errors in an error log, either periodically (which is
 likely best for long-running application) or upon process exit (which is likely
 most convenient for scripts).</p>
+</div><div>
 <h4>Event: <code>'workerMessage'</code><span><a class="mark" href="#event-workermessage" id="event-workermessage">#</a></span><a aria-hidden="true" class="legacy" id="process_event_workermessage"></a></h4>
 <div class="api_metadata">
 <span>Added in: v22.5.0</span>
 </div>
 <ul>
 <li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> A value transmitted using <a href="worker_threads.html#workerpostmessagetothreadthreadid-value-transferlist-timeout"><code>postMessageToThread()</code></a>.</li>
-<li><code>source</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The transmitting worker thread ID or <code>0</code> for the main thread.</li>
+<li><code>source</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The transmitting worker thread ID or <code>0</code> for the main thread.</li>
 </ul>
 <p>The <code>'workerMessage'</code> event is emitted for any incoming message send by the other
 party by using <a href="worker_threads.html#workerpostmessagetothreadthreadid-value-transferlist-timeout"><code>postMessageToThread()</code></a>.</p>
+</div><div>
 <h4>Event: <code>'uncaughtException'</code><span><a class="mark" href="#event-uncaughtexception" id="event-uncaughtexception">#</a></span><a aria-hidden="true" class="legacy" id="process_event_uncaughtexception"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -877,7 +902,7 @@ party by using <a href="worker_threads.html#workerpostmessagetothreadthreadid-va
 </div>
 <ul>
 <li><code>err</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The uncaught exception.</li>
-<li><code>origin</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Indicates if the exception originates from an unhandled
+<li><code>origin</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Indicates if the exception originates from an unhandled
 rejection or from a synchronous error. Can either be <code>'uncaughtException'</code> or
 <code>'unhandledRejection'</code>. The latter is used when an exception happens in a
 <code>Promise</code> based async context (or if a <code>Promise</code> is rejected) and
@@ -933,6 +958,7 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <p>It is possible to monitor <code>'uncaughtException'</code> events without overriding the
 default behavior to exit the process by installing a
 <code>'uncaughtExceptionMonitor'</code> listener.</p>
+<div>
 <h5>Warning: Using <code>'uncaughtException'</code> correctly<span><a class="mark" href="#warning-using-uncaughtexception-correctly" id="warning-using-uncaughtexception-correctly">#</a></span><a aria-hidden="true" class="legacy" id="process_warning_using_uncaughtexception_correctly"></a></h5>
 <p><code>'uncaughtException'</code> is a crude mechanism for exception handling
 intended to be used only as a last resort. The event <em>should not</em> be used as
@@ -954,13 +980,14 @@ down the process. <strong>It is not safe to resume normal operation after
 <code>'uncaughtException'</code> is emitted or not, an external monitor should be employed
 in a separate process to detect application failures and recover or restart as
 needed.</p>
+</div></div><div>
 <h4>Event: <code>'uncaughtExceptionMonitor'</code><span><a class="mark" href="#event-uncaughtexceptionmonitor" id="event-uncaughtexceptionmonitor">#</a></span><a aria-hidden="true" class="legacy" id="process_event_uncaughtexceptionmonitor"></a></h4>
 <div class="api_metadata">
 <span>Added in: v13.7.0, v12.17.0</span>
 </div>
 <ul>
 <li><code>err</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The uncaught exception.</li>
-<li><code>origin</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Indicates if the exception originates from an unhandled
+<li><code>origin</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Indicates if the exception originates from an unhandled
 rejection or from synchronous errors. Can either be <code>'uncaughtException'</code> or
 <code>'unhandledRejection'</code>. The latter is used when an exception happens in a
 <code>Promise</code> based async context (or if a <code>Promise</code> is rejected) and
@@ -992,6 +1019,7 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <span class="hljs-comment">// Intentionally cause an exception, but don't catch it.</span>
 <span class="hljs-title function_">nonexistentFunc</span>();
 <span class="hljs-comment">// Still crashes Node.js</span></code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4>Event: <code>'unhandledRejection'</code><span><a class="mark" href="#event-unhandledrejection" id="event-unhandledrejection">#</a></span><a aria-hidden="true" class="legacy" id="process_event_unhandledrejection"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1064,6 +1092,10 @@ address such failures, a non-operational
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch"><code>.catch(() => { })</code></a> handler may be attached to
 <code>resource.loaded</code>, which would prevent the <code>'unhandledRejection'</code> event from
 being emitted.</p>
+<p>If an <code>'unhandledRejection'</code> event is emitted but not handled it will
+be raised as an uncaught exception. This alongside other behaviors of
+<code>'unhandledRejection'</code> events can changed via the <a href="cli.html#--unhandled-rejectionsmode"><code>--unhandled-rejections</code></a> flag.</p>
+</div><div>
 <h4>Event: <code>'warning'</code><span><a class="mark" href="#event-warning" id="event-warning">#</a></span><a aria-hidden="true" class="legacy" id="process_event_warning"></a></h4>
 <div class="api_metadata">
 <span>Added in: v6.0.0</span>
@@ -1071,9 +1103,9 @@ being emitted.</p>
 <ul>
 <li><code>warning</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> Key properties of the warning are:
 <ul>
-<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The name of the warning. <strong>Default:</strong> <code>'Warning'</code>.</li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A system-provided description of the warning.</li>
-<li><code>stack</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A stack trace to the location in the code where the warning
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The name of the warning. <strong>Default:</strong> <code>'Warning'</code>.</li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> A system-provided description of the warning.</li>
+<li><code>stack</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> A stack trace to the location in the code where the warning
 was issued.</li>
 </ul>
 </li>
@@ -1130,9 +1162,11 @@ deprecation to be printed to <code>stderr</code> along with the stack trace.</p>
 of the custom deprecation.</p>
 <p>The <code>*-deprecation</code> command-line flags only affect warnings that use the name
 <code>'DeprecationWarning'</code>.</p>
+<div>
 <h5>Emitting custom warnings<span><a class="mark" href="#emitting-custom-warnings" id="emitting-custom-warnings">#</a></span><a aria-hidden="true" class="legacy" id="process_emitting_custom_warnings"></a></h5>
 <p>See the <a href="#processemitwarningwarning-type-code-ctor"><code>process.emitWarning()</code></a> method for issuing
 custom or application-specific warnings.</p>
+</div><div>
 <h5>Node.js warning names<span><a class="mark" href="#nodejs-warning-names" id="nodejs-warning-names">#</a></span><a aria-hidden="true" class="legacy" id="process_node_js_warning_names"></a></h5>
 <p>There are no strict guidelines for warning types (as identified by the <code>name</code>
 property) emitted by Node.js. New types of warnings can be added at any time.
@@ -1155,6 +1189,7 @@ or <code>setInterval()</code> functions.</li>
 that will be ignored rather than treated as an error. One example is use of
 the HTTP response status message when using the HTTP/2 compatibility API.</li>
 </ul>
+</div></div><div>
 <h4>Event: <code>'worker'</code><span><a class="mark" href="#event-worker" id="event-worker">#</a></span><a aria-hidden="true" class="legacy" id="process_event_worker"></a></h4>
 <div class="api_metadata">
 <span>Added in: v16.2.0, v14.18.0</span>
@@ -1163,6 +1198,7 @@ the HTTP response status message when using the HTTP/2 compatibility API.</li>
 <li><code>worker</code> <a href="worker_threads.html#class-worker" class="type">&#x3C;Worker></a> The <a href="worker_threads.html#class-worker" class="type">&#x3C;Worker></a> that was created.</li>
 </ul>
 <p>The <code>'worker'</code> event is emitted after a new <a href="worker_threads.html#class-worker" class="type">&#x3C;Worker></a> thread has been created.</p>
+</div><div>
 <h4>Signal events<span><a class="mark" href="#signal-events" id="signal-events">#</a></span><a aria-hidden="true" class="legacy" id="process_signal_events"></a></h4>
 
 
@@ -1251,6 +1287,7 @@ the process was terminated by signal.</li>
 <li>Sending signal <code>0</code> can be used as a platform independent way to test for the
 existence of a process.</li>
 </ul>
+</div>
 </section><section><h3><code>process.abort()</code><span><a class="mark" href="#processabort" id="processabort">#</a></span><a aria-hidden="true" class="legacy" id="process_process_abort"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.7.0</span>
@@ -1263,7 +1300,7 @@ generate a core file.</p>
 <span>Added in: v10.10.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="type">&#x3C;Set></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="type">&#x3C;Set></a></li>
 </ul>
 <p>The <code>process.allowedNodeEnvironmentFlags</code> property is a special,
 read-only <code>Set</code> of flags allowable within the <a href="cli.html#node_optionsoptions"><code>NODE_OPTIONS</code></a>
@@ -1315,7 +1352,7 @@ contain what <em>would have</em> been allowable.</p>
 <span>Added in: v0.5.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The operating system CPU architecture for which the Node.js binary was compiled.
 Possible values are: <code>'arm'</code>, <code>'arm64'</code>, <code>'ia32'</code>, <code>'loong64'</code>, <code>'mips'</code>,
@@ -1331,13 +1368,13 @@ Possible values are: <code>'arm'</code>, <code>'arm64'</code>, <code>'ia32'</cod
 <span>Added in: v0.1.27</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string[]></a></li>
 </ul>
 <p>The <code>process.argv</code> property returns an array containing the command-line
 arguments passed when the Node.js process was launched. The first element will
 be <a href="#processexecpath"><code>process.execPath</code></a>. See <code>process.argv0</code> if access to the original value
-of <code>argv[0]</code> is needed. The second element will be the path to the JavaScript
-file being executed. The remaining elements will be any additional command-line
+of <code>argv[0]</code> is needed. If a <a href="https://nodejs.org/api/cli.html#program-entry-point">program entry point</a> was provided, the second element
+will be the absolute path to it. The remaining elements are additional command-line
 arguments.</p>
 <p>For example, assuming the following script for <code>process-args.js</code>:</p>
 
@@ -1365,7 +1402,7 @@ argv.<span class="hljs-title function_">forEach</span>(<span class="hljs-functio
 <span>Added in: v6.4.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.argv0</code> property stores a read-only copy of the original value of
 <code>argv[0]</code> passed when Node.js starts.</p>
@@ -1374,6 +1411,25 @@ argv.<span class="hljs-title function_">forEach</span>(<span class="hljs-functio
 '/Volumes/code/external/node/out/Release/node'
 <span class="hljs-meta prompt_">> </span><span class="language-bash">process.argv0</span>
 'customArgv0'</code> <button class="copy-button">copy</button></pre>
+</section><section><h3><code>process.availableMemory()</code><span><a class="mark" href="#processavailablememory" id="processavailablememory">#</a></span><a aria-hidden="true" class="legacy" id="process_process_availablememory"></a></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.16.0</td>
+<td><p>Change stability index for this feature from Experimental to Stable.</p></td></tr>
+<tr><td>v22.0.0</td>
+<td><p><span>Added in: v22.0.0</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>Gets the amount of free memory that is still available to the process
+(in bytes).</p>
+<p>See <a href="https://docs.libuv.org/en/v1.x/misc.html#c.uv_get_available_memory"><code>uv_get_available_memory</code></a> for more
+information.</p>
 </section><section><h3><code>process.channel</code><span><a class="mark" href="#processchannel" id="processchannel">#</a></span><a aria-hidden="true" class="legacy" id="process_process_channel"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1387,12 +1443,13 @@ argv.<span class="hljs-title function_">forEach</span>(<span class="hljs-functio
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>If the Node.js process was spawned with an IPC channel (see the
 <a href="child_process.html">Child Process</a> documentation), the <code>process.channel</code>
 property is a reference to the IPC channel. If no IPC channel exists, this
 property is <code>undefined</code>.</p>
+<div>
 <h4><code>process.channel.ref()</code><span><a class="mark" href="#processchannelref" id="processchannelref">#</a></span><a aria-hidden="true" class="legacy" id="process_process_channel_ref"></a></h4>
 <div class="api_metadata">
 <span>Added in: v7.1.0</span>
@@ -1402,6 +1459,7 @@ running if <code>.unref()</code> has been called before.</p>
 <p>Typically, this is managed through the number of <code>'disconnect'</code> and <code>'message'</code>
 listeners on the <code>process</code> object. However, this method can be used to
 explicitly request a specific behavior.</p>
+</div><div>
 <h4><code>process.channel.unref()</code><span><a class="mark" href="#processchannelunref" id="processchannelunref">#</a></span><a aria-hidden="true" class="legacy" id="process_process_channel_unref"></a></h4>
 <div class="api_metadata">
 <span>Added in: v7.1.0</span>
@@ -1411,12 +1469,13 @@ running, and lets it finish even while the channel is open.</p>
 <p>Typically, this is managed through the number of <code>'disconnect'</code> and <code>'message'</code>
 listeners on the <code>process</code> object. However, this method can be used to
 explicitly request a specific behavior.</p>
+</div>
 </section><section><h3><code>process.chdir(directory)</code><span><a class="mark" href="#processchdirdirectory" id="processchdirdirectory">#</a></span><a aria-hidden="true" class="legacy" id="process_process_chdir_directory"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.1.17</span>
 </div>
 <ul>
-<li><code>directory</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>directory</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.chdir()</code> method changes the current working directory of the
 Node.js process or throws an exception if doing so fails (for instance, if
@@ -1455,7 +1514,7 @@ the specified <code>directory</code> does not exist).</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>The <code>process.config</code> property returns a frozen <code>Object</code> containing the
 JavaScript representation of the configure options used to compile the current
@@ -1491,7 +1550,7 @@ when running the <code>./configure</code> script.</p>
 <span>Added in: v0.7.2</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If the Node.js process is spawned with an IPC channel (see the <a href="child_process.html">Child Process</a>
 and <a href="cluster.html">Cluster</a> documentation), the <code>process.connected</code> property will return
@@ -1504,6 +1563,8 @@ over the IPC channel using <code>process.send()</code>.</p>
 <details class="changelog"><summary>History</summary>
 <table>
 <tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.16.0</td>
+<td><p>Change stability index for this feature from Experimental to Stable.</p></td></tr>
 <tr><td>v22.0.0</td>
 <td><p>Aligned return value with <code>uv_get_constrained_memory</code>.</p></td></tr>
 <tr><td>v19.6.0, v18.15.0</td>
@@ -1511,26 +1572,13 @@ over the IPC channel using <code>process.send()</code>.</p>
 </tbody></table>
 </details>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>Gets the amount of memory available to the process (in bytes) based on
 limits imposed by the OS. If there is no such constraint, or the constraint
 is unknown, <code>0</code> is returned.</p>
 <p>See <a href="https://docs.libuv.org/en/v1.x/misc.html#c.uv_get_constrained_memory"><code>uv_get_constrained_memory</code></a> for more
-information.</p>
-</section><section><h3><code>process.availableMemory()</code><span><a class="mark" href="#processavailablememory" id="processavailablememory">#</a></span><a aria-hidden="true" class="legacy" id="process_process_availablememory"></a></h3>
-<div class="api_metadata">
-<span>Added in: v22.0.0</span>
-</div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
-<ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
-</ul>
-<p>Gets the amount of free memory that is still available to the process
-(in bytes).</p>
-<p>See <a href="https://docs.libuv.org/en/v1.x/misc.html#c.uv_get_available_memory"><code>uv_get_available_memory</code></a> for more
 information.</p>
 </section><section><h3><code>process.cpuUsage([previousValue])</code><span><a class="mark" href="#processcpuusagepreviousvalue" id="processcpuusagepreviousvalue">#</a></span><a aria-hidden="true" class="legacy" id="process_process_cpuusage_previousvalue"></a></h3>
 <div class="api_metadata">
@@ -1541,8 +1589,8 @@ information.</p>
 <code>process.cpuUsage()</code></li>
 <li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>user</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
-<li><code>system</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li><code>user</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>system</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 </li>
 </ul>
@@ -1580,7 +1628,7 @@ argument to the function, to get a diff reading.</p>
 <span>Added in: v0.1.8</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.cwd()</code> method returns the current working directory of the Node.js
 process.</p>
@@ -1595,7 +1643,7 @@ process.</p>
 <span>Added in: v0.7.2</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>The port used by the Node.js debugger when enabled.</p>
 
@@ -1630,7 +1678,7 @@ once there are no other connections keeping it alive.</p>
 </div>
 <ul>
 <li><code>module</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
-<li><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 <li><code>flags</code> <a href="os.html#dlopen-constants" class="type">&#x3C;os.constants.dlopen></a> <strong>Default:</strong> <code>os.constants.dlopen.RTLD_LAZY</code></li>
 </ul>
 <p>The <code>process.dlopen()</code> method allows dynamically loading shared objects. It is
@@ -1667,16 +1715,16 @@ the constant is assumed to be available.</p>
 <span>Added in: v8.0.0</span>
 </div>
 <ul>
-<li><code>warning</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The warning to emit.</li>
+<li><code>warning</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The warning to emit.</li>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> When <code>warning</code> is a <code>String</code>, <code>type</code> is the name to use
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> When <code>warning</code> is a <code>String</code>, <code>type</code> is the name to use
 for the <em>type</em> of warning being emitted. <strong>Default:</strong> <code>'Warning'</code>.</li>
-<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A unique identifier for the warning instance being emitted.</li>
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> A unique identifier for the warning instance being emitted.</li>
 <li><code>ctor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> When <code>warning</code> is a <code>String</code>, <code>ctor</code> is an optional
 function used to limit the generated stack trace. <strong>Default:</strong>
 <code>process.emitWarning</code>.</li>
-<li><code>detail</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Additional text to include with the error.</li>
+<li><code>detail</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Additional text to include with the error.</li>
 </ul>
 </li>
 </ul>
@@ -1730,10 +1778,10 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 <span>Added in: v6.0.0</span>
 </div>
 <ul>
-<li><code>warning</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The warning to emit.</li>
-<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> When <code>warning</code> is a <code>String</code>, <code>type</code> is the name to use
+<li><code>warning</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> The warning to emit.</li>
+<li><code>type</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> When <code>warning</code> is a <code>String</code>, <code>type</code> is the name to use
 for the <em>type</em> of warning being emitted. <strong>Default:</strong> <code>'Warning'</code>.</li>
-<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A unique identifier for the warning instance being emitted.</li>
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> A unique identifier for the warning instance being emitted.</li>
 <li><code>ctor</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> When <code>warning</code> is a <code>String</code>, <code>ctor</code> is an optional
 function used to limit the generated stack trace. <strong>Default:</strong>
 <code>process.emitWarning</code>.</li>
@@ -1825,6 +1873,7 @@ warning is suppressed.</li>
 <li>If the <code>--trace-deprecation</code> command-line flag is used, the deprecation
 warning is printed to <code>stderr</code> along with the full stack trace.</li>
 </ul>
+<div>
 <h4>Avoiding duplicate warnings<span><a class="mark" href="#avoiding-duplicate-warnings" id="avoiding-duplicate-warnings">#</a></span><a aria-hidden="true" class="legacy" id="process_avoiding_duplicate_warnings"></a></h4>
 <p>As a best practice, warnings should be emitted only once per process. To do
 so, place the <code>emitWarning()</code> behind a boolean.</p>
@@ -1852,6 +1901,7 @@ so, place the <code>emitWarning()</code> behind a boolean.</p>
 <span class="hljs-comment">// Emits: (node: 56339) Warning: Only warn once!</span>
 <span class="hljs-title function_">emitMyWarning</span>();
 <span class="hljs-comment">// Emits nothing</span></code><button class="copy-button">copy</button></pre>
+</div>
 </section><section><h3><code>process.env</code><span><a class="mark" href="#processenv" id="processenv">#</a></span><a aria-hidden="true" class="legacy" id="process_process_env"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1867,7 +1917,7 @@ so, place the <code>emitWarning()</code> behind a boolean.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>The <code>process.env</code> property returns an object containing the user environment.
 See <a href="http://man7.org/linux/man-pages/man7/environ.7.html"><code>environ(7)</code></a>.</p>
@@ -1955,7 +2005,7 @@ unlike the main thread.</p>
 <span>Added in: v0.7.7</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string[]></a></li>
 </ul>
 <p>The <code>process.execArgv</code> property returns the set of Node.js-specific command-line
 options passed when the Node.js process was launched. These options do not
@@ -1976,12 +2026,32 @@ threads with this property.</p>
 <span>Added in: v0.1.100</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.execPath</code> property returns the absolute pathname of the executable
 that started the Node.js process. Symbolic links, if any, are resolved.</p>
 <!-- eslint-disable @stylistic/js/semi -->
 <pre><code class="language-js"><span class="hljs-string">'/usr/local/bin/node'</span></code> <button class="copy-button">copy</button></pre>
+</section><section><h3><code>process.execve(file[, args[, env]])</code><span><a class="mark" href="#processexecvefile-args-env" id="processexecvefile-args-env">#</a></span><a aria-hidden="true" class="legacy" id="process_process_execve_file_args_env"></a></h3>
+<div class="api_metadata">
+<span>Added in: v22.15.0</span>
+</div>
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
+<ul>
+<li><code>file</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The name or path of the executable file to run.</li>
+<li><code>args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string[]></a> List of string arguments. No argument can contain a null-byte (<code>\u0000</code>).</li>
+<li><code>env</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> Environment key-value pairs.
+No key or value can contain a null-byte (<code>\u0000</code>).
+<strong>Default:</strong> <code>process.env</code>.</li>
+</ul>
+<p>Replaces the current process with a new process.</p>
+<p>This is achieved by using the <code>execve</code> POSIX function and therefore no memory or other
+resources from the current process are preserved, except for the standard input,
+standard output and standard error file descriptor.</p>
+<p>All other resources are discarded by the system when the processes are swapped, without triggering
+any exit or close events and without running any cleanup handler.</p>
+<p>This function will never return, unless an error occurred.</p>
+<p>This function is not available on Windows or IBM i.</p>
 </section><section><h3><code>process.exit([code])</code><span><a class="mark" href="#processexitcode" id="processexitcode">#</a></span><a aria-hidden="true" class="legacy" id="process_process_exit_code"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1995,7 +2065,7 @@ that started the Node.js process. Symbolic links, if any, are resolved.</p>
 </details>
 </div>
 <ul>
-<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a> The exit code. For string type, only
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type" class="type">&#x3C;null></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a> The exit code. For string type, only
 integer strings (e.g.,'1') are allowed. <strong>Default:</strong> <code>0</code>.</li>
 </ul>
 <p>The <code>process.exit()</code> method instructs Node.js to terminate the process
@@ -2077,20 +2147,33 @@ than the current process.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a> The exit code. For string type, only
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type" class="type">&#x3C;null></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a> The exit code. For string type, only
 integer strings (e.g.,'1') are allowed. <strong>Default:</strong> <code>undefined</code>.</li>
 </ul>
 <p>A number which will be the process exit code, when the process either
 exits gracefully, or is exited via <a href="#processexitcode"><code>process.exit()</code></a> without specifying
 a code.</p>
-<p>Specifying a code to <a href="#processexitcode"><code>process.exit(code)</code></a> will override any
-previous setting of <code>process.exitCode</code>.</p>
+<p>The value of <code>process.exitCode</code> can be updated by either assigning a value to
+<code>process.exitCode</code> or by passing an argument to <a href="#processexitcode"><code>process.exit()</code></a>:</p>
+<pre><code class="language-console"><span class="hljs-meta prompt_">$ </span><span class="language-bash">node -e <span class="hljs-string">'process.exitCode = 9'</span>; <span class="hljs-built_in">echo</span> $?</span>
+9
+<span class="hljs-meta prompt_">$ </span><span class="language-bash">node -e <span class="hljs-string">'process.exit(42)'</span>; <span class="hljs-built_in">echo</span> $?</span>
+42
+<span class="hljs-meta prompt_">$ </span><span class="language-bash">node -e <span class="hljs-string">'process.exitCode = 9; process.exit(42)'</span>; <span class="hljs-built_in">echo</span> $?</span>
+42</code> <button class="copy-button">copy</button></pre>
+<p>The value can also be set implicitly by Node.js when unrecoverable errors occur (e.g.
+such as the encountering of an unsettled top-level await). However explicit
+manipulations of the exit code always take precedence over implicit ones:</p>
+<pre><code class="language-console"><span class="hljs-meta prompt_">$ </span><span class="language-bash">node --input-type=module -e <span class="hljs-string">'await new Promise(() => {})'</span>; <span class="hljs-built_in">echo</span> $?</span>
+13
+<span class="hljs-meta prompt_">$ </span><span class="language-bash">node --input-type=module -e <span class="hljs-string">'process.exitCode = 9; await new Promise(() => {})'</span>; <span class="hljs-built_in">echo</span> $?</span>
+9</code> <button class="copy-button">copy</button></pre>
 </section><section><h3><code>process.features.cached_builtins</code><span><a class="mark" href="#processfeaturescached_builtins" id="processfeaturescached_builtins">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_cached_builtins"></a></h3>
 <div class="api_metadata">
 <span>Added in: v12.0.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build is caching builtin modules.</p>
 </section><section><h3><code>process.features.debug</code><span><a class="mark" href="#processfeaturesdebug" id="processfeaturesdebug">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_debug"></a></h3>
@@ -2098,7 +2181,7 @@ previous setting of <code>process.exitCode</code>.</p>
 <span>Added in: v0.5.5</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build is a debug build.</p>
 </section><section><h3><code>process.features.inspector</code><span><a class="mark" href="#processfeaturesinspector" id="processfeaturesinspector">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_inspector"></a></h3>
@@ -2106,7 +2189,7 @@ previous setting of <code>process.exitCode</code>.</p>
 <span>Added in: v11.10.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes the inspector.</p>
 </section><section><h3><code>process.features.ipv6</code><span><a class="mark" href="#processfeaturesipv6" id="processfeaturesipv6">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_ipv6"></a></h3>
@@ -2116,7 +2199,7 @@ previous setting of <code>process.exitCode</code>.</p>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated. This property is always true, and any checks based on it are
 redundant.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for IPv6.</p>
 <p>Since all Node.js builds have IPv6 support, this value is always <code>true</code>.</p>
@@ -2125,7 +2208,7 @@ redundant.</div><p></p>
 <span>Added in: v22.10.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build supports
 <a href="modules.html#loading-ecmascript-modules-using-require">loading ECMAScript modules using <code>require()</code></a>.</p>
@@ -2134,7 +2217,7 @@ redundant.</div><p></p>
 <span>Added in: v0.5.3</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for TLS.</p>
 </section><section><h3><code>process.features.tls_alpn</code><span><a class="mark" href="#processfeaturestls_alpn" id="processfeaturestls_alpn">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_tls_alpn"></a></h3>
@@ -2143,7 +2226,7 @@ redundant.</div><p></p>
 </div>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated. Use <code>process.features.tls</code> instead.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for ALPN in TLS.</p>
 <p>In Node.js 11.0.0 and later versions, the OpenSSL dependencies feature unconditional ALPN support.
@@ -2154,7 +2237,7 @@ This value is therefore identical to that of <code>process.features.tls</code>.<
 </div>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated. Use <code>process.features.tls</code> instead.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for OCSP in TLS.</p>
 <p>In Node.js 11.0.0 and later versions, the OpenSSL dependencies feature unconditional OCSP support.
@@ -2165,7 +2248,7 @@ This value is therefore identical to that of <code>process.features.tls</code>.<
 </div>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated. Use <code>process.features.tls</code> instead.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for SNI in TLS.</p>
 <p>In Node.js 11.0.0 and later versions, the OpenSSL dependencies feature unconditional SNI support.
@@ -2174,12 +2257,13 @@ This value is therefore identical to that of <code>process.features.tls</code>.<
 <div class="api_metadata">
 <span>Added in: v22.10.0</span>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.1 - Active development</div><p></p>
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1.2</a> - Release candidate</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
-<p>A value that is <code>"strip"</code> if Node.js is run with <code>--experimental-strip-types</code>,
-<code>"transform"</code> if Node.js is run with <code>--experimental-transform-types</code>, and <code>false</code> otherwise.</p>
+<p>A value that is <code>"strip"</code> by default,
+<code>"transform"</code> if Node.js is run with <code>--experimental-transform-types</code>, and <code>false</code> if
+Node.js is run with <code>--no-experimental-strip-types</code>.</p>
 </section><section><h3><code>process.features.uv</code><span><a class="mark" href="#processfeaturesuv" id="processfeaturesuv">#</a></span><a aria-hidden="true" class="legacy" id="process_process_features_uv"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.5.3</span><span>Deprecated since: v22.13.0</span>
@@ -2187,7 +2271,7 @@ This value is therefore identical to that of <code>process.features.tls</code>.<
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated. This property is always true, and any checks based on it are
 redundant.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>A boolean value that is <code>true</code> if the current Node.js build includes support for libuv.</p>
 <p>Since it's not possible to build Node.js without libuv, this value is always <code>true</code>.</p>
@@ -2195,14 +2279,14 @@ redundant.</div><p></p>
 <div class="api_metadata">
 <span>Added in: v22.5.0</span>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.1 - Active Development</div><p></p>
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1.1</a> - Active Development</div><p></p>
 <ul>
 <li><code>ref</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The reference to the resource that is being tracked.</li>
 <li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The callback function to be called when the resource
 is finalized.
 <ul>
 <li><code>ref</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The reference to the resource that is being tracked.</li>
-<li><code>event</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The event that triggered the finalization. Defaults to 'exit'.</li>
+<li><code>event</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The event that triggered the finalization. Defaults to 'exit'.</li>
 </ul>
 </li>
 </ul>
@@ -2288,7 +2372,7 @@ as it is not guaranteed that the callback will be called under all circumstances
 <div class="api_metadata">
 <span>Added in: v22.5.0</span>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.1 - Active Development</div><p></p>
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1.1</a> - Active Development</div><p></p>
 <ul>
 <li><code>ref</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The reference
 to the resource that is being tracked.</li>
@@ -2296,7 +2380,7 @@ to the resource that is being tracked.</li>
 is finalized.
 <ul>
 <li><code>ref</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The reference to the resource that is being tracked.</li>
-<li><code>event</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The event that triggered the finalization. Defaults to 'beforeExit'.</li>
+<li><code>event</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The event that triggered the finalization. Defaults to 'beforeExit'.</li>
 </ul>
 </li>
 </ul>
@@ -2308,7 +2392,7 @@ this means that there is a possibility that the callback will not be called unde
 <div class="api_metadata">
 <span>Added in: v22.5.0</span>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.1 - Active Development</div><p></p>
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1.1</a> - Active Development</div><p></p>
 <ul>
 <li><code>ref</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The reference
 to the resource that was registered previously.</li>
@@ -2380,11 +2464,18 @@ registry, so the callback will not be called anymore.</p>
 <span class="hljs-title function_">setup</span>();</code><button class="copy-button">copy</button></pre>
 </section><section><h3><code>process.getActiveResourcesInfo()</code><span><a class="mark" href="#processgetactiveresourcesinfo" id="processgetactiveresourcesinfo">#</a></span><a aria-hidden="true" class="legacy" id="process_process_getactiveresourcesinfo"></a></h3>
 <div class="api_metadata">
-<span>Added in: v17.3.0, v16.14.0</span>
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.16.0</td>
+<td><p>Change stability index for this feature from Experimental to Stable.</p></td></tr>
+<tr><td>v17.3.0, v16.14.0</td>
+<td><p><span>Added in: v17.3.0, v16.14.0</span></p></td></tr>
+</tbody></table>
+</details>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string[]></a></li>
 </ul>
 <p>The <code>process.getActiveResourcesInfo()</code> method returns an array of strings
 containing the types of the active resources that are currently keeping the
@@ -2412,8 +2503,8 @@ event loop alive.</p>
 <span>Added in: v22.3.0</span>
 </div>
 <ul>
-<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> ID of the built-in module being requested.</li>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a></li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> ID of the built-in module being requested.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a></li>
 </ul>
 <p><code>process.getBuiltinModule(id)</code> provides a way to load built-in modules
 in a globally available function. ES Modules that need to support
@@ -2505,7 +2596,7 @@ Android).</p>
 <span>Added in: v0.9.4</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer[]></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer[]></a></li>
 </ul>
 <p>The <code>process.getgroups()</code> method returns an array with the supplementary group
 IDs. POSIX leaves it unspecified if the effective group ID is included but
@@ -2527,7 +2618,7 @@ Android).</p>
 <span>Added in: v0.1.28</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p>The <code>process.getuid()</code> method returns the numeric user identity of the process.
 (See <a href="http://man7.org/linux/man-pages/man2/getuid.2.html"><code>getuid(2)</code></a>.)</p>
@@ -2541,14 +2632,13 @@ Android).</p>
 <span class="hljs-keyword">if</span> (process.<span class="hljs-property">getuid</span>) {
   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Current uid: <span class="hljs-subst">${process.getuid()}</span>`</span>);
 }</code><button class="copy-button">copy</button></pre>
-<p>This function is only available on POSIX platforms (i.e. not Windows or
-Android).</p>
+<p>This function not available on Windows.</p>
 </section><section><h3><code>process.hasUncaughtExceptionCaptureCallback()</code><span><a class="mark" href="#processhasuncaughtexceptioncapturecallback" id="processhasuncaughtexceptioncapturecallback">#</a></span><a aria-hidden="true" class="legacy" id="process_process_hasuncaughtexceptioncapturecallback"></a></h3>
 <div class="api_metadata">
 <span>Added in: v9.3.0</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>Indicates whether a callback has been set using
 <a href="#processsetuncaughtexceptioncapturecallbackfn"><code>process.setUncaughtExceptionCaptureCallback()</code></a>.</p>
@@ -2558,8 +2648,8 @@ Android).</p>
 </div>
 <p></p><div class="api_stability api_stability_3"><a href="documentation.html#stability-index">Stability: 3</a> - Legacy. Use <a href="#processhrtimebigint"><code>process.hrtime.bigint()</code></a> instead.</div><p></p>
 <ul>
-<li><code>time</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer[]></a> The result of a previous call to <code>process.hrtime()</code></li>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer[]></a></li>
+<li><code>time</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer[]></a> The result of a previous call to <code>process.hrtime()</code></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer[]></a></li>
 </ul>
 <p>This is the legacy version of <a href="#processhrtimebigint"><code>process.hrtime.bigint()</code></a>
 before <code>bigint</code> was introduced in JavaScript.</p>
@@ -2605,7 +2695,7 @@ drift. The primary use is for measuring performance between intervals:</p>
 <span>Added in: v10.7.0</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt" class="type">&#x3C;bigint></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#bigint_type" class="type">&#x3C;bigint></a></li>
 </ul>
 <p>The <code>bigint</code> version of the <a href="#processhrtimetime"><code>process.hrtime()</code></a> method returning the
 current high-resolution real time in nanoseconds as a <code>bigint</code>.</p>
@@ -2641,8 +2731,8 @@ by subtraction of the two <code>bigint</code>s.</p>
 <span>Added in: v0.9.4</span>
 </div>
 <ul>
-<li><code>user</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The user name or numeric identifier.</li>
-<li><code>extraGroup</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> A group name or numeric identifier.</li>
+<li><code>user</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The user name or numeric identifier.</li>
+<li><code>extraGroup</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> A group name or numeric identifier.</li>
 </ul>
 <p>The <code>process.initgroups()</code> method reads the <code>/etc/group</code> file and initializes
 the group access list, using all groups of which the user is a member. This is
@@ -2671,8 +2761,8 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 <span>Added in: v0.0.6</span>
 </div>
 <ul>
-<li><code>pid</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> A process ID</li>
-<li><code>signal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The signal to send, either as a string or number.
+<li><code>pid</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> A process ID</li>
+<li><code>signal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The signal to send, either as a string or number.
 <strong>Default:</strong> <code>'SIGTERM'</code>.</li>
 </ul>
 <p>The <code>process.kill()</code> method sends the <code>signal</code> to the process identified by
@@ -2714,11 +2804,18 @@ process.<span class="hljs-title function_">kill</span>(process.<span class="hljs
 debugger. See <a href="#signal-events">Signal Events</a>.</p>
 </section><section><h3><code>process.loadEnvFile(path)</code><span><a class="mark" href="#processloadenvfilepath" id="processloadenvfilepath">#</a></span><a aria-hidden="true" class="legacy" id="process_process_loadenvfile_path"></a></h3>
 <div class="api_metadata">
-<span>Added in: v21.7.0, v20.12.0</span>
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.21.0</td>
+<td><p>This API is no longer experimental.</p></td></tr>
+<tr><td>v21.7.0, v20.12.0</td>
+<td><p><span>Added in: v21.7.0, v20.12.0</span></p></td></tr>
+</tbody></table>
+</details>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.1 - Active development</div><p></p>
 <ul>
-<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> | <a href="buffer.html#class-buffer" class="type">&#x3C;Buffer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a>. <strong>Default:</strong> <code>'./.env'</code></li>
+<li><code>path</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="url.html#the-whatwg-url-api" class="type">&#x3C;URL></a> | <a href="buffer.html#class-buffer" class="type">&#x3C;Buffer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a>. <strong>Default:</strong> <code>'./.env'</code></li>
 </ul>
 <p>Loads the <code>.env</code> file into <code>process.env</code>. Usage of <code>NODE_OPTIONS</code>
 in the <code>.env</code> file will not have any effect on Node.js.</p>
@@ -2732,7 +2829,7 @@ in the <code>.env</code> file will not have any effect on Node.js.</p>
 </div>
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated: Use <a href="modules.html#accessing-the-main-module"><code>require.main</code></a> instead.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>The <code>process.mainModule</code> property provides an alternative way of retrieving
 <a href="modules.html#accessing-the-main-module"><code>require.main</code></a>. The difference is that if the main module changes at
@@ -2758,11 +2855,11 @@ is no entry script.</p>
 <ul>
 <li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>rss</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
-<li><code>heapTotal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
-<li><code>heapUsed</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
-<li><code>external</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
-<li><code>arrayBuffers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li><code>rss</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>heapTotal</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>heapUsed</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>external</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>arrayBuffers</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 </li>
 </ul>
@@ -2808,12 +2905,19 @@ entire process, while the other fields will only refer to the current thread.</p
 <p>The <code>process.memoryUsage()</code> method iterates over each page to gather
 information about memory usage which might be slow depending on the
 program memory allocations.</p>
+<div>
+<h4>A note on process memoryUsage<span><a class="mark" href="#a-note-on-process-memoryusage" id="a-note-on-process-memoryusage">#</a></span><a aria-hidden="true" class="legacy" id="process_a_note_on_process_memoryusage"></a></h4>
+<p>On Linux or other systems where glibc is commonly used, an application may have sustained
+<code>rss</code> growth despite stable <code>heapTotal</code> due to fragmentation caused by the glibc <code>malloc</code>
+implementation. See <a href="https://github.com/nodejs/node/issues/21973">nodejs/node#21973</a> on how to switch to an alternative <code>malloc</code>
+implementation to address the performance issue.</p>
+</div>
 </section><section><h3><code>process.memoryUsage.rss()</code><span><a class="mark" href="#processmemoryusagerss" id="processmemoryusagerss">#</a></span><a aria-hidden="true" class="legacy" id="process_process_memoryusage_rss"></a></h3>
 <div class="api_metadata">
 <span>Added in: v15.6.0, v14.18.0</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p>The <code>process.memoryUsage.rss()</code> method returns an integer representing the
 Resident Set Size (RSS) in bytes.</p>
@@ -2950,6 +3054,7 @@ asynchronous. Consider this example:</p>
 
   fs.<span class="hljs-title function_">stat</span>(<span class="hljs-string">'file'</span>, cb);
 }</code><button class="copy-button">copy</button></pre>
+<div>
 <h4>When to use <code>queueMicrotask()</code> vs. <code>process.nextTick()</code><span><a class="mark" href="#when-to-use-queuemicrotask-vs-processnexttick" id="when-to-use-queuemicrotask-vs-processnexttick">#</a></span><a aria-hidden="true" class="legacy" id="process_when_to_use_queuemicrotask_vs_process_nexttick"></a></h4>
 <p>The <a href="globals.html#queuemicrotaskcallback"><code>queueMicrotask()</code></a> API is an alternative to <code>process.nextTick()</code> that instead of using the
 "next tick queue" defers execution of a function using the same microtask queue used to execute the
@@ -2958,7 +3063,7 @@ then, catch, and finally handlers of resolved promises.</p>
 is drained immediately after.</p>
 <p>So in CJS modules <code>process.nextTick()</code> callbacks are always run before <code>queueMicrotask()</code> ones.
 However since ESM modules are processed already as part of the microtask queue, there
-<code>queueMicrotask()</code> callbacks are always exectued before <code>process.nextTick()</code> ones since Node.js
+<code>queueMicrotask()</code> callbacks are always executed before <code>process.nextTick()</code> ones since Node.js
 is already in the process of draining the microtask queue.</p>
 
 <pre class="with-45-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> { nextTick } <span class="hljs-keyword">from</span> <span class="hljs-string">'node:process'</span>;
@@ -3014,12 +3119,13 @@ not, the <code>process.on('uncaughtException')</code> event handler can be used 
 and handle the errors.</p>
 <p>When in doubt, unless the specific capabilities of <code>process.nextTick()</code> are
 needed, use <code>queueMicrotask()</code>.</p>
+</div>
 </section><section><h3><code>process.noDeprecation</code><span><a class="mark" href="#processnodeprecation" id="processnodeprecation">#</a></span><a aria-hidden="true" class="legacy" id="process_process_nodeprecation"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.8.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>The <code>process.noDeprecation</code> property indicates whether the <code>--no-deprecation</code>
 flag is set on the current Node.js process. See the documentation for
@@ -3031,20 +3137,21 @@ flag's behavior.</p>
 <span>Added in: v20.0.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>This API is available through the <a href="cli.html#--permission"><code>--permission</code></a> flag.</p>
 <p><code>process.permission</code> is an object whose methods are used to manage permissions
 for the current process. Additional documentation is available in the
 <a href="permissions.html#permission-model">Permission Model</a>.</p>
+<div>
 <h4><code>process.permission.has(scope[, reference])</code><span><a class="mark" href="#processpermissionhasscope-reference" id="processpermissionhasscope-reference">#</a></span><a aria-hidden="true" class="legacy" id="process_process_permission_has_scope_reference"></a></h4>
 <div class="api_metadata">
 <span>Added in: v20.0.0</span>
 </div>
 <ul>
-<li><code>scope</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
-<li><code>reference</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li><code>scope</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
+<li><code>reference</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>Verifies that the process is able to access the given scope and reference.
 If no reference is provided, a global scope is assumed, for instance,
@@ -3064,12 +3171,13 @@ the reference when the scope is File System means files and folders.</p>
 process.<span class="hljs-property">permission</span>.<span class="hljs-title function_">has</span>(<span class="hljs-string">'fs.read'</span>, <span class="hljs-string">'./README.md'</span>);
 <span class="hljs-comment">// Check if the process has read permission operations</span>
 process.<span class="hljs-property">permission</span>.<span class="hljs-title function_">has</span>(<span class="hljs-string">'fs.read'</span>);</code> <button class="copy-button">copy</button></pre>
+</div>
 </section><section><h3><code>process.pid</code><span><a class="mark" href="#processpid" id="processpid">#</a></span><a aria-hidden="true" class="legacy" id="process_process_pid"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.1.15</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p>The <code>process.pid</code> property returns the PID of the process.</p>
 
@@ -3083,7 +3191,7 @@ process.<span class="hljs-property">permission</span>.<span class="hljs-title fu
 <span>Added in: v0.1.16</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.platform</code> property returns a string identifying the operating
 system platform for which the Node.js binary was compiled.</p>
@@ -3111,7 +3219,7 @@ Android operating system. However, Android support in Node.js
 <span>Added in: v9.2.0, v8.10.0, v6.13.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p>The <code>process.ppid</code> property returns the PID of the parent of the
 current process.</p>
@@ -3150,25 +3258,25 @@ to add <code>ref()</code> and <code>unref()</code> methods but still need to sup
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>The <code>process.release</code> property returns an <code>Object</code> containing metadata related
 to the current release, including URLs for the source tarball and headers-only
 tarball.</p>
 <p><code>process.release</code> contains the following properties:</p>
 <ul>
-<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> A value that will always be <code>'node'</code>.</li>
-<li><code>sourceUrl</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> an absolute URL pointing to a <em><code>.tar.gz</code></em> file containing
+<li><code>name</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> A value that will always be <code>'node'</code>.</li>
+<li><code>sourceUrl</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> an absolute URL pointing to a <em><code>.tar.gz</code></em> file containing
 the source code of the current release.</li>
-<li><code>headersUrl</code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> an absolute URL pointing to a <em><code>.tar.gz</code></em> file containing
+<li><code>headersUrl</code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> an absolute URL pointing to a <em><code>.tar.gz</code></em> file containing
 only the source header files for the current release. This file is
 significantly smaller than the full source file and can be used for compiling
 Node.js native add-ons.</li>
-<li><code>libUrl</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a> an absolute URL pointing to a <em><code>node.lib</code></em> file
+<li><code>libUrl</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a> an absolute URL pointing to a <em><code>node.lib</code></em> file
 matching the architecture and version of the current release. This file is
 used for compiling Node.js native add-ons. <em>This property is only present on
 Windows builds of Node.js and will be missing on all other platforms.</em></li>
-<li><code>lts</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type" class="type">&#x3C;undefined></a> a string label identifying the <a href="https://github.com/nodejs/Release">LTS</a> label for this
+<li><code>lts</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#undefined_type" class="type">&#x3C;undefined></a> a string label identifying the <a href="https://github.com/nodejs/Release">LTS</a> label for this
 release. This property only exists for LTS releases and is <code>undefined</code> for all
 other release types, including <em>Current</em> releases. Valid values include the
 LTS Release code names (including those that are no longer supported).
@@ -3204,17 +3312,18 @@ relied upon to exist.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p><code>process.report</code> is an object whose methods are used to generate diagnostic
 reports for the current process. Additional documentation is available in the
 <a href="report.html">report documentation</a>.</p>
+<div>
 <h4><code>process.report.compact</code><span><a class="mark" href="#processreportcompact" id="processreportcompact">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_compact"></a></h4>
 <div class="api_metadata">
 <span>Added in: v13.12.0, v12.17.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>Write reports in a compact format, single-line JSON, more easily consumable
 by log processing systems than the default multi-line format designed for
@@ -3225,6 +3334,7 @@ human consumption.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Reports are compact? <span class="hljs-subst">${report.compact}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Reports are compact? <span class="hljs-subst">${report.compact}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.directory</code><span><a class="mark" href="#processreportdirectory" id="processreportdirectory">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_directory"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3238,7 +3348,7 @@ human consumption.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>Directory where the report is written. The default value is the empty string,
 indicating that reports are written to the current working directory of the
@@ -3249,6 +3359,7 @@ Node.js process.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report directory is <span class="hljs-subst">${report.directory}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report directory is <span class="hljs-subst">${report.directory}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.filename</code><span><a class="mark" href="#processreportfilename" id="processreportfilename">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_filename"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3262,7 +3373,7 @@ Node.js process.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>Filename where the report is written. If set to the empty string, the output
 filename will be comprised of a timestamp, PID, and sequence number. The default
@@ -3275,6 +3386,7 @@ the report is written to the stdout or stderr of the process respectively.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report filename is <span class="hljs-subst">${report.filename}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report filename is <span class="hljs-subst">${report.filename}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.getReport([err])</code><span><a class="mark" href="#processreportgetreporterr" id="processreportgetreporterr">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_getreport_err"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3313,6 +3425,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(<span class="hljs-str
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:fs'</span>);
 fs.<span class="hljs-title function_">writeFileSync</span>(<span class="hljs-string">'my-report.log'</span>, util.<span class="hljs-title function_">inspect</span>(data), <span class="hljs-string">'utf8'</span>);</code><button class="copy-button">copy</button></pre>
 <p>Additional documentation is available in the <a href="report.html">report documentation</a>.</p>
+</div><div>
 <h4><code>process.report.reportOnFatalError</code><span><a class="mark" href="#processreportreportonfatalerror" id="processreportreportonfatalerror">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_reportonfatalerror"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3326,7 +3439,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(<span class="hljs-str
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If <code>true</code>, a diagnostic report is generated on fatal errors, such as out of
 memory errors or failed C++ assertions.</p>
@@ -3336,6 +3449,7 @@ memory errors or failed C++ assertions.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on fatal error: <span class="hljs-subst">${report.reportOnFatalError}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on fatal error: <span class="hljs-subst">${report.reportOnFatalError}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.reportOnSignal</code><span><a class="mark" href="#processreportreportonsignal" id="processreportreportonsignal">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_reportonsignal"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3349,7 +3463,7 @@ memory errors or failed C++ assertions.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If <code>true</code>, a diagnostic report is generated when the process receives the
 signal specified by <code>process.report.signal</code>.</p>
@@ -3359,6 +3473,7 @@ signal specified by <code>process.report.signal</code>.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on signal: <span class="hljs-subst">${report.reportOnSignal}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on signal: <span class="hljs-subst">${report.reportOnSignal}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.reportOnUncaughtException</code><span><a class="mark" href="#processreportreportonuncaughtexception" id="processreportreportonuncaughtexception">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_reportonuncaughtexception"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3372,7 +3487,7 @@ signal specified by <code>process.report.signal</code>.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If <code>true</code>, a diagnostic report is generated on uncaught exception.</p>
 
@@ -3381,14 +3496,16 @@ signal specified by <code>process.report.signal</code>.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on exception: <span class="hljs-subst">${report.reportOnUncaughtException}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report on exception: <span class="hljs-subst">${report.reportOnUncaughtException}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.excludeEnv</code><span><a class="mark" href="#processreportexcludeenv" id="processreportexcludeenv">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_excludeenv"></a></h4>
 <div class="api_metadata">
 <span>Added in: v22.13.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If <code>true</code>, a diagnostic report is generated without the environment variables.</p>
+</div><div>
 <h4><code>process.report.signal</code><span><a class="mark" href="#processreportsignal" id="processreportsignal">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_signal"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3402,7 +3519,7 @@ signal specified by <code>process.report.signal</code>.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The signal used to trigger the creation of a diagnostic report. Defaults to
 <code>'SIGUSR2'</code>.</p>
@@ -3412,6 +3529,7 @@ signal specified by <code>process.report.signal</code>.</p>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report signal: <span class="hljs-subst">${report.signal}</span>`</span>);</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { report } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:process'</span>);
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Report signal: <span class="hljs-subst">${report.signal}</span>`</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>process.report.writeReport([filename][, err])</code><span><a class="mark" href="#processreportwritereportfilename-err" id="processreportwritereportfilename-err">#</a></span><a aria-hidden="true" class="legacy" id="process_process_report_writereport_filename_err"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3426,7 +3544,7 @@ signal specified by <code>process.report.signal</code>.</p>
 </div>
 <ul>
 <li>
-<p><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Name of the file where the report is written. This
+<p><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Name of the file where the report is written. This
 should be a relative path, that will be appended to the directory specified in
 <code>process.report.directory</code>, or the current working directory of the Node.js
 process, if unspecified.</p>
@@ -3435,7 +3553,7 @@ process, if unspecified.</p>
 <p><code>err</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> A custom error used for reporting the JavaScript stack.</p>
 </li>
 <li>
-<p>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Returns the filename of the generated report.</p>
+<p>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Returns the filename of the generated report.</p>
 </li>
 </ul>
 <p>Writes a diagnostic report to a file. If <code>filename</code> is not provided, the default
@@ -3450,6 +3568,7 @@ report.<span class="hljs-title function_">writeReport</span>();</code><code clas
 
 report.<span class="hljs-title function_">writeReport</span>();</code><button class="copy-button">copy</button></pre>
 <p>Additional documentation is available in the <a href="report.html">report documentation</a>.</p>
+</div>
 </section><section><h3><code>process.resourceUsage()</code><span><a class="mark" href="#processresourceusage" id="processresourceusage">#</a></span><a aria-hidden="true" class="legacy" id="process_process_resourceusage"></a></h3>
 <div class="api_metadata">
 <span>Added in: v12.6.0</span>
@@ -3459,42 +3578,42 @@ report.<span class="hljs-title function_">writeReport</span>();</code><button cl
 values come from the <code>uv_getrusage</code> call which returns
 a <a href="https://docs.libuv.org/en/v1.x/misc.html#c.uv_rusage_t"><code>uv_rusage_t</code> struct</a>.
 <ul>
-<li><code>userCPUTime</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_utime</code> computed in microseconds.
+<li><code>userCPUTime</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_utime</code> computed in microseconds.
 It is the same value as <a href="#processcpuusagepreviousvalue"><code>process.cpuUsage().user</code></a>.</li>
-<li><code>systemCPUTime</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_stime</code> computed in microseconds.
+<li><code>systemCPUTime</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_stime</code> computed in microseconds.
 It is the same value as <a href="#processcpuusagepreviousvalue"><code>process.cpuUsage().system</code></a>.</li>
-<li><code>maxRSS</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_maxrss</code> which is the maximum resident set
-size used in kilobytes.</li>
-<li><code>sharedMemorySize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_ixrss</code> but is not supported by
+<li><code>maxRSS</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_maxrss</code> which is the maximum resident set
+size used in kibibytes (1024 bytes).</li>
+<li><code>sharedMemorySize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_ixrss</code> but is not supported by
 any platform.</li>
-<li><code>unsharedDataSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_idrss</code> but is not supported by
+<li><code>unsharedDataSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_idrss</code> but is not supported by
 any platform.</li>
-<li><code>unsharedStackSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_isrss</code> but is not supported by
+<li><code>unsharedStackSize</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_isrss</code> but is not supported by
 any platform.</li>
-<li><code>minorPageFault</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_minflt</code> which is the number of
+<li><code>minorPageFault</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_minflt</code> which is the number of
 minor page faults for the process, see
 <a href="https://en.wikipedia.org/wiki/Page_fault#Minor">this article for more details</a>.</li>
-<li><code>majorPageFault</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_majflt</code> which is the number of
+<li><code>majorPageFault</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_majflt</code> which is the number of
 major page faults for the process, see
 <a href="https://en.wikipedia.org/wiki/Page_fault#Major">this article for more details</a>. This field is not
 supported on Windows.</li>
-<li><code>swappedOut</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_nswap</code> but is not supported by any
+<li><code>swappedOut</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_nswap</code> but is not supported by any
 platform.</li>
-<li><code>fsRead</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_inblock</code> which is the number of times the
+<li><code>fsRead</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_inblock</code> which is the number of times the
 file system had to perform input.</li>
-<li><code>fsWrite</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_oublock</code> which is the number of times the
+<li><code>fsWrite</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_oublock</code> which is the number of times the
 file system had to perform output.</li>
-<li><code>ipcSent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_msgsnd</code> but is not supported by any
+<li><code>ipcSent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_msgsnd</code> but is not supported by any
 platform.</li>
-<li><code>ipcReceived</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_msgrcv</code> but is not supported by any
+<li><code>ipcReceived</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_msgrcv</code> but is not supported by any
 platform.</li>
-<li><code>signalsCount</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_nsignals</code> but is not supported by any
+<li><code>signalsCount</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_nsignals</code> but is not supported by any
 platform.</li>
-<li><code>voluntaryContextSwitches</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_nvcsw</code> which is the
+<li><code>voluntaryContextSwitches</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_nvcsw</code> which is the
 number of times a CPU context switch resulted due to a process voluntarily
 giving up the processor before its time slice was completed (usually to
 await availability of a resource). This field is not supported on Windows.</li>
-<li><code>involuntaryContextSwitches</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> maps to <code>ru_nivcsw</code> which is the
+<li><code>involuntaryContextSwitches</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> maps to <code>ru_nivcsw</code> which is the
 number of times a CPU context switch resulted due to a higher priority
 process becoming runnable or because the current process exceeded its
 time slice. This field is not supported on Windows.</li>
@@ -3559,13 +3678,13 @@ time slice. This field is not supported on Windows.</li>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> used to parameterize the sending of certain types of
 handles.<code>options</code> supports the following properties:
 <ul>
-<li><code>keepOpen</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> A value that can be used when passing instances of
+<li><code>keepOpen</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> A value that can be used when passing instances of
 <code>net.Socket</code>. When <code>true</code>, the socket is kept open in the sending process.
 <strong>Default:</strong> <code>false</code>.</li>
 </ul>
 </li>
 <li><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>If Node.js is spawned with an IPC channel, the <code>process.send()</code> method can be
 used to send messages to the parent process. Messages will be received as a
@@ -3579,7 +3698,7 @@ not be the same as what is originally sent.</p>
 <span>Added in: v2.0.0</span>
 </div>
 <ul>
-<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> A group name or ID</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> A group name or ID</li>
 </ul>
 <p>The <code>process.setegid()</code> method sets the effective group identity of the process.
 (See <a href="http://man7.org/linux/man-pages/man2/setegid.2.html"><code>setegid(2)</code></a>.) The <code>id</code> can be passed as either a numeric ID or a group
@@ -3615,7 +3734,7 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 <span>Added in: v2.0.0</span>
 </div>
 <ul>
-<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> A user name or ID</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> A user name or ID</li>
 </ul>
 <p>The <code>process.seteuid()</code> method sets the effective user identity of the process.
 (See <a href="http://man7.org/linux/man-pages/man2/seteuid.2.html"><code>seteuid(2)</code></a>.) The <code>id</code> can be passed as either a numeric ID or a username
@@ -3651,7 +3770,7 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 <span>Added in: v0.1.31</span>
 </div>
 <ul>
-<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The group name or ID</li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The group name or ID</li>
 </ul>
 <p>The <code>process.setgid()</code> method sets the group identity of the process. (See
 <a href="http://man7.org/linux/man-pages/man2/setgid.2.html"><code>setgid(2)</code></a>.) The <code>id</code> can be passed as either a numeric ID or a group name
@@ -3687,7 +3806,7 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 <span>Added in: v0.9.4</span>
 </div>
 <ul>
-<li><code>groups</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer[]></a></li>
+<li><code>groups</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer[]></a></li>
 </ul>
 <p>The <code>process.setgroups()</code> method sets the supplementary group IDs for the
 Node.js process. This is a privileged operation that requires the Node.js
@@ -3721,7 +3840,7 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 <span>Added in: v0.1.28</span>
 </div>
 <ul>
-<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.setuid(id)</code> method sets the user identity of the process. (See
 <a href="http://man7.org/linux/man-pages/man2/setuid.2.html"><code>setuid(2)</code></a>.) The <code>id</code> can be passed as either a numeric ID or a username string.
@@ -3758,9 +3877,9 @@ This feature is not available in <a href="worker_threads.html#class-worker"><cod
 </div>
 <p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental: Use <a href="module.html#modulesetsourcemapssupportenabled-options"><code>module.setSourceMapsSupport()</code></a> instead.</div><p></p>
 <ul>
-<li><code>val</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li><code>val</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
-<p>This function enables or disables the <a href="https://sourcemaps.info/spec.html">Source Map v3</a> support for
+<p>This function enables or disables the <a href="https://tc39.es/ecma426/">Source Map</a> support for
 stack traces.</p>
 <p>It provides same features as launching Node.js process with commandline options
 <code>--enable-source-maps</code>.</p>
@@ -3773,7 +3892,7 @@ enabled will be parsed and loaded.</p>
 <span>Added in: v9.3.0</span>
 </div>
 <ul>
-<li><code>fn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a></li>
+<li><code>fn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type" class="type">&#x3C;null></a></li>
 </ul>
 <p>The <code>process.setUncaughtExceptionCaptureCallback()</code> function sets a function
 that will be invoked when an uncaught exception occurs, which will receive the
@@ -3795,13 +3914,13 @@ throw an error.</p>
 </div>
 <p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental: Use <a href="module.html#modulegetsourcemapssupport"><code>module.getSourceMapsSupport()</code></a> instead.</div><p></p>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>The <code>process.sourceMapsEnabled</code> property returns whether the
-<a href="https://sourcemaps.info/spec.html">Source Map v3</a> support for stack traces is enabled.</p>
+<a href="https://tc39.es/ecma426/">Source Map</a> support for stack traces is enabled.</p>
 </section><section><h3><code>process.stderr</code><span><a class="mark" href="#processstderr" id="processstderr">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stderr"></a></h3>
 <ul>
-<li><a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
+<li>Type: <a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
 </ul>
 <p>The <code>process.stderr</code> property returns a stream connected to
 <code>stderr</code> (fd <code>2</code>). It is a <a href="net.html#class-netsocket"><code>net.Socket</code></a> (which is a <a href="stream.html#duplex-and-transform-streams">Duplex</a>
@@ -3809,16 +3928,18 @@ stream) unless fd <code>2</code> refers to a file, in which case it is
 a <a href="stream.html#writable-streams">Writable</a> stream.</p>
 <p><code>process.stderr</code> differs from other Node.js streams in important ways. See
 <a href="#a-note-on-process-io">note on process I/O</a> for more information.</p>
+<div>
 <h4><code>process.stderr.fd</code><span><a class="mark" href="#processstderrfd" id="processstderrfd">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stderr_fd"></a></h4>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>This property refers to the value of underlying file descriptor of
 <code>process.stderr</code>. The value is fixed at <code>2</code>. In <a href="worker_threads.html#class-worker"><code>Worker</code></a> threads,
 this field does not exist.</p>
+</div>
 </section><section><h3><code>process.stdin</code><span><a class="mark" href="#processstdin" id="processstdin">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stdin"></a></h3>
 <ul>
-<li><a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
+<li>Type: <a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
 </ul>
 <p>The <code>process.stdin</code> property returns a stream connected to
 <code>stdin</code> (fd <code>0</code>). It is a <a href="net.html#class-netsocket"><code>net.Socket</code></a> (which is a <a href="stream.html#duplex-and-transform-streams">Duplex</a>
@@ -3831,16 +3952,18 @@ For more information see <a href="stream.html#compatibility-with-older-nodejs-ve
 <p>In "old" streams mode the <code>stdin</code> stream is paused by default, so one
 must call <code>process.stdin.resume()</code> to read from it. Note also that calling
 <code>process.stdin.resume()</code> itself would switch stream to "old" mode.</p>
+<div>
 <h4><code>process.stdin.fd</code><span><a class="mark" href="#processstdinfd" id="processstdinfd">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stdin_fd"></a></h4>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>This property refers to the value of underlying file descriptor of
 <code>process.stdin</code>. The value is fixed at <code>0</code>. In <a href="worker_threads.html#class-worker"><code>Worker</code></a> threads,
 this field does not exist.</p>
+</div>
 </section><section><h3><code>process.stdout</code><span><a class="mark" href="#processstdout" id="processstdout">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stdout"></a></h3>
 <ul>
-<li><a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
+<li>Type: <a href="stream.html#stream" class="type">&#x3C;Stream></a></li>
 </ul>
 <p>The <code>process.stdout</code> property returns a stream connected to
 <code>stdout</code> (fd <code>1</code>). It is a <a href="net.html#class-netsocket"><code>net.Socket</code></a> (which is a <a href="stream.html#duplex-and-transform-streams">Duplex</a>
@@ -3855,13 +3978,15 @@ stdin.<span class="hljs-title function_">pipe</span>(stdout);</code><code class=
 stdin.<span class="hljs-title function_">pipe</span>(stdout);</code><button class="copy-button">copy</button></pre>
 <p><code>process.stdout</code> differs from other Node.js streams in important ways. See
 <a href="#a-note-on-process-io">note on process I/O</a> for more information.</p>
+<div>
 <h4><code>process.stdout.fd</code><span><a class="mark" href="#processstdoutfd" id="processstdoutfd">#</a></span><a aria-hidden="true" class="legacy" id="process_process_stdout_fd"></a></h4>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>This property refers to the value of underlying file descriptor of
 <code>process.stdout</code>. The value is fixed at <code>1</code>. In <a href="worker_threads.html#class-worker"><code>Worker</code></a> threads,
 this field does not exist.</p>
+</div><div>
 <h4>A note on process I/O<span><a class="mark" href="#a-note-on-process-io" id="a-note-on-process-io">#</a></span><a aria-hidden="true" class="legacy" id="process_a_note_on_process_i_o"></a></h4>
 <p><code>process.stdout</code> and <code>process.stderr</code> differ from other Node.js streams in
 important ways:</p>
@@ -3903,12 +4028,13 @@ true
 <span class="hljs-meta prompt_">$ </span><span class="language-bash">node -p <span class="hljs-string">"Boolean(process.stdout.isTTY)"</span> | <span class="hljs-built_in">cat</span></span>
 false</code> <button class="copy-button">copy</button></pre>
 <p>See the <a href="tty.html#tty">TTY</a> documentation for more information.</p>
+</div>
 </section><section><h3><code>process.throwDeprecation</code><span><a class="mark" href="#processthrowdeprecation" id="processthrowdeprecation">#</a></span><a aria-hidden="true" class="legacy" id="process_process_throwdeprecation"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.9.12</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>The initial value of <code>process.throwDeprecation</code> indicates whether the
 <code>--throw-deprecation</code> flag is set on the current Node.js process.
@@ -3929,12 +4055,31 @@ true
 <span class="hljs-meta prompt_">> </span><span class="language-bash">process.emitWarning(<span class="hljs-string">'test'</span>, <span class="hljs-string">'DeprecationWarning'</span>);</span>
 Thrown:
 [DeprecationWarning: test] { name: 'DeprecationWarning' }</code> <button class="copy-button">copy</button></pre>
+</section><section><h3><code>process.threadCpuUsage([previousValue])</code><span><a class="mark" href="#processthreadcpuusagepreviousvalue" id="processthreadcpuusagepreviousvalue">#</a></span><a aria-hidden="true" class="legacy" id="process_process_threadcpuusage_previousvalue"></a></h3>
+<div class="api_metadata">
+<span>Added in: v22.19.0</span>
+</div>
+<ul>
+<li><code>previousValue</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> A previous return value from calling
+<code>process.cpuUsage()</code></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
+<ul>
+<li><code>user</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+<li><code>system</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
+</ul>
+</li>
+</ul>
+<p>The <code>process.threadCpuUsage()</code> method returns the user and system CPU time usage of
+the current worker thread, in an object with properties <code>user</code> and <code>system</code>, whose
+values are microsecond values (millionth of a second).</p>
+<p>The result of a previous call to <code>process.threadCpuUsage()</code> can be passed as the
+argument to the function, to get a diff reading.</p>
 </section><section><h3><code>process.title</code><span><a class="mark" href="#processtitle" id="processtitle">#</a></span><a aria-hidden="true" class="legacy" id="process_process_title"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.1.104</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.title</code> property returns the current process title (i.e. returns
 the current value of <code>ps</code>). Assigning a new value to <code>process.title</code> modifies
@@ -3955,13 +4100,31 @@ Services Manager.</p>
 <span>Added in: v0.8.0</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
 </ul>
 <p>The <code>process.traceDeprecation</code> property indicates whether the
 <code>--trace-deprecation</code> flag is set on the current Node.js process. See the
 documentation for the <a href="#event-warning"><code>'warning'</code> event</a> and the
 <a href="#processemitwarningwarning-type-code-ctor"><code>emitWarning()</code> method</a> for more information about this
 flag's behavior.</p>
+</section><section><h3><code>process.traceProcessWarnings</code><span><a class="mark" href="#processtraceprocesswarnings" id="processtraceprocesswarnings">#</a></span><a aria-hidden="true" class="legacy" id="process_process_traceprocesswarnings"></a></h3>
+<div class="api_metadata">
+<span>Added in: v6.10.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>The <code>process.traceProcessWarnings</code> property indicates whether the <code>--trace-warnings</code> flag
+is set on the current Node.js process. This property allows programmatic control over the
+tracing of warnings, enabling or disabling stack traces for warnings at runtime.</p>
+<pre><code class="language-js"><span class="hljs-comment">// Enable trace warnings</span>
+process.<span class="hljs-property">traceProcessWarnings</span> = <span class="hljs-literal">true</span>;
+
+<span class="hljs-comment">// Emit a warning with a stack trace</span>
+process.<span class="hljs-title function_">emitWarning</span>(<span class="hljs-string">'Warning with stack trace'</span>);
+
+<span class="hljs-comment">// Disable trace warnings</span>
+process.<span class="hljs-property">traceProcessWarnings</span> = <span class="hljs-literal">false</span>;</code> <button class="copy-button">copy</button></pre>
 </section><section><h3><code>process.umask()</code><span><a class="mark" href="#processumask" id="processumask">#</a></span><a aria-hidden="true" class="legacy" id="process_process_umask"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -3985,7 +4148,7 @@ processes inherit the mask from the parent process.</p>
 <span>Added in: v0.1.19</span>
 </div>
 <ul>
-<li><code>mask</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li><code>mask</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer></a></li>
 </ul>
 <p><code>process.umask(mask)</code> sets the Node.js process's file mode creation mask. Child
 processes inherit the mask from the parent process. Returns the previous mask.</p>
@@ -4010,7 +4173,7 @@ processes inherit the mask from the parent process. Returns the previous mask.</
 </div>
 <p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a> - Experimental</div><p></p>
 <ul>
-<li><code>maybeUnfefable</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> An object that may be "unref'd".</li>
+<li><code>maybeRefable</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> An object that may be "unref'd".</li>
 </ul>
 <p>An object is "unrefable" if it implements the Node.js "Refable protocol".
 Specifically, this means that the object implements the <code>Symbol.for('nodejs.ref')</code>
@@ -4025,7 +4188,7 @@ to add <code>ref()</code> and <code>unref()</code> methods but still need to sup
 <span>Added in: v0.5.0</span>
 </div>
 <ul>
-<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a></li>
 </ul>
 <p>The <code>process.uptime()</code> method returns the number of seconds the current Node.js
 process has been running.</p>
@@ -4036,7 +4199,7 @@ seconds.</p>
 <span>Added in: v0.1.3</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>process.version</code> property contains the Node.js version string.</p>
 
@@ -4064,7 +4227,7 @@ seconds.</p>
 </details>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
 </ul>
 <p>The <code>process.versions</code> property returns an object listing the version strings of
 Node.js and its dependencies. <code>process.versions.modules</code> indicates the current

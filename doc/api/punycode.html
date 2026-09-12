@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>Punycode | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>Punycode | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="punycode" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -183,13 +183,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -247,12 +247,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/punycode.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/punycode.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/punycode.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/punycode.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/punycode.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/punycode.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/punycode.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/punycode.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/punycode.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/punycode.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/punycode.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/punycode.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/punycode.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/punycode.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/punycode.html">15.x</a></li>
@@ -319,7 +322,7 @@
 </div>
 
 <p></p><div class="api_stability api_stability_0"><a href="documentation.html#stability-index">Stability: 0</a> - Deprecated</div><p></p>
-<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.14.0/lib/punycode.js">lib/punycode.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.23.2/lib/punycode.js">lib/punycode.js</a></p>
 <p><strong>The version of the punycode module bundled in Node.js is being deprecated.</strong>
 In a future major version of Node.js this module will be removed. Users
 currently depending on the <code>punycode</code> module should switch to using the
@@ -346,7 +349,7 @@ the module must be directed to the <a href="https://github.com/bestiejs/punycode
 <span>Added in: v0.5.1</span>
 </div>
 <ul>
-<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>punycode.decode()</code> method converts a <a href="https://tools.ietf.org/html/rfc3492">Punycode</a> string of ASCII-only
 characters to the equivalent string of Unicode codepoints.</p>
@@ -357,7 +360,7 @@ punycode.<span class="hljs-title function_">decode</span>(<span class="hljs-stri
 <span>Added in: v0.5.1</span>
 </div>
 <ul>
-<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>punycode.encode()</code> method converts a string of Unicode codepoints to a
 <a href="https://tools.ietf.org/html/rfc3492">Punycode</a> string of ASCII-only characters.</p>
@@ -368,7 +371,7 @@ punycode.<span class="hljs-title function_">encode</span>(<span class="hljs-stri
 <span>Added in: v0.6.1</span>
 </div>
 <ul>
-<li><code>domain</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>domain</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>punycode.toASCII()</code> method converts a Unicode string representing an
 Internationalized Domain Name to <a href="https://tools.ietf.org/html/rfc3492">Punycode</a>. Only the non-ASCII parts of the
@@ -383,7 +386,7 @@ punycode.<span class="hljs-title function_">toASCII</span>(<span class="hljs-str
 <span>Added in: v0.6.1</span>
 </div>
 <ul>
-<li><code>domain</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>domain</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>punycode.toUnicode()</code> method converts a string representing a domain name
 containing <a href="https://tools.ietf.org/html/rfc3492">Punycode</a> encoded characters into Unicode. Only the <a href="https://tools.ietf.org/html/rfc3492">Punycode</a>
@@ -396,35 +399,38 @@ punycode.<span class="hljs-title function_">toUnicode</span>(<span class="hljs-s
 <div class="api_metadata">
 <span>Added in: v0.7.0</span>
 </div>
+<div>
 <h4><code>punycode.ucs2.decode(string)</code><span><a class="mark" href="#punycodeucs2decodestring" id="punycodeucs2decodestring">#</a></span><a aria-hidden="true" class="legacy" id="punycode_punycode_ucs2_decode_string"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.7.0</span>
 </div>
 <ul>
-<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>The <code>punycode.ucs2.decode()</code> method returns an array containing the numeric
 codepoint values of each Unicode symbol in the string.</p>
 <pre><code class="language-js">punycode.<span class="hljs-property">ucs2</span>.<span class="hljs-title function_">decode</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// [0x61, 0x62, 0x63]</span>
 <span class="hljs-comment">// surrogate pair for U+1D306 tetragram for centre:</span>
 punycode.<span class="hljs-property">ucs2</span>.<span class="hljs-title function_">decode</span>(<span class="hljs-string">'\uD834\uDF06'</span>); <span class="hljs-comment">// [0x1D306]</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>punycode.ucs2.encode(codePoints)</code><span><a class="mark" href="#punycodeucs2encodecodepoints" id="punycodeucs2encodecodepoints">#</a></span><a aria-hidden="true" class="legacy" id="punycode_punycode_ucs2_encode_codepoints"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.7.0</span>
 </div>
 <ul>
-<li><code>codePoints</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer[]></a></li>
+<li><code>codePoints</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;integer[]></a></li>
 </ul>
 <p>The <code>punycode.ucs2.encode()</code> method returns a string based on an array of
 numeric code point values.</p>
 <pre><code class="language-js">punycode.<span class="hljs-property">ucs2</span>.<span class="hljs-title function_">encode</span>([<span class="hljs-number">0x61</span>, <span class="hljs-number">0x62</span>, <span class="hljs-number">0x63</span>]); <span class="hljs-comment">// 'abc'</span>
 punycode.<span class="hljs-property">ucs2</span>.<span class="hljs-title function_">encode</span>([<span class="hljs-number">0x1D306</span>]); <span class="hljs-comment">// '\uD834\uDF06'</span></code> <button class="copy-button">copy</button></pre>
+</div>
 </section><section><h3><code>punycode.version</code><span><a class="mark" href="#punycodeversion" id="punycodeversion">#</a></span><a aria-hidden="true" class="legacy" id="punycode_punycode_version"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.6.1</span>
 </div>
 <ul>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Type: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>Returns a string identifying the current <a href="https://github.com/bestiejs/punycode.js">Punycode.js</a> version number.</p></section>
         <!-- API END -->

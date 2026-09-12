@@ -1,3 +1,4 @@
+#include <signal.h>
 // Copyright 2017 the V8 project authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -262,7 +263,7 @@ bool EnableTrapHandler(bool use_v8_handler) {
     return false;
   }
   if (use_v8_handler) {
-    g_is_trap_handler_enabled = RegisterDefaultTrapHandler();
+    g_is_trap_handler_enabled = false;
     return g_is_trap_handler_enabled;
   }
   g_is_trap_handler_enabled = true;
@@ -271,6 +272,7 @@ bool EnableTrapHandler(bool use_v8_handler) {
 
 void SetLandingPad(uintptr_t landing_pad) { gLandingPad.store(landing_pad); }
 
+bool TryHandleSignal(int, siginfo_t*, void*) { return false; }
 }  // namespace trap_handler
 }  // namespace internal
 }  // namespace v8

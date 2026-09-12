@@ -49,6 +49,8 @@ if (!hasOpenSSL3) {
   documented.delete('--openssl-shared-config');
 }
 
+const isV8Sandboxed = process.config.variables.v8_enable_sandbox;
+
 // Filter out options that are conditionally present.
 const conditionalOpts = [
   {
@@ -61,6 +63,7 @@ const conditionalOpts = [
         '--tls-cipher-list',
         '--use-bundled-ca',
         '--use-openssl-ca',
+        common.isMacOS ? '--use-system-ca' : '',
         '--secure-heap',
         '--secure-heap-min',
         '--enable-fips',
@@ -73,6 +76,9 @@ const conditionalOpts = [
   }, {
     include: process.features.inspector,
     filter: (opt) => opt.startsWith('--inspect') || opt === '--debug-port'
+  }, {
+    include: !isV8Sandboxed,
+    filter: (opt) => ['--secure-heap', '--secure-heap-min'].includes(opt)
   },
 ];
 documented.forEach((opt) => {
@@ -92,6 +98,10 @@ const difference = (setA, setB) => {
 // Refs: https://github.com/nodejs/node/pull/54259#issuecomment-2308256647
 if (!process.features.inspector) {
   [
+    '--cpu-prof-dir',
+    '--cpu-prof-interval',
+    '--cpu-prof-name',
+    '--cpu-prof',
     '--heap-prof-dir',
     '--heap-prof-interval',
     '--heap-prof-name',
@@ -114,6 +124,7 @@ assert(undocumented.delete('--no-debug-arraybuffer-allocations'));
 assert(undocumented.delete('--es-module-specifier-resolution'));
 assert(undocumented.delete('--experimental-report'));
 assert(undocumented.delete('--experimental-worker'));
+assert(undocumented.delete('--experimental-wasm-modules'));
 assert(undocumented.delete('--node-snapshot'));
 assert(undocumented.delete('--no-node-snapshot'));
 assert(undocumented.delete('--loader'));

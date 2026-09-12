@@ -27,6 +27,7 @@ const setResponseHeaders = (res) => {
   res.setHeader('etag', 12345);
   res.setHeader('Set-Cookie', ['key1=value1', 'key2=value2']);
   res.setHeader('x-header2', ['value1', 'value2']);
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 };
 
 const kTimeout = 1000;
@@ -64,6 +65,13 @@ const terminate = () => {
   inspector.close();
 };
 
+function findFrameInInitiator(scriptName, initiator) {
+  const frame = initiator.stack.callFrames.find((it) => {
+    return it.url === scriptName;
+  });
+  return frame;
+}
+
 function verifyRequestWillBeSent({ method, params }, expect) {
   assert.strictEqual(method, 'Network.requestWillBeSent');
 
@@ -77,6 +85,10 @@ function verifyRequestWillBeSent({ method, params }, expect) {
   assert.strictEqual(params.request.headers['x-header1'], 'value1, value2');
   assert.strictEqual(typeof params.timestamp, 'number');
   assert.strictEqual(typeof params.wallTime, 'number');
+
+  assert.strictEqual(typeof params.initiator, 'object');
+  assert.strictEqual(params.initiator.type, 'script');
+  assert.ok(findFrameInInitiator(__filename, params.initiator));
 
   return params;
 }
@@ -95,6 +107,8 @@ function verifyResponseReceived({ method, params }, expect) {
   assert.strictEqual(params.response.headers.etag, '12345');
   assert.strictEqual(params.response.headers['set-cookie'], 'key1=value1\nkey2=value2');
   assert.strictEqual(params.response.headers['x-header2'], 'value1, value2');
+  assert.strictEqual(params.response.mimeType, 'text/plain');
+  assert.strictEqual(params.response.charset, 'utf-8');
 
   return params;
 }
@@ -116,6 +130,27 @@ function verifyLoadingFailed({ method, params }) {
   assert.strictEqual(typeof params.errorText, 'string');
 }
 
+function verifyHttpResponse(response) {
+  assert.strictEqual(response.statusCode, 200);
+  const chunks = [];
+
+  // Verifies that the inspector does not put the response into flowing mode.
+  assert.strictEqual(response.readableFlowing, null);
+  // Verifies that the data listener may be added at a later time, and it can
+  // still observe the data in full.
+  queueMicrotask(() => {
+    response.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+    assert.strictEqual(response.readableFlowing, true);
+  });
+
+  response.on('end', common.mustCall(() => {
+    const body = Buffer.concat(chunks).toString();
+    assert.strictEqual(body, '\nhello world\n');
+  }));
+}
+
 async function testHttpGet() {
   const url = `http://127.0.0.1:${httpServer.address().port}/hello-world`;
   const requestWillBeSentFuture = once(session, 'Network.requestWillBeSent')
@@ -132,11 +167,7 @@ async function testHttpGet() {
     port: httpServer.address().port,
     path: '/hello-world',
     headers: requestHeaders
-  }, common.mustCall((res) => {
-    // Dump the response.
-    res.on('data', () => {});
-    res.on('end', () => {});
-  }));
+  }, common.mustCall(verifyHttpResponse));
 
   await requestWillBeSentFuture;
   const responseReceived = await responseReceivedFuture;
@@ -144,6 +175,12 @@ async function testHttpGet() {
 
   const delta = (loadingFinished.timestamp - responseReceived.timestamp) * 1000;
   assert.ok(delta > kDelta);
+
+  const responseBody = await session.post('Network.getResponseBody', {
+    requestId: responseReceived.requestId,
+  });
+  assert.strictEqual(responseBody.base64Encoded, false);
+  assert.strictEqual(responseBody.body, '\nhello world\n');
 }
 
 async function testHttpsGet() {
@@ -163,11 +200,7 @@ async function testHttpsGet() {
     path: '/hello-world',
     rejectUnauthorized: false,
     headers: requestHeaders,
-  }, common.mustCall((res) => {
-    // Dump the response.
-    res.on('data', () => {});
-    res.on('end', () => {});
-  }));
+  }, common.mustCall(verifyHttpResponse));
 
   await requestWillBeSentFuture;
   const responseReceived = await responseReceivedFuture;
@@ -175,6 +208,12 @@ async function testHttpsGet() {
 
   const delta = (loadingFinished.timestamp - responseReceived.timestamp) * 1000;
   assert.ok(delta > kDelta);
+
+  const responseBody = await session.post('Network.getResponseBody', {
+    requestId: responseReceived.requestId,
+  });
+  assert.strictEqual(responseBody.base64Encoded, false);
+  assert.strictEqual(responseBody.body, '\nhello world\n');
 }
 
 async function testHttpError() {

@@ -10,11 +10,17 @@
         "added": [
           "v22.5.0"
         ],
-        "changes": []
+        "changes": [
+          {
+            "version": "v22.13.0",
+            "pr-url": "https://github.com/nodejs/node/pull/55890",
+            "description": "SQLite is no longer behind `--experimental-sqlite` but still experimental."
+          }
+        ]
       },
       "stability": 1,
       "stabilityText": ".1 - Active development.",
-      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.14.0/lib/sqlite.js\">lib/sqlite.js</a></p>\n<p>The <code>node:sqlite</code> module facilitates working with SQLite databases.\nTo access it:</p>\n<pre><code class=\"language-mjs\">import sqlite from 'node:sqlite';\n</code></pre>\n<pre><code class=\"language-cjs\">const sqlite = require('node:sqlite');\n</code></pre>\n<p>This module is only available under the <code>node:</code> scheme.</p>\n<p>The following example shows the basic usage of the <code>node:sqlite</code> module to open\nan in-memory database, write data to the database, and then read the data back.</p>\n<pre><code class=\"language-mjs\">import { DatabaseSync } from 'node:sqlite';\nconst database = new DatabaseSync(':memory:');\n\n// Execute SQL statements from strings.\ndatabase.exec(`\n  CREATE TABLE data(\n    key INTEGER PRIMARY KEY,\n    value TEXT\n  ) STRICT\n`);\n// Create a prepared statement to insert data into the database.\nconst insert = database.prepare('INSERT INTO data (key, value) VALUES (?, ?)');\n// Execute the prepared statement with bound values.\ninsert.run(1, 'hello');\ninsert.run(2, 'world');\n// Create a prepared statement to read data from the database.\nconst query = database.prepare('SELECT * FROM data ORDER BY key');\n// Execute the prepared statement and log the result set.\nconsole.log(query.all());\n// Prints: [ { key: 1, value: 'hello' }, { key: 2, value: 'world' } ]\n</code></pre>\n<pre><code class=\"language-cjs\">'use strict';\nconst { DatabaseSync } = require('node:sqlite');\nconst database = new DatabaseSync(':memory:');\n\n// Execute SQL statements from strings.\ndatabase.exec(`\n  CREATE TABLE data(\n    key INTEGER PRIMARY KEY,\n    value TEXT\n  ) STRICT\n`);\n// Create a prepared statement to insert data into the database.\nconst insert = database.prepare('INSERT INTO data (key, value) VALUES (?, ?)');\n// Execute the prepared statement with bound values.\ninsert.run(1, 'hello');\ninsert.run(2, 'world');\n// Create a prepared statement to read data from the database.\nconst query = database.prepare('SELECT * FROM data ORDER BY key');\n// Execute the prepared statement and log the result set.\nconsole.log(query.all());\n// Prints: [ { key: 1, value: 'hello' }, { key: 2, value: 'world' } ]\n</code></pre>",
+      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.23.2/lib/sqlite.js\">lib/sqlite.js</a></p>\n<p>The <code>node:sqlite</code> module facilitates working with SQLite databases.\nTo access it:</p>\n<pre><code class=\"language-mjs\">import sqlite from 'node:sqlite';\n</code></pre>\n<pre><code class=\"language-cjs\">const sqlite = require('node:sqlite');\n</code></pre>\n<p>This module is only available under the <code>node:</code> scheme.</p>\n<p>The following example shows the basic usage of the <code>node:sqlite</code> module to open\nan in-memory database, write data to the database, and then read the data back.</p>\n<pre><code class=\"language-mjs\">import { DatabaseSync } from 'node:sqlite';\nconst database = new DatabaseSync(':memory:');\n\n// Execute SQL statements from strings.\ndatabase.exec(`\n  CREATE TABLE data(\n    key INTEGER PRIMARY KEY,\n    value TEXT\n  ) STRICT\n`);\n// Create a prepared statement to insert data into the database.\nconst insert = database.prepare('INSERT INTO data (key, value) VALUES (?, ?)');\n// Execute the prepared statement with bound values.\ninsert.run(1, 'hello');\ninsert.run(2, 'world');\n// Create a prepared statement to read data from the database.\nconst query = database.prepare('SELECT * FROM data ORDER BY key');\n// Execute the prepared statement and log the result set.\nconsole.log(query.all());\n// Prints: [ { key: 1, value: 'hello' }, { key: 2, value: 'world' } ]\n</code></pre>\n<pre><code class=\"language-cjs\">'use strict';\nconst { DatabaseSync } = require('node:sqlite');\nconst database = new DatabaseSync(':memory:');\n\n// Execute SQL statements from strings.\ndatabase.exec(`\n  CREATE TABLE data(\n    key INTEGER PRIMARY KEY,\n    value TEXT\n  ) STRICT\n`);\n// Create a prepared statement to insert data into the database.\nconst insert = database.prepare('INSERT INTO data (key, value) VALUES (?, ?)');\n// Execute the prepared statement with bound values.\ninsert.run(1, 'hello');\ninsert.run(2, 'world');\n// Create a prepared statement to read data from the database.\nconst query = database.prepare('SELECT * FROM data ORDER BY key');\n// Execute the prepared statement and log the result set.\nconsole.log(query.all());\n// Prints: [ { key: 1, value: 'hello' }, { key: 2, value: 'world' } ]\n</code></pre>",
       "classes": [
         {
           "textRaw": "Class: `DatabaseSync`",
@@ -24,10 +30,38 @@
             "added": [
               "v22.5.0"
             ],
-            "changes": []
+            "changes": [
+              {
+                "version": "v22.16.0",
+                "pr-url": "https://github.com/nodejs/node/pull/57752",
+                "description": "Add `timeout` option."
+              },
+              {
+                "version": "v22.15.0",
+                "pr-url": "https://github.com/nodejs/node/pull/56991",
+                "description": "The `path` argument now supports Buffer and URL objects."
+              }
+            ]
           },
           "desc": "<p>This class represents a single <a href=\"https://www.sqlite.org/c3ref/sqlite3.html\">connection</a> to a SQLite database. All APIs\nexposed by this class execute synchronously.</p>",
           "methods": [
+            {
+              "textRaw": "`database.aggregate(name, options)`",
+              "type": "method",
+              "name": "aggregate",
+              "meta": {
+                "added": [
+                  "v22.16.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Registers a new aggregate function with the SQLite database. This method is a wrapper around\n<a href=\"https://www.sqlite.org/c3ref/create_function.html\"><code>sqlite3_create_window_function()</code></a>.</p>\n<ul>\n<li><code>name</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type\" class=\"type\">&lt;string&gt;</a> The name of the SQLite function to create.</li>\n<li><code>options</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a> Function configuration settings.\n<ul>\n<li><code>deterministic</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type\" class=\"type\">&lt;boolean&gt;</a> If <code>true</code>, the <a href=\"https://www.sqlite.org/c3ref/c_deterministic.html\"><code>SQLITE_DETERMINISTIC</code></a> flag is\nset on the created function. <strong>Default:</strong> <code>false</code>.</li>\n<li><code>directOnly</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type\" class=\"type\">&lt;boolean&gt;</a> If <code>true</code>, the <a href=\"https://www.sqlite.org/c3ref/c_deterministic.html\"><code>SQLITE_DIRECTONLY</code></a> flag is set on\nthe created function. <strong>Default:</strong> <code>false</code>.</li>\n<li><code>useBigIntArguments</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type\" class=\"type\">&lt;boolean&gt;</a> If <code>true</code>, integer arguments to <code>options.step</code> and <code>options.inverse</code>\nare converted to <code>BigInt</code>s. If <code>false</code>, integer arguments are passed as\nJavaScript numbers. <strong>Default:</strong> <code>false</code>.</li>\n<li><code>varargs</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type\" class=\"type\">&lt;boolean&gt;</a> If <code>true</code>, <code>options.step</code> and <code>options.inverse</code> may be invoked with any number of\narguments (between zero and <a href=\"https://www.sqlite.org/limits.html#max_function_arg\"><code>SQLITE_MAX_FUNCTION_ARG</code></a>). If <code>false</code>,\n<code>inverse</code> and <code>step</code> must be invoked with exactly <code>length</code> arguments.\n<strong>Default:</strong> <code>false</code>.</li>\n<li><code>start</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type\" class=\"type\">&lt;number&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type\" class=\"type\">&lt;string&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type\" class=\"type\">&lt;null&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array\" class=\"type\">&lt;Array&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object\" class=\"type\">&lt;Object&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a> The identity\nvalue for the aggregation function. This value is used when the aggregation\nfunction is initialized. When a <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a> is passed the identity will be its return value.</li>\n<li><code>step</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a> The function to call for each row in the aggregation. The\nfunction receives the current state and the row value. The return value of\nthis function should be the new state.</li>\n<li><code>result</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a> The function to call to get the result of the\naggregation. The function receives the final state and should return the\nresult of the aggregation.</li>\n<li><code>inverse</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function\" class=\"type\">&lt;Function&gt;</a> When this function is provided, the <code>aggregate</code> method will work as a window function.\nThe function receives the current state and the dropped row value. The return value of this function should be the\nnew state.</li>\n</ul>\n</li>\n</ul>\n<p>When used as a window function, the <code>result</code> function will be called multiple times.</p>\n<pre><code class=\"language-cjs\">const { DatabaseSync } = require('node:sqlite');\n\nconst db = new DatabaseSync(':memory:');\ndb.exec(`\n  CREATE TABLE t3(x, y);\n  INSERT INTO t3 VALUES ('a', 4),\n                        ('b', 5),\n                        ('c', 3),\n                        ('d', 8),\n                        ('e', 1);\n`);\n\ndb.aggregate('sumint', {\n  start: 0,\n  step: (acc, value) => acc + value,\n});\n\ndb.prepare('SELECT sumint(y) as total FROM t3').get(); // { total: 21 }\n</code></pre>\n<pre><code class=\"language-mjs\">import { DatabaseSync } from 'node:sqlite';\n\nconst db = new DatabaseSync(':memory:');\ndb.exec(`\n  CREATE TABLE t3(x, y);\n  INSERT INTO t3 VALUES ('a', 4),\n                        ('b', 5),\n                        ('c', 3),\n                        ('d', 8),\n                        ('e', 1);\n`);\n\ndb.aggregate('sumint', {\n  start: 0,\n  step: (acc, value) => acc + value,\n});\n\ndb.prepare('SELECT sumint(y) as total FROM t3').get(); // { total: 21 }\n</code></pre>"
+            },
             {
               "textRaw": "`database.close()`",
               "type": "method",
@@ -94,6 +128,37 @@
               "desc": "<p>Enables or disables the <code>loadExtension</code> SQL function, and the <code>loadExtension()</code>\nmethod. When <code>allowExtension</code> is <code>false</code> when constructing, you cannot enable\nloading extensions for security reasons.</p>"
             },
             {
+              "textRaw": "`database.location([dbName])`",
+              "type": "method",
+              "name": "location",
+              "meta": {
+                "added": [
+                  "v22.16.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {string | null} The location of the database file. When using an in-memory database, this method returns null.",
+                    "name": "return",
+                    "type": "string | null",
+                    "desc": "The location of the database file. When using an in-memory database, this method returns null."
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`dbName` {string} Name of the database. This can be `'main'` (the default primary database) or any other database that has been added with [`ATTACH DATABASE`][] **Default:** `'main'`.",
+                      "name": "dbName",
+                      "type": "string",
+                      "default": "`'main'`",
+                      "desc": "Name of the database. This can be `'main'` (the default primary database) or any other database that has been added with [`ATTACH DATABASE`][]"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method is a wrapper around <a href=\"https://sqlite.org/c3ref/db_filename.html\"><code>sqlite3_db_filename()</code></a></p>"
+            },
+            {
               "textRaw": "`database.exec(sql)`",
               "type": "method",
               "name": "exec",
@@ -118,7 +183,7 @@
               "desc": "<p>This method allows one or more SQL statements to be executed without returning\nany results. This method is useful when executing SQL statements read from a\nfile. This method is a wrapper around <a href=\"https://www.sqlite.org/c3ref/exec.html\"><code>sqlite3_exec()</code></a>.</p>"
             },
             {
-              "textRaw": "`database.function(name[, options], function)`",
+              "textRaw": "`database.function(name[, options], fn)`",
               "type": "method",
               "name": "function",
               "meta": {
@@ -164,19 +229,19 @@
                           "desc": "If `true`, integer arguments to `function` are converted to `BigInt`s. If `false`, integer arguments are passed as JavaScript numbers."
                         },
                         {
-                          "textRaw": "`varargs` {boolean} If `true`, `function` can accept a variable number of arguments. If `false`, `function` must be invoked with exactly `function.length` arguments. **Default:** `false`.",
+                          "textRaw": "`varargs` {boolean} If `true`, `function` may be invoked with any number of arguments (between zero and [`SQLITE_MAX_FUNCTION_ARG`][]). If `false`, `function` must be invoked with exactly `function.length` arguments. **Default:** `false`.",
                           "name": "varargs",
                           "type": "boolean",
                           "default": "`false`",
-                          "desc": "If `true`, `function` can accept a variable number of arguments. If `false`, `function` must be invoked with exactly `function.length` arguments."
+                          "desc": "If `true`, `function` may be invoked with any number of arguments (between zero and [`SQLITE_MAX_FUNCTION_ARG`][]). If `false`, `function` must be invoked with exactly `function.length` arguments."
                         }
                       ]
                     },
                     {
-                      "textRaw": "`function` {Function} The JavaScript function to call when the SQLite function is invoked.",
-                      "name": "function",
+                      "textRaw": "`fn` {Function} The JavaScript function to call when the SQLite function is invoked. The return value of this function should be a valid SQLite data type: see [Type conversion between JavaScript and SQLite][]. The result defaults to `NULL` if the return value is `undefined`.",
+                      "name": "fn",
                       "type": "Function",
-                      "desc": "The JavaScript function to call when the SQLite function is invoked."
+                      "desc": "The JavaScript function to call when the SQLite function is invoked. The return value of this function should be a valid SQLite data type: see [Type conversion between JavaScript and SQLite][]. The result defaults to `NULL` if the return value is `undefined`."
                     }
                   ]
                 }
@@ -198,7 +263,7 @@
                   "params": []
                 }
               ],
-              "desc": "<p>Opens the database specified in the <code>location</code> argument of the <code>DatabaseSync</code>\nconstructor. This method should only be used when the database is not opened via\nthe constructor. An exception is thrown if the database is already open.</p>"
+              "desc": "<p>Opens the database specified in the <code>path</code> argument of the <code>DatabaseSync</code>\nconstructor. This method should only be used when the database is not opened via\nthe constructor. An exception is thrown if the database is already open.</p>"
             },
             {
               "textRaw": "`database.prepare(sql)`",
@@ -287,10 +352,10 @@
               "signatures": [
                 {
                   "return": {
-                    "textRaw": "Returns: {boolean} Whether the changeset was applied succesfully without being aborted.",
+                    "textRaw": "Returns: {boolean} Whether the changeset was applied successfully without being aborted.",
                     "name": "return",
                     "type": "boolean",
-                    "desc": "Whether the changeset was applied succesfully without being aborted."
+                    "desc": "Whether the changeset was applied successfully without being aborted."
                   },
                   "params": [
                     {
@@ -350,16 +415,61 @@
                 }
               ],
               "desc": "<p>An exception is thrown if the database is not\nopen. This method is a wrapper around <a href=\"https://www.sqlite.org/session/sqlite3changeset_apply.html\"><code>sqlite3changeset_apply()</code></a>.</p>\n<pre><code class=\"language-js\">const sourceDb = new DatabaseSync(':memory:');\nconst targetDb = new DatabaseSync(':memory:');\n\nsourceDb.exec('CREATE TABLE data(key INTEGER PRIMARY KEY, value TEXT)');\ntargetDb.exec('CREATE TABLE data(key INTEGER PRIMARY KEY, value TEXT)');\n\nconst session = sourceDb.createSession();\n\nconst insert = sourceDb.prepare('INSERT INTO data (key, value) VALUES (?, ?)');\ninsert.run(1, 'hello');\ninsert.run(2, 'world');\n\nconst changeset = session.changeset();\ntargetDb.applyChangeset(changeset);\n// Now that the changeset has been applied, targetDb contains the same data as sourceDb.\n</code></pre>"
+            },
+            {
+              "textRaw": "`database[Symbol.dispose]()`",
+              "type": "method",
+              "name": "[Symbol.dispose]",
+              "meta": {
+                "added": [
+                  "v22.15.0"
+                ],
+                "changes": []
+              },
+              "stability": 1,
+              "stabilityText": "Experimental",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Closes the database connection. If the database connection is already closed\nthen this is a no-op.</p>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`isOpen` Type: {boolean} Whether the database is currently open or not.",
+              "type": "boolean",
+              "name": "Type",
+              "meta": {
+                "added": [
+                  "v22.15.0"
+                ],
+                "changes": []
+              },
+              "desc": "Whether the database is currently open or not."
+            },
+            {
+              "textRaw": "`isTransaction` Type: {boolean} Whether the database is currently within a transaction. This method is a wrapper around [`sqlite3_get_autocommit()`][].",
+              "type": "boolean",
+              "name": "Type",
+              "meta": {
+                "added": [
+                  "v22.16.0"
+                ],
+                "changes": []
+              },
+              "desc": "Whether the database is currently within a transaction. This method is a wrapper around [`sqlite3_get_autocommit()`][]."
             }
           ],
           "signatures": [
             {
               "params": [
                 {
-                  "textRaw": "`location` {string} The location of the database. A SQLite database can be stored in a file or completely [in memory][]. To use a file-backed database, the location should be a file path. To use an in-memory database, the location should be the special name `':memory:'`.",
-                  "name": "location",
-                  "type": "string",
-                  "desc": "The location of the database. A SQLite database can be stored in a file or completely [in memory][]. To use a file-backed database, the location should be a file path. To use an in-memory database, the location should be the special name `':memory:'`."
+                  "textRaw": "`path` {string | Buffer | URL} The path of the database. A SQLite database can be stored in a file or completely [in memory][]. To use a file-backed database, the path should be a file path. To use an in-memory database, the path should be the special name `':memory:'`.",
+                  "name": "path",
+                  "type": "string | Buffer | URL",
+                  "desc": "The path of the database. A SQLite database can be stored in a file or completely [in memory][]. To use a file-backed database, the path should be a file path. To use an in-memory database, the path should be the special name `':memory:'`."
                 },
                 {
                   "textRaw": "`options` {Object} Configuration options for the database connection. The following options are supported:",
@@ -401,6 +511,41 @@
                       "type": "boolean",
                       "default": "`false`",
                       "desc": "If `true`, the `loadExtension` SQL function and the `loadExtension()` method are enabled. You can call `enableLoadExtension(false)` later to disable this feature."
+                    },
+                    {
+                      "textRaw": "`timeout` {number} The [busy timeout][] in milliseconds. This is the maximum amount of time that SQLite will wait for a database lock to be released before returning an error. **Default:** `0`.",
+                      "name": "timeout",
+                      "type": "number",
+                      "default": "`0`",
+                      "desc": "The [busy timeout][] in milliseconds. This is the maximum amount of time that SQLite will wait for a database lock to be released before returning an error."
+                    },
+                    {
+                      "textRaw": "`readBigInts` {boolean} If `true`, integer fields are read as JavaScript `BigInt` values. If `false`, integer fields are read as JavaScript numbers. **Default:** `false`.",
+                      "name": "readBigInts",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, integer fields are read as JavaScript `BigInt` values. If `false`, integer fields are read as JavaScript numbers."
+                    },
+                    {
+                      "textRaw": "`returnArrays` {boolean} If `true`, query results are returned as arrays instead of objects. **Default:** `false`.",
+                      "name": "returnArrays",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, query results are returned as arrays instead of objects."
+                    },
+                    {
+                      "textRaw": "`allowBareNamedParameters` {boolean} If `true`, allows binding named parameters without the prefix character (e.g., `foo` instead of `:foo`). **Default:** `true`.",
+                      "name": "allowBareNamedParameters",
+                      "type": "boolean",
+                      "default": "`true`",
+                      "desc": "If `true`, allows binding named parameters without the prefix character (e.g., `foo` instead of `:foo`)."
+                    },
+                    {
+                      "textRaw": "`allowUnknownNamedParameters` {boolean} If `true`, unknown named parameters are ignored when binding. If `false`, an exception is thrown for unknown named parameters. **Default:** `false`.",
+                      "name": "allowUnknownNamedParameters",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "If `true`, unknown named parameters are ignored when binding. If `false`, an exception is thrown for unknown named parameters."
                     }
                   ]
                 }
@@ -532,6 +677,61 @@
               "desc": "<p>This method executes a prepared statement and returns all results as an array of\nobjects. If the prepared statement does not return any results, this method\nreturns an empty array. The prepared statement <a href=\"https://www.sqlite.org/c3ref/bind_blob.html\">parameters are bound</a> using\nthe values in <code>namedParameters</code> and <code>anonymousParameters</code>.</p>"
             },
             {
+              "textRaw": "`statement.columns()`",
+              "type": "method",
+              "name": "columns",
+              "meta": {
+                "added": [
+                  "v22.16.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Array} An array of objects. Each object corresponds to a column in the prepared statement, and contains the following properties:",
+                    "name": "return",
+                    "type": "Array",
+                    "desc": "An array of objects. Each object corresponds to a column in the prepared statement, and contains the following properties:",
+                    "options": [
+                      {
+                        "textRaw": "`column` {string|null} The unaliased name of the column in the origin table, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_origin_name()`][].",
+                        "name": "column",
+                        "type": "string|null",
+                        "desc": "The unaliased name of the column in the origin table, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_origin_name()`][]."
+                      },
+                      {
+                        "textRaw": "`database` {string|null} The unaliased name of the origin database, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_database_name()`][].",
+                        "name": "database",
+                        "type": "string|null",
+                        "desc": "The unaliased name of the origin database, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_database_name()`][]."
+                      },
+                      {
+                        "textRaw": "`name` {string} The name assigned to the column in the result set of a `SELECT` statement. This property is the result of [`sqlite3_column_name()`][].",
+                        "name": "name",
+                        "type": "string",
+                        "desc": "The name assigned to the column in the result set of a `SELECT` statement. This property is the result of [`sqlite3_column_name()`][]."
+                      },
+                      {
+                        "textRaw": "`table` {string|null} The unaliased name of the origin table, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_table_name()`][].",
+                        "name": "table",
+                        "type": "string|null",
+                        "desc": "The unaliased name of the origin table, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_table_name()`][]."
+                      },
+                      {
+                        "textRaw": "`type` {string|null} The declared data type of the column, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_decltype()`][].",
+                        "name": "type",
+                        "type": "string|null",
+                        "desc": "The declared data type of the column, or `null` if the column is the result of an expression or subquery. This property is the result of [`sqlite3_column_decltype()`][]."
+                      }
+                    ]
+                  },
+                  "params": []
+                }
+              ],
+              "desc": "<p>This method is used to retrieve information about the columns returned by the\nprepared statement.</p>"
+            },
+            {
               "textRaw": "`statement.get([namedParameters][, ...anonymousParameters])`",
               "type": "method",
               "name": "get",
@@ -639,13 +839,13 @@
                     "type": "Object",
                     "options": [
                       {
-                        "textRaw": "`changes`: {number|bigint} The number of rows modified, inserted, or deleted by the most recently completed `INSERT`, `UPDATE`, or `DELETE` statement. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_changes64()`][].",
+                        "textRaw": "`changes` {number|bigint} The number of rows modified, inserted, or deleted by the most recently completed `INSERT`, `UPDATE`, or `DELETE` statement. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_changes64()`][].",
                         "name": "changes",
                         "type": "number|bigint",
                         "desc": "The number of rows modified, inserted, or deleted by the most recently completed `INSERT`, `UPDATE`, or `DELETE` statement. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_changes64()`][]."
                       },
                       {
-                        "textRaw": "`lastInsertRowid`: {number|bigint} The most recently inserted rowid. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_last_insert_rowid()`][].",
+                        "textRaw": "`lastInsertRowid` {number|bigint} The most recently inserted rowid. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_last_insert_rowid()`][].",
                         "name": "lastInsertRowid",
                         "type": "number|bigint",
                         "desc": "The most recently inserted rowid. This field is either a number or a `BigInt` depending on the prepared statement's configuration. This property is the result of [`sqlite3_last_insert_rowid()`][]."
@@ -695,6 +895,54 @@
               "desc": "<p>The names of SQLite parameters begin with a prefix character. By default,\n<code>node:sqlite</code> requires that this prefix character is present when binding\nparameters. However, with the exception of dollar sign character, these\nprefix characters also require extra quoting when used in object keys.</p>\n<p>To improve ergonomics, this method can be used to also allow bare named\nparameters, which do not require the prefix character in JavaScript code. There\nare several caveats to be aware of when enabling bare named parameters:</p>\n<ul>\n<li>The prefix character is still required in SQL.</li>\n<li>The prefix character is still allowed in JavaScript. In fact, prefixed names\nwill have slightly better binding performance.</li>\n<li>Using ambiguous named parameters, such as <code>$k</code> and <code>@k</code>, in the same prepared\nstatement will result in an exception as it cannot be determined how to bind\na bare name.</li>\n</ul>"
             },
             {
+              "textRaw": "`statement.setAllowUnknownNamedParameters(enabled)`",
+              "type": "method",
+              "name": "setAllowUnknownNamedParameters",
+              "meta": {
+                "added": [
+                  "v22.15.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`enabled` {boolean} Enables or disables support for unknown named parameters.",
+                      "name": "enabled",
+                      "type": "boolean",
+                      "desc": "Enables or disables support for unknown named parameters."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>By default, if an unknown name is encountered while binding parameters, an\nexception is thrown. This method allows unknown named parameters to be ignored.</p>"
+            },
+            {
+              "textRaw": "`statement.setReturnArrays(enabled)`",
+              "type": "method",
+              "name": "setReturnArrays",
+              "meta": {
+                "added": [
+                  "v22.16.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`enabled` {boolean} Enables or disables the return of query results as arrays.",
+                      "name": "enabled",
+                      "type": "boolean",
+                      "desc": "Enables or disables the return of query results as arrays."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>When enabled, query results returned by the <code>all()</code>, <code>get()</code>, and <code>iterate()</code> methods will be returned as arrays instead\nof objects.</p>"
+            },
+            {
               "textRaw": "`statement.setReadBigInts(enabled)`",
               "type": "method",
               "name": "setReadBigInts",
@@ -721,9 +969,9 @@
           ],
           "properties": [
             {
-              "textRaw": "`expandedSQL` {string} The source SQL expanded to include parameter values.",
+              "textRaw": "`expandedSQL` Type: {string} The source SQL expanded to include parameter values.",
               "type": "string",
-              "name": "expandedSQL",
+              "name": "Type",
               "meta": {
                 "added": [
                   "v22.5.0"
@@ -734,9 +982,9 @@
               "shortDesc": "The source SQL expanded to include parameter values."
             },
             {
-              "textRaw": "`sourceSQL` {string} The source SQL used to create this prepared statement.",
+              "textRaw": "`sourceSQL` Type: {string} The source SQL used to create this prepared statement.",
               "type": "string",
-              "name": "sourceSQL",
+              "name": "Type",
               "meta": {
                 "added": [
                   "v22.5.0"
@@ -751,18 +999,91 @@
             {
               "textRaw": "Type conversion between JavaScript and SQLite",
               "name": "type_conversion_between_javascript_and_sqlite",
-              "desc": "<p>When Node.js writes to or reads from SQLite it is necessary to convert between\nJavaScript data types and SQLite's <a href=\"https://www.sqlite.org/datatype3.html\">data types</a>. Because JavaScript supports\nmore data types than SQLite, only a subset of JavaScript types are supported.\nAttempting to write an unsupported data type to SQLite will result in an\nexception.</p>\n<table>\n<thead>\n<tr>\n<th>SQLite</th>\n<th>JavaScript</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>NULL</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type\" class=\"type\">&lt;null&gt;</a></td>\n</tr>\n<tr>\n<td><code>INTEGER</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a> or <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt\" class=\"type\">&lt;bigint&gt;</a></td>\n</tr>\n<tr>\n<td><code>REAL</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type\" class=\"type\">&lt;number&gt;</a></td>\n</tr>\n<tr>\n<td><code>TEXT</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a></td>\n</tr>\n<tr>\n<td><code>BLOB</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array\" class=\"type\">&lt;Uint8Array&gt;</a></td>\n</tr>\n</tbody>\n</table>",
+              "desc": "<p>When Node.js writes to or reads from SQLite it is necessary to convert between\nJavaScript data types and SQLite's <a href=\"https://www.sqlite.org/datatype3.html\">data types</a>. Because JavaScript supports\nmore data types than SQLite, only a subset of JavaScript types are supported.\nAttempting to write an unsupported data type to SQLite will result in an\nexception.</p>\n<table>\n<thead>\n<tr>\n<th>SQLite</th>\n<th>JavaScript</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>NULL</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type\" class=\"type\">&lt;null&gt;</a></td>\n</tr>\n<tr>\n<td><code>INTEGER</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type\" class=\"type\">&lt;number&gt;</a> or <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#bigint_type\" class=\"type\">&lt;bigint&gt;</a></td>\n</tr>\n<tr>\n<td><code>REAL</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type\" class=\"type\">&lt;number&gt;</a></td>\n</tr>\n<tr>\n<td><code>TEXT</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type\" class=\"type\">&lt;string&gt;</a></td>\n</tr>\n<tr>\n<td><code>BLOB</code></td>\n<td><a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray\" class=\"type\">&lt;TypedArray&gt;</a> or <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView\" class=\"type\">&lt;DataView&gt;</a></td>\n</tr>\n</tbody>\n</table>",
               "type": "module",
               "displayName": "Type conversion between JavaScript and SQLite"
             }
           ]
         }
       ],
+      "methods": [
+        {
+          "textRaw": "`sqlite.backup(sourceDb, destination[, options])`",
+          "type": "method",
+          "name": "backup",
+          "meta": {
+            "added": [
+              "v22.16.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {Promise} A promise that fulfills with the total number of backed-up pages upon completion, or rejects if an error occurs.",
+                "name": "return",
+                "type": "Promise",
+                "desc": "A promise that fulfills with the total number of backed-up pages upon completion, or rejects if an error occurs."
+              },
+              "params": [
+                {
+                  "textRaw": "`sourceDb` {DatabaseSync} The database to backup. The source database must be open.",
+                  "name": "sourceDb",
+                  "type": "DatabaseSync",
+                  "desc": "The database to backup. The source database must be open."
+                },
+                {
+                  "textRaw": "`destination` {string} The path where the backup will be created. If the file already exists, the contents will be overwritten.",
+                  "name": "destination",
+                  "type": "string",
+                  "desc": "The path where the backup will be created. If the file already exists, the contents will be overwritten."
+                },
+                {
+                  "textRaw": "`options` {Object} Optional configuration for the backup. The following properties are supported:",
+                  "name": "options",
+                  "type": "Object",
+                  "desc": "Optional configuration for the backup. The following properties are supported:",
+                  "options": [
+                    {
+                      "textRaw": "`source` {string} Name of the source database. This can be `'main'` (the default primary database) or any other database that have been added with [`ATTACH DATABASE`][] **Default:** `'main'`.",
+                      "name": "source",
+                      "type": "string",
+                      "default": "`'main'`",
+                      "desc": "Name of the source database. This can be `'main'` (the default primary database) or any other database that have been added with [`ATTACH DATABASE`][]"
+                    },
+                    {
+                      "textRaw": "`target` {string} Name of the target database. This can be `'main'` (the default primary database) or any other database that have been added with [`ATTACH DATABASE`][] **Default:** `'main'`.",
+                      "name": "target",
+                      "type": "string",
+                      "default": "`'main'`",
+                      "desc": "Name of the target database. This can be `'main'` (the default primary database) or any other database that have been added with [`ATTACH DATABASE`][]"
+                    },
+                    {
+                      "textRaw": "`rate` {number} Number of pages to be transmitted in each batch of the backup. **Default:** `100`.",
+                      "name": "rate",
+                      "type": "number",
+                      "default": "`100`",
+                      "desc": "Number of pages to be transmitted in each batch of the backup."
+                    },
+                    {
+                      "textRaw": "`progress` {Function} An optional callback function that will be called after each backup step. The argument passed to this callback is an {Object} with `remainingPages` and `totalPages` properties, describing the current progress of the backup operation.",
+                      "name": "progress",
+                      "type": "Function",
+                      "desc": "An optional callback function that will be called after each backup step. The argument passed to this callback is an {Object} with `remainingPages` and `totalPages` properties, describing the current progress of the backup operation."
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "desc": "<p>This method makes a database backup. This method abstracts the <a href=\"https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupinit\"><code>sqlite3_backup_init()</code></a>, <a href=\"https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupstep\"><code>sqlite3_backup_step()</code></a>\nand <a href=\"https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupfinish\"><code>sqlite3_backup_finish()</code></a> functions.</p>\n<p>The backed-up database can be used normally during the backup process. Mutations coming from the same connection - same\n<a href=\"sqlite.html#class-databasesync\" class=\"type\">&lt;DatabaseSync&gt;</a> - object will be reflected in the backup right away. However, mutations from other connections will cause\nthe backup process to restart.</p>\n<pre><code class=\"language-cjs\">const { backup, DatabaseSync } = require('node:sqlite');\n\n(async () => {\n  const sourceDb = new DatabaseSync('source.db');\n  const totalPagesTransferred = await backup(sourceDb, 'backup.db', {\n    rate: 1, // Copy one page at a time.\n    progress: ({ totalPages, remainingPages }) => {\n      console.log('Backup in progress', { totalPages, remainingPages });\n    },\n  });\n\n  console.log('Backup completed', totalPagesTransferred);\n})();\n</code></pre>\n<pre><code class=\"language-mjs\">import { backup, DatabaseSync } from 'node:sqlite';\n\nconst sourceDb = new DatabaseSync('source.db');\nconst totalPagesTransferred = await backup(sourceDb, 'backup.db', {\n  rate: 1, // Copy one page at a time.\n  progress: ({ totalPages, remainingPages }) => {\n    console.log('Backup in progress', { totalPages, remainingPages });\n  },\n});\n\nconsole.log('Backup completed', totalPagesTransferred);\n</code></pre>"
+        }
+      ],
       "properties": [
         {
-          "textRaw": "`constants` {Object}",
+          "textRaw": "`constants` Type: {Object}",
           "type": "Object",
-          "name": "constants",
+          "name": "Type",
           "meta": {
             "added": [
               "v22.13.0"

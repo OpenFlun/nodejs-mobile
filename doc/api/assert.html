@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>Assert | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>Assert | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="assert" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -140,9 +140,14 @@
 <ul>
 <li><a href="#strict-assertion-mode">Strict assertion mode</a></li>
 <li><a href="#legacy-assertion-mode">Legacy assertion mode</a></li>
-<li><a href="#class-assertassertionerror">Class: assert.AssertionError</a>
+<li><a href="#class-assertassertionerror">Class: <code>assert.AssertionError</code></a>
 <ul>
 <li><a href="#new-assertassertionerroroptions"><code>new assert.AssertionError(options)</code></a></li>
+</ul>
+</li>
+<li><a href="#class-assertassert">Class: <code>assert.Assert</code></a>
+<ul>
+<li><a href="#new-assertassertoptions"><code>new assert.Assert([options])</code></a></li>
 </ul>
 </li>
 <li><span class="stability_0"><a href="#class-assertcalltracker">Class: <code>assert.CallTracker</code></a></span>
@@ -182,7 +187,11 @@
 <li><a href="#assertrejectsasyncfn-error-message"><code>assert.rejects(asyncFn[, error][, message])</code></a></li>
 <li><a href="#assertstrictequalactual-expected-message"><code>assert.strictEqual(actual, expected[, message])</code></a></li>
 <li><a href="#assertthrowsfn-error-message"><code>assert.throws(fn[, error][, message])</code></a></li>
-<li><span class="stability_1"><a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual(actual, expected[, message])</code></a></span></li>
+<li><a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual(actual, expected[, message])</code></a>
+<ul>
+<li><a href="#comparison-details_2">Comparison details</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul></div></div>
@@ -217,13 +226,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -281,12 +290,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/assert.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/assert.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/assert.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/assert.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/assert.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/assert.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/assert.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/assert.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/assert.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/assert.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/assert.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/assert.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/assert.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/assert.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/assert.html">15.x</a></li>
@@ -333,9 +345,14 @@
 <ul>
 <li><a href="#strict-assertion-mode">Strict assertion mode</a></li>
 <li><a href="#legacy-assertion-mode">Legacy assertion mode</a></li>
-<li><a href="#class-assertassertionerror">Class: assert.AssertionError</a>
+<li><a href="#class-assertassertionerror">Class: <code>assert.AssertionError</code></a>
 <ul>
 <li><a href="#new-assertassertionerroroptions"><code>new assert.AssertionError(options)</code></a></li>
+</ul>
+</li>
+<li><a href="#class-assertassert">Class: <code>assert.Assert</code></a>
+<ul>
+<li><a href="#new-assertassertoptions"><code>new assert.Assert([options])</code></a></li>
 </ul>
 </li>
 <li><span class="stability_0"><a href="#class-assertcalltracker">Class: <code>assert.CallTracker</code></a></span>
@@ -375,7 +392,11 @@
 <li><a href="#assertrejectsasyncfn-error-message"><code>assert.rejects(asyncFn[, error][, message])</code></a></li>
 <li><a href="#assertstrictequalactual-expected-message"><code>assert.strictEqual(actual, expected[, message])</code></a></li>
 <li><a href="#assertthrowsfn-error-message"><code>assert.throws(fn[, error][, message])</code></a></li>
-<li><span class="stability_1"><a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual(actual, expected[, message])</code></a></span></li>
+<li><a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual(actual, expected[, message])</code></a>
+<ul>
+<li><a href="#comparison-details_2">Comparison details</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul></details>
@@ -384,7 +405,7 @@
         <h2>Assert<span><a class="mark" href="#assert" id="assert">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert"></a></h2>
 
 <p></p><div class="api_stability api_stability_2"><a href="documentation.html#stability-index">Stability: 2</a> - Stable</div><p></p>
-<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.14.0/lib/assert.js">lib/assert.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.23.2/lib/assert.js">lib/assert.js</a></p>
 <p>The <code>node:assert</code> module provides a set of assertion functions for verifying
 invariants.</p>
 <section><h3>Strict assertion mode<span><a class="mark" href="#strict-assertion-mode" id="strict-assertion-mode">#</a></span><a aria-hidden="true" class="legacy" id="assert_strict_assertion_mode"></a></h3>
@@ -467,12 +488,13 @@ more on color support in terminal environments, read the tty
 <a href="#assertdeepequalactual-expected-message"><code>assert.deepEqual()</code></a>:</p>
 <pre><code class="language-js cjs"><span class="hljs-comment">// WARNING: This does not throw an AssertionError in legacy assertion mode!</span>
 assert.<span class="hljs-title function_">deepEqual</span>(<span class="hljs-regexp">/a/gi</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>());</code> <button class="copy-button">copy</button></pre>
-</section><section><h3>Class: assert.AssertionError<a class="srclink" href="https://github.com/nodejs/node/blob/5d2feb257bcee090e57900eb51720171a6aa92f3/lib/assert.js#L181">[src]</a><span><a class="mark" href="#class-assertassertionerror" id="class-assertassertionerror">#</a></span><a aria-hidden="true" class="legacy" id="assert_class_assert_assertionerror"></a></h3>
+</section><section><h3>Class: <code>assert.AssertionError</code><span><a class="mark" href="#class-assertassertionerror" id="class-assertassertionerror">#</a></span><a aria-hidden="true" class="legacy" id="assert_class_assert_assertionerror"></a></h3>
 <ul>
 <li>Extends: <a href="errors.html#class-error" class="type">&#x3C;errors.Error></a></li>
 </ul>
 <p>Indicates the failure of an assertion. All errors thrown by the <code>node:assert</code>
 module will be instances of the <code>AssertionError</code> class.</p>
+<div>
 <h4><code>new assert.AssertionError(options)</code><span><a class="mark" href="#new-assertassertionerroroptions" id="new-assertassertionerroroptions">#</a></span><a aria-hidden="true" class="legacy" id="assert_new_assert_assertionerror_options"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.21</span>
@@ -480,16 +502,18 @@ module will be instances of the <code>AssertionError</code> class.</p>
 <ul>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> If provided, the error message is set to this value.</li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> If provided, the error message is set to this value.</li>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The <code>actual</code> property on the error instance.</li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The <code>expected</code> property on the error instance.</li>
-<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The <code>operator</code> property on the error instance.</li>
+<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The <code>operator</code> property on the error instance.</li>
 <li><code>stackStartFn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> If provided, the generated stack trace omits
 frames before this function.</li>
+<li><code>diff</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> If set to <code>'full'</code>, shows the full diff in assertion errors. Defaults to <code>'simple'</code>.
+Accepted values: <code>'simple'</code>, <code>'full'</code>.</li>
 </ul>
 </li>
 </ul>
-<p>A subclass of <code>Error</code> that indicates the failure of an assertion.</p>
+<p>A subclass of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> that indicates the failure of an assertion.</p>
 <p>All instances contain the built-in <code>Error</code> properties (<code>message</code> and <code>name</code>)
 and:</p>
 <ul>
@@ -497,11 +521,11 @@ and:</p>
 <a href="#assertstrictequalactual-expected-message"><code>assert.strictEqual()</code></a>.</li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> Set to the <code>expected</code> value for methods such as
 <a href="#assertstrictequalactual-expected-message"><code>assert.strictEqual()</code></a>.</li>
-<li><code>generatedMessage</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Indicates if the message was auto-generated
+<li><code>generatedMessage</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> Indicates if the message was auto-generated
 (<code>true</code>) or not.</li>
-<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Value is always <code>ERR_ASSERTION</code> to show that the error is an
+<li><code>code</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Value is always <code>ERR_ASSERTION</code> to show that the error is an
 assertion error.</li>
-<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Set to the passed in operator value.</li>
+<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Set to the passed in operator value.</li>
 </ul>
 
 <pre class="with-38-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert'</span>;
@@ -547,6 +571,45 @@ assertion error.</li>
   assert.<span class="hljs-title function_">strictEqual</span>(err.<span class="hljs-property">operator</span>, <span class="hljs-string">'strictEqual'</span>);
   assert.<span class="hljs-title function_">strictEqual</span>(err.<span class="hljs-property">generatedMessage</span>, <span class="hljs-literal">true</span>);
 }</code><button class="copy-button">copy</button></pre>
+</div>
+</section><section><h3>Class: <code>assert.Assert</code><span><a class="mark" href="#class-assertassert" id="class-assertassert">#</a></span><a aria-hidden="true" class="legacy" id="assert_class_assert_assert"></a></h3>
+<div class="api_metadata">
+<span>Added in: v22.19.0</span>
+</div>
+<p>The <code>Assert</code> class allows creating independent assertion instances with custom options.</p>
+<div>
+<h4><code>new assert.Assert([options])</code><span><a class="mark" href="#new-assertassertoptions" id="new-assertassertoptions">#</a></span><a aria-hidden="true" class="legacy" id="assert_new_assert_assert_options"></a></h4>
+<ul>
+<li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
+<ul>
+<li><code>diff</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> If set to <code>'full'</code>, shows the full diff in assertion errors. Defaults to <code>'simple'</code>.
+Accepted values: <code>'simple'</code>, <code>'full'</code>.</li>
+<li><code>strict</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> If set to <code>true</code>, non-strict methods behave like their
+corresponding strict methods. Defaults to <code>true</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Creates a new assertion instance. The <code>diff</code> option controls the verbosity of diffs in assertion error messages.</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> { <span class="hljs-title class_">Assert</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:assert'</span>);
+<span class="hljs-keyword">const</span> assertInstance = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Assert</span>({ <span class="hljs-attr">diff</span>: <span class="hljs-string">'full'</span> });
+assertInstance.<span class="hljs-title function_">deepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">2</span> });
+<span class="hljs-comment">// Shows a full diff in the error message.</span></code> <button class="copy-button">copy</button></pre>
+<p><strong>Important</strong>: When destructuring assertion methods from an <code>Assert</code> instance,
+the methods lose their connection to the instance's configuration options (such as <code>diff</code> and <code>strict</code> settings).
+The destructured methods will fall back to default behavior instead.</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> myAssert = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Assert</span>({ <span class="hljs-attr">diff</span>: <span class="hljs-string">'full'</span> });
+
+<span class="hljs-comment">// This works as expected - uses 'full' diff</span>
+myAssert.<span class="hljs-title function_">strictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } });
+
+<span class="hljs-comment">// This loses the 'full' diff setting - falls back to default 'simple' diff</span>
+<span class="hljs-keyword">const</span> { strictEqual } = myAssert;
+<span class="hljs-title function_">strictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } });</code> <button class="copy-button">copy</button></pre>
+<p>When destructured, methods lose access to the instance's <code>this</code> context and revert to default assertion behavior
+(diff: 'simple', non-strict mode).
+To maintain custom options when using destructured methods, avoid
+destructuring and call methods directly on the instance.</p>
+</div>
 </section><section><h3>Class: <code>assert.CallTracker</code><span><a class="mark" href="#class-assertcalltracker" id="class-assertcalltracker">#</a></span><a aria-hidden="true" class="legacy" id="assert_class_assert_calltracker"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -563,6 +626,7 @@ assertion error.</li>
 <p>This feature is deprecated and will be removed in a future version.
 Please consider using alternatives such as the
 <a href="test.html#mocking"><code>mock</code></a> helper function.</p>
+<div>
 <h4><code>new assert.CallTracker()</code><span><a class="mark" href="#new-assertcalltracker" id="new-assertcalltracker">#</a></span><a aria-hidden="true" class="legacy" id="assert_new_assert_calltracker"></a></h4>
 <div class="api_metadata">
 <span>Added in: v14.2.0, v12.19.0</span>
@@ -605,13 +669,14 @@ process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'
 process.<span class="hljs-title function_">on</span>(<span class="hljs-string">'exit'</span>, <span class="hljs-function">() =></span> {
   tracker.<span class="hljs-title function_">verify</span>();
 });</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>tracker.calls([fn][, exact])</code><span><a class="mark" href="#trackercallsfn-exact" id="trackercallsfn-exact">#</a></span><a aria-hidden="true" class="legacy" id="assert_tracker_calls_fn_exact"></a></h4>
 <div class="api_metadata">
 <span>Added in: v14.2.0, v12.19.0</span>
 </div>
 <ul>
 <li><code>fn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> <strong>Default:</strong> A no-op function.</li>
-<li><code>exact</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>1</code>.</li>
+<li><code>exact</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> <strong>Default:</strong> <code>1</code>.</li>
 <li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> A function that wraps <code>fn</code>.</li>
 </ul>
 <p>The wrapper function is expected to be called exactly <code>exact</code> times. If the
@@ -638,6 +703,7 @@ error.</p>
 <span class="hljs-comment">// Returns a function that wraps func() that must be called exact times</span>
 <span class="hljs-comment">// before tracker.verify().</span>
 <span class="hljs-keyword">const</span> callsfunc = tracker.<span class="hljs-title function_">calls</span>(func);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>tracker.getCalls(fn)</code><span><a class="mark" href="#trackergetcallsfn" id="trackergetcallsfn">#</a></span><a aria-hidden="true" class="legacy" id="assert_tracker_getcalls_fn"></a></h4>
 <div class="api_metadata">
 <span>Added in: v18.8.0, v16.18.0</span>
@@ -678,6 +744,7 @@ assert.<span class="hljs-title function_">deepStrictEqual</span>(tracker.<span c
 
 assert.<span class="hljs-title function_">deepStrictEqual</span>(tracker.<span class="hljs-title function_">getCalls</span>(callsfunc),
                        [{ <span class="hljs-attr">thisArg</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">arguments</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] }]);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>tracker.report()</code><span><a class="mark" href="#trackerreport" id="trackerreport">#</a></span><a aria-hidden="true" class="legacy" id="assert_tracker_report"></a></h4>
 <div class="api_metadata">
 <span>Added in: v14.2.0, v12.19.0</span>
@@ -687,11 +754,11 @@ assert.<span class="hljs-title function_">deepStrictEqual</span>(tracker.<span c
 functions returned by <a href="#trackercallsfn-exact"><code>tracker.calls()</code></a>.</li>
 <li>Object <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
-<li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The actual number of times the function was called.</li>
-<li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> The number of times the function was expected to be
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
+<li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The actual number of times the function was called.</li>
+<li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> The number of times the function was expected to be
 called.</li>
-<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The name of the function that is wrapped.</li>
+<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The name of the function that is wrapped.</li>
 <li><code>stack</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> A stack trace of the function.</li>
 </ul>
 </li>
@@ -744,6 +811,7 @@ the functions that have not been called the expected number of times.</p>
 <span class="hljs-comment">//    stack: stack trace</span>
 <span class="hljs-comment">//  }</span>
 <span class="hljs-comment">// ]</span></code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>tracker.reset([fn])</code><span><a class="mark" href="#trackerresetfn" id="trackerresetfn">#</a></span><a aria-hidden="true" class="legacy" id="assert_tracker_reset_fn"></a></h4>
 <div class="api_metadata">
 <span>Added in: v18.8.0, v16.18.0</span>
@@ -780,6 +848,7 @@ assert.<span class="hljs-title function_">strictEqual</span>(tracker.<span class
 
 tracker.<span class="hljs-title function_">reset</span>(callsfunc);
 assert.<span class="hljs-title function_">strictEqual</span>(tracker.<span class="hljs-title function_">getCalls</span>(callsfunc).<span class="hljs-property">length</span>, <span class="hljs-number">0</span>);</code><button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>tracker.verify()</code><span><a class="mark" href="#trackerverify" id="trackerverify">#</a></span><a aria-hidden="true" class="legacy" id="assert_tracker_verify"></a></h4>
 <div class="api_metadata">
 <span>Added in: v14.2.0, v12.19.0</span>
@@ -817,13 +886,14 @@ tracker.<span class="hljs-title function_">verify</span>();</code><code class="l
 
 <span class="hljs-comment">// Will throw an error since callsfunc() was only called once.</span>
 tracker.<span class="hljs-title function_">verify</span>();</code><button class="copy-button">copy</button></pre>
+</div>
 </section><section><h3><code>assert(value[, message])</code><span><a class="mark" href="#assertvalue-message" id="assertvalue-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_value_message"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.5.9</span>
 </div>
 <ul>
 <li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The input that is checked for being truthy.</li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>An alias of <a href="#assertokvalue-message"><code>assert.ok()</code></a>.</p>
 </section><section><h3><code>assert.deepEqual(actual, expected[, message])</code><span><a class="mark" href="#assertdeepequalactual-expected-message" id="assertdeepequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_deepequal_actual_expected_message"></a></h3>
@@ -859,7 +929,7 @@ tracker.<span class="hljs-title function_">verify</span>();</code><button class=
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p><strong>Strict assertion mode</strong></p>
 <p>An alias of <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepStrictEqual()</code></a>.</p>
@@ -870,25 +940,27 @@ using <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepS
 surprising results.</p>
 <p><em>Deep equality</em> means that the enumerable "own" properties of child objects
 are also recursively evaluated by the following rules.</p>
+<div>
 <h4>Comparison details<span><a class="mark" href="#comparison-details" id="comparison-details">#</a></span><a aria-hidden="true" class="legacy" id="assert_comparison_details"></a></h4>
 <ul>
 <li>Primitive values are compared with the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Equality"><code>==</code> operator</a>,
-with the exception of <code>NaN</code>. It is treated as being identical in case
-both sides are <code>NaN</code>.</li>
+with the exception of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN" class="type">&#x3C;NaN></a>. It is treated as being identical in case
+both sides are <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN" class="type">&#x3C;NaN></a>.</li>
 <li><a href="https://tc39.github.io/ecma262/#sec-object.prototype.tostring">Type tags</a> of objects should be the same.</li>
-<li>Only <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties">enumerable "own" properties</a> are considered.</li>
-<li><a href="errors.html#class-error"><code>Error</code></a> names, messages, causes, and errors are always compared,
+<li>Only <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Enumerability_and_ownership_of_properties">enumerable "own" properties</a> are considered.</li>
+<li>Object constructors are compared when available.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> names, messages, causes, and errors are always compared,
 even if these are not enumerable properties.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Primitive#Primitive_wrapper_objects_in_JavaScript">Object wrappers</a> are compared both as objects and unwrapped values.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Data_structures#primitive_values">Object wrappers</a> are compared both as objects and unwrapped values.</li>
 <li><code>Object</code> properties are compared unordered.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"><code>Map</code></a> keys and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"><code>Set</code></a> items are compared unordered.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="type">&#x3C;Map></a> keys and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="type">&#x3C;Set></a> items are compared unordered.</li>
 <li>Recursion stops when both sides differ or both sides encounter a circular
 reference.</li>
 <li>Implementation does not test the <a href="https://tc39.github.io/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots"><code>[[Prototype]]</code></a> of
 objects.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol"><code>Symbol</code></a> properties are not compared.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap"><code>WeakMap</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet"><code>WeakSet</code></a> comparison does not rely on their values.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a> lastIndex, flags, and source are always compared, even if these
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol" class="type">&#x3C;Symbol></a> properties are not compared.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap" class="type">&#x3C;WeakMap></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet" class="type">&#x3C;WeakSet></a> comparison does not rely on their values.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> lastIndex, flags, and source are always compared, even if these
 are not enumerable properties.</li>
 </ul>
 <p>The following example does not throw an <a href="#class-assertassertionerror"><code>AssertionError</code></a> because the
@@ -970,8 +1042,9 @@ assert.<span class="hljs-title function_">deepEqual</span>(obj1, obj4);
 <p>If the values are not equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code>
 property set equal to the value of the <code>message</code> parameter. If the <code>message</code>
 parameter is undefined, a default error message is assigned. If the <code>message</code>
-parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
+</div>
 </section><section><h3><code>assert.deepStrictEqual(actual, expected[, message])</code><span><a class="mark" href="#assertdeepstrictequalactual-expected-message" id="assertdeepstrictequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_deepstrictequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1003,32 +1076,33 @@ parameter is an instance of an <a href="errors.html#class-error"><code>Error</co
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Tests for deep equality between the <code>actual</code> and <code>expected</code> parameters.
 "Deep" equality means that the enumerable "own" properties of child objects
 are recursively evaluated also by the following rules.</p>
+<div>
 <h4>Comparison details<span><a class="mark" href="#comparison-details_1" id="comparison-details_1">#</a></span><a aria-hidden="true" class="legacy" id="assert_comparison_details_1"></a></h4>
 <ul>
 <li>Primitive values are compared using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is"><code>Object.is()</code></a>.</li>
 <li><a href="https://tc39.github.io/ecma262/#sec-object.prototype.tostring">Type tags</a> of objects should be the same.</li>
 <li><a href="https://tc39.github.io/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots"><code>[[Prototype]]</code></a> of objects are compared using
 the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality"><code>===</code> operator</a>.</li>
-<li>Only <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties">enumerable "own" properties</a> are considered.</li>
-<li><a href="errors.html#class-error"><code>Error</code></a> names, messages, causes, and errors are always compared,
+<li>Only <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Enumerability_and_ownership_of_properties">enumerable "own" properties</a> are considered.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> names, messages, causes, and errors are always compared,
 even if these are not enumerable properties.
 <code>errors</code> is also compared.</li>
-<li>Enumerable own <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol"><code>Symbol</code></a> properties are compared as well.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Primitive#Primitive_wrapper_objects_in_JavaScript">Object wrappers</a> are compared both as objects and unwrapped values.</li>
+<li>Enumerable own <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol" class="type">&#x3C;Symbol></a> properties are compared as well.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Data_structures#primitive_values">Object wrappers</a> are compared both as objects and unwrapped values.</li>
 <li><code>Object</code> properties are compared unordered.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"><code>Map</code></a> keys and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"><code>Set</code></a> items are compared unordered.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="type">&#x3C;Map></a> keys and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="type">&#x3C;Set></a> items are compared unordered.</li>
 <li>Recursion stops when both sides differ or both sides encounter a circular
 reference.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap"><code>WeakMap</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet"><code>WeakSet</code></a> instances are <strong>not</strong> compared structurally.
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap" class="type">&#x3C;WeakMap></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet" class="type">&#x3C;WeakSet></a> instances are <strong>not</strong> compared structurally.
 They are only equal if they reference the same object. Any comparison between
 different <code>WeakMap</code> or <code>WeakSet</code> instances will result in inequality,
 even if they contain the same entries.</li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a> lastIndex, flags, and source are always compared, even if these
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> lastIndex, flags, and source are always compared, even if these
 are not enumerable properties.</li>
 </ul>
 
@@ -1248,8 +1322,9 @@ assert.<span class="hljs-title function_">deepStrictEqual</span>(weakSet1, weakS
 <p>If the values are not equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code>
 property set equal to the value of the <code>message</code> parameter. If the <code>message</code>
 parameter is undefined, a default error message is assigned. If the <code>message</code>
-parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <code>AssertionError</code>.</p>
+</div>
 </section><section><h3><code>assert.doesNotMatch(string, regexp[, message])</code><span><a class="mark" href="#assertdoesnotmatchstring-regexp-message" id="assertdoesnotmatchstring-regexp-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_doesnotmatch_string_regexp_message"></a></h3>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -1263,9 +1338,9 @@ parameter is an instance of an <a href="errors.html#class-error"><code>Error</co
 </details>
 </div>
 <ul>
-<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 <li><code>regexp</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Expects the <code>string</code> input not to match the regular expression.</p>
 
@@ -1292,7 +1367,7 @@ assert.<span class="hljs-title function_">doesNotMatch</span>(<span class="hljs-
 <code>string</code>, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code> property set equal
 to the value of the <code>message</code> parameter. If the <code>message</code> parameter is
 undefined, a default error message is assigned. If the <code>message</code> parameter is an
-instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
 </section><section><h3><code>assert.doesNotReject(asyncFn[, error][, message])</code><span><a class="mark" href="#assertdoesnotrejectasyncfn-error-message" id="assertdoesnotrejectasyncfn-error-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_doesnotreject_asyncfn_error_message"></a></h3>
 <div class="api_metadata">
@@ -1301,7 +1376,8 @@ instance of an <a href="errors.html#class-error"><code>Error</code></a> then it 
 <ul>
 <li><code>asyncFn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="type">&#x3C;Promise></a></li>
 <li><code>error</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="type">&#x3C;Promise></a></li>
 </ul>
 <p>Awaits the <code>asyncFn</code> promise or, if <code>asyncFn</code> is a function, immediately
 calls the function and awaits the returned promise to complete. It will then
@@ -1315,7 +1391,7 @@ the error handler is skipped.</p>
 benefit in catching a rejection and then rejecting it again. Instead, consider
 adding a comment next to the specific code path that should not reject and keep
 error messages as expressive as possible.</p>
-<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a>, or a validation
+<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> or a validation
 function. See <a href="#assertthrowsfn-error-message"><code>assert.throws()</code></a> for more details.</p>
 <p>Besides the async nature to await the completion behaves identically to
 <a href="#assertdoesnotthrowfn-error-message"><code>assert.doesNotThrow()</code></a>.</p>
@@ -1366,7 +1442,7 @@ assert.<span class="hljs-title function_">doesNotReject</span>(<span class="hljs
 <ul>
 <li><code>fn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
 <li><code>error</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>Asserts that the function <code>fn</code> does not throw an error.</p>
 <p>Using <code>assert.doesNotThrow()</code> is actually not useful because there
@@ -1379,9 +1455,9 @@ function.</p>
 parameter, then an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown. If the error is of a
 different type, or if the <code>error</code> parameter is undefined, the error is
 propagated back to the caller.</p>
-<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a>, or a validation
+<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a>, or a validation
 function. See <a href="#assertthrowsfn-error-message"><code>assert.throws()</code></a> for more details.</p>
-<p>The following, for instance, will throw the <a href="errors.html#class-typeerror"><code>TypeError</code></a> because there is no
+<p>The following, for instance, will throw the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError" class="type">&#x3C;TypeError></a> because there is no
 matching error type in the assertion:</p>
 
 <pre class="with-45-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;
@@ -1457,7 +1533,7 @@ assert.<span class="hljs-title function_">doesNotThrow</span>(
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p><strong>Strict assertion mode</strong></p>
 <p>An alias of <a href="#assertstrictequalactual-expected-message"><code>assert.strictEqual()</code></a>.</p>
@@ -1495,17 +1571,17 @@ assert.<span class="hljs-title function_">equal</span>({ <span class="hljs-attr"
 <p>If the values are not equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code>
 property set equal to the value of the <code>message</code> parameter. If the <code>message</code>
 parameter is undefined, a default error message is assigned. If the <code>message</code>
-parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <code>AssertionError</code>.</p>
 </section><section><h3><code>assert.fail([message])</code><span><a class="mark" href="#assertfailmessage" id="assertfailmessage">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_fail_message"></a></h3>
 <div class="api_metadata">
 <span>Added in: v0.1.21</span>
 </div>
 <ul>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> <strong>Default:</strong> <code>'Failed'</code></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> <strong>Default:</strong> <code>'Failed'</code></li>
 </ul>
 <p>Throws an <a href="#class-assertassertionerror"><code>AssertionError</code></a> with the provided error message or a default
-error message. If the <code>message</code> parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then
+error message. If the <code>message</code> parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then
 it will be thrown instead of the <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
 
 <pre class="with-45-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;
@@ -1546,8 +1622,8 @@ functions instead.</div><p></p>
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
-<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'!='</code></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>operator</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'!='</code></li>
 <li><code>stackStartFn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> <strong>Default:</strong> <code>assert.fail</code></li>
 </ul>
 <p>If <code>message</code> is falsy, the error message is set as the values of <code>actual</code> and
@@ -1693,9 +1769,9 @@ assert.<span class="hljs-title function_">ifError</span>(<span class="hljs-keywo
 </details>
 </div>
 <ul>
-<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>string</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 <li><code>regexp</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Expects the <code>string</code> input to match the regular expression.</p>
 
@@ -1722,7 +1798,7 @@ assert.<span class="hljs-title function_">match</span>(<span class="hljs-string"
 <code>string</code>, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code> property set equal
 to the value of the <code>message</code> parameter. If the <code>message</code> parameter is
 undefined, a default error message is assigned. If the <code>message</code> parameter is an
-instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
 </section><section><h3><code>assert.notDeepEqual(actual, expected[, message])</code><span><a class="mark" href="#assertnotdeepequalactual-expected-message" id="assertnotdeepequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_notdeepequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
@@ -1751,7 +1827,7 @@ instance of an <a href="errors.html#class-error"><code>Error</code></a> then it 
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p><strong>Strict assertion mode</strong></p>
 <p>An alias of <a href="#assertnotdeepstrictequalactual-expected-message"><code>assert.notDeepStrictEqual()</code></a>.</p>
@@ -1821,7 +1897,7 @@ assert.<span class="hljs-title function_">notDeepEqual</span>(obj1, obj4);
 <p>If the values are deeply equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a
 <code>message</code> property set equal to the value of the <code>message</code> parameter. If the
 <code>message</code> parameter is undefined, a default error message is assigned. If the
-<code>message</code> parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown
+<code>message</code> parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown
 instead of the <code>AssertionError</code>.</p>
 </section><section><h3><code>assert.notDeepStrictEqual(actual, expected[, message])</code><span><a class="mark" href="#assertnotdeepstrictequalactual-expected-message" id="assertnotdeepstrictequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_notdeepstrictequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
@@ -1850,7 +1926,7 @@ instead of the <code>AssertionError</code>.</p>
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Tests for deep strict inequality. Opposite of <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepStrictEqual()</code></a>.</p>
 
@@ -1864,7 +1940,7 @@ assert.<span class="hljs-title function_">notDeepStrictEqual</span>({ <span clas
 <p>If the values are deeply and strictly equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown
 with a <code>message</code> property set equal to the value of the <code>message</code> parameter. If
 the <code>message</code> parameter is undefined, a default error message is assigned. If
-the <code>message</code> parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown
+the <code>message</code> parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown
 instead of the <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
 </section><section><h3><code>assert.notEqual(actual, expected[, message])</code><span><a class="mark" href="#assertnotequalactual-expected-message" id="assertnotequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_notequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
@@ -1883,7 +1959,7 @@ instead of the <a href="#class-assertassertionerror"><code>AssertionError</code>
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p><strong>Strict assertion mode</strong></p>
 <p>An alias of <a href="#assertnotstrictequalactual-expected-message"><code>assert.notStrictEqual()</code></a>.</p>
@@ -1914,7 +1990,7 @@ assert.<span class="hljs-title function_">notEqual</span>(<span class="hljs-numb
 <p>If the values are equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code>
 property set equal to the value of the <code>message</code> parameter. If the <code>message</code>
 parameter is undefined, a default error message is assigned. If the <code>message</code>
-parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <code>AssertionError</code>.</p>
 </section><section><h3><code>assert.notStrictEqual(actual, expected[, message])</code><span><a class="mark" href="#assertnotstrictequalactual-expected-message" id="assertnotstrictequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_notstrictequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
@@ -1931,7 +2007,7 @@ parameter is an instance of an <a href="errors.html#class-error"><code>Error</co
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Tests strict inequality between the <code>actual</code> and <code>expected</code> parameters as
 determined by <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is"><code>Object.is()</code></a>.</p>
@@ -1962,7 +2038,7 @@ assert.<span class="hljs-title function_">notStrictEqual</span>(<span class="hlj
 <p>If the values are strictly equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a
 <code>message</code> property set equal to the value of the <code>message</code> parameter. If the
 <code>message</code> parameter is undefined, a default error message is assigned. If the
-<code>message</code> parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown
+<code>message</code> parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown
 instead of the <code>AssertionError</code>.</p>
 </section><section><h3><code>assert.ok(value[, message])</code><span><a class="mark" href="#assertokvalue-message" id="assertokvalue-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_ok_value_message"></a></h3>
 <div class="api_metadata">
@@ -1978,14 +2054,14 @@ instead of the <code>AssertionError</code>.</p>
 </div>
 <ul>
 <li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Tests if <code>value</code> is truthy. It is equivalent to
 <code>assert.equal(!!value, true, message)</code>.</p>
 <p>If <code>value</code> is not truthy, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a <code>message</code>
 property set equal to the value of the <code>message</code> parameter. If the <code>message</code>
 parameter is <code>undefined</code>, a default error message is assigned. If the <code>message</code>
-parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown instead of the
+parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown instead of the
 <code>AssertionError</code>.
 If no arguments are passed in at all <code>message</code> will be set to the string:
 <code>'No value argument passed to `assert.ok()`'</code>.</p>
@@ -2076,7 +2152,8 @@ assert.<span class="hljs-title function_">ok</span>(<span class="hljs-number">0<
 <ul>
 <li><code>asyncFn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="type">&#x3C;Promise></a></li>
 <li><code>error</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="type">&#x3C;Promise></a></li>
 </ul>
 <p>Awaits the <code>asyncFn</code> promise or, if <code>asyncFn</code> is a function, immediately
 calls the function and awaits the returned promise to complete. It will then
@@ -2088,7 +2165,7 @@ function does not return a promise, <code>assert.rejects()</code> will return a 
 handler is skipped.</p>
 <p>Besides the async nature to await the completion behaves identically to
 <a href="#assertthrowsfn-error-message"><code>assert.throws()</code></a>.</p>
-<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a>, a validation function,
+<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a>, a validation function,
 an object where each property will be tested for, or an instance of error where
 each property will be tested for including the non-enumerable <code>message</code> and
 <code>name</code> properties.</p>
@@ -2180,7 +2257,7 @@ argument gets considered.</p>
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
 <p>Tests strict equality between the <code>actual</code> and <code>expected</code> parameters as
 determined by <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is"><code>Object.is()</code></a>.</p>
@@ -2237,7 +2314,7 @@ assert.<span class="hljs-title function_">strictEqual</span>(<span class="hljs-n
 <p>If the values are not strictly equal, an <a href="#class-assertassertionerror"><code>AssertionError</code></a> is thrown with a
 <code>message</code> property set equal to the value of the <code>message</code> parameter. If the
 <code>message</code> parameter is undefined, a default error message is assigned. If the
-<code>message</code> parameter is an instance of an <a href="errors.html#class-error"><code>Error</code></a> then it will be thrown
+<code>message</code> parameter is an instance of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> then it will be thrown
 instead of the <a href="#class-assertassertionerror"><code>AssertionError</code></a>.</p>
 </section><section><h3><code>assert.throws(fn[, error][, message])</code><span><a class="mark" href="#assertthrowsfn-error-message" id="assertthrowsfn-error-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_throws_fn_error_message"></a></h3>
 <div class="api_metadata">
@@ -2258,10 +2335,10 @@ instead of the <a href="#class-assertassertionerror"><code>AssertionError</code>
 <ul>
 <li><code>fn</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
 <li><code>error</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>Expects the function <code>fn</code> to throw an error.</p>
-<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a>, a validation function,
+<p>If specified, <code>error</code> can be a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"><code>Class</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a>, a validation function,
 a validation object where each property will be tested for strict deep equality,
 or an instance of error where each property will be tested for strict deep
 equality including the non-enumerable <code>message</code> and <code>name</code> properties. When
@@ -2420,7 +2497,7 @@ assert.<span class="hljs-title function_">throws</span>(
   },
   <span class="hljs-title class_">Error</span>,
 );</code><button class="copy-button">copy</button></pre>
-<p>Validate error message using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"><code>RegExp</code></a>:</p>
+<p>Validate error message using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a>:</p>
 <p>Using a regular expression runs <code>.toString</code> on the error object, and will
 therefore also include the error name.</p>
 
@@ -2554,85 +2631,156 @@ assert.<span class="hljs-title function_">throws</span>(throwingFirst, <span cla
 argument.</p>
 </section><section><h3><code>assert.partialDeepStrictEqual(actual, expected[, message])</code><span><a class="mark" href="#assertpartialdeepstrictequalactual-expected-message" id="assertpartialdeepstrictequalactual-expected-message">#</a></span><a aria-hidden="true" class="legacy" id="assert_assert_partialdeepstrictequal_actual_expected_message"></a></h3>
 <div class="api_metadata">
-<span>Added in: v22.13.0</span>
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v22.17.0</td>
+<td><p>partialDeepStrictEqual is now Stable. Previously, it had been Experimental.</p></td></tr>
+<tr><td>v22.13.0</td>
+<td><p><span>Added in: v22.13.0</span></p></td></tr>
+</tbody></table>
+</details>
 </div>
-<p></p><div class="api_stability api_stability_1"><a href="documentation.html#stability-index">Stability: 1</a>.0 - Early development</div><p></p>
 <ul>
 <li><code>actual</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>expected</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
 </ul>
-<p><a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual()</code></a> Asserts the equivalence between the <code>actual</code> and <code>expected</code> parameters through a
-deep comparison, ensuring that all properties in the <code>expected</code> parameter are
-present in the <code>actual</code> parameter with equivalent values, not allowing type coercion.
-The main difference with <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepStrictEqual()</code></a> is that <a href="#assertpartialdeepstrictequalactual-expected-message"><code>assert.partialDeepStrictEqual()</code></a> does not require
-all properties in the <code>actual</code> parameter to be present in the <code>expected</code> parameter.
-This method should always pass the same test cases as <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepStrictEqual()</code></a>, behaving as a super set of it.</p>
+<p>Tests for partial deep equality between the <code>actual</code> and <code>expected</code> parameters.
+"Deep" equality means that the enumerable "own" properties of child objects
+are recursively evaluated also by the following rules. "Partial" equality means
+that only properties that exist on the <code>expected</code> parameter are going to be
+compared.</p>
+<p>This method always passes the same test cases as <a href="#assertdeepstrictequalactual-expected-message"><code>assert.deepStrictEqual()</code></a>,
+behaving as a super set of it.</p>
+<div>
+<h4>Comparison details<span><a class="mark" href="#comparison-details_2" id="comparison-details_2">#</a></span><a aria-hidden="true" class="legacy" id="assert_comparison_details_2"></a></h4>
+<ul>
+<li>Primitive values are compared using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is"><code>Object.is()</code></a>.</li>
+<li><a href="https://tc39.github.io/ecma262/#sec-object.prototype.tostring">Type tags</a> of objects should be the same.</li>
+<li><a href="https://tc39.github.io/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots"><code>[[Prototype]]</code></a> of objects are not compared.</li>
+<li>Only <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Enumerability_and_ownership_of_properties">enumerable "own" properties</a> are considered.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a> names, messages, causes, and errors are always compared,
+even if these are not enumerable properties.
+<code>errors</code> is also compared.</li>
+<li>Enumerable own <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol" class="type">&#x3C;Symbol></a> properties are compared as well.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Data_structures#primitive_values">Object wrappers</a> are compared both as objects and unwrapped values.</li>
+<li><code>Object</code> properties are compared unordered.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="type">&#x3C;Map></a> keys and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="type">&#x3C;Set></a> items are compared unordered.</li>
+<li>Recursion stops when both sides differ or both sides encounter a circular
+reference.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap" class="type">&#x3C;WeakMap></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet" class="type">&#x3C;WeakSet></a> instances are <strong>not</strong> compared structurally.
+They are only equal if they reference the same object. Any comparison between
+different <code>WeakMap</code> or <code>WeakSet</code> instances will result in inequality,
+even if they contain the same entries.</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp" class="type">&#x3C;RegExp></a> lastIndex, flags, and source are always compared, even if these
+are not enumerable properties.</li>
+<li>Holes in sparse arrays are ignored.</li>
+</ul>
 
 <pre class="with-38-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert'</span>;
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } },
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } },
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } }, { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> },
+  { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> },
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>],
+  [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">8</span>],
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'value1'</span>, <span class="hljs-string">'value2'</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'value1'</span>, <span class="hljs-string">'value2'</span>]));
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">1</span> }]),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }]),
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key1'</span>, <span class="hljs-string">'value1'</span>]]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key1'</span>, <span class="hljs-string">'value1'</span>]]));
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key1'</span>, <span class="hljs-string">'value1'</span>], [<span class="hljs-string">'key2'</span>, <span class="hljs-string">'value2'</span>]]),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key2'</span>, <span class="hljs-string">'value2'</span>]]),
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]));
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-number">123n</span>, <span class="hljs-number">123n</span>);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-regexp">/abc/</span>, <span class="hljs-regexp">/abc/</span>);
-<span class="hljs-comment">// OK</span>
-
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">5</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">5</span> }], [{ <span class="hljs-attr">a</span>: <span class="hljs-number">5</span> }]);
-<span class="hljs-comment">// OK</span>
-
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">1</span> }]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }]));
-<span class="hljs-comment">// OK</span>
-
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">0</span>), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">0</span>));
-<span class="hljs-comment">// OK</span>
-
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>],
+  [<span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>],
+);
 <span class="hljs-comment">// AssertionError</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> },
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> },
+);
 <span class="hljs-comment">// AssertionError</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> } }, { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> } });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> } },
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> } },
+);
 <span class="hljs-comment">// AssertionError</span></code><code class="language-js cjs"><span class="hljs-keyword">const</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:assert'</span>);
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } },
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } },
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } }, { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: { <span class="hljs-attr">c</span>: <span class="hljs-number">1</span> } } });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> },
+  { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> },
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>],
+  [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">8</span>],
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">5</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">5</span> }], [{ <span class="hljs-attr">a</span>: <span class="hljs-number">5</span> }]);
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">1</span> }]),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }]),
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">b</span>: <span class="hljs-number">1</span> }]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }]));
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key1'</span>, <span class="hljs-string">'value1'</span>], [<span class="hljs-string">'key2'</span>, <span class="hljs-string">'value2'</span>]]),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'key2'</span>, <span class="hljs-string">'value2'</span>]]),
+);
 <span class="hljs-comment">// OK</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(<span class="hljs-number">123n</span>, <span class="hljs-number">123n</span>);
+<span class="hljs-comment">// OK</span>
+
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>],
+  [<span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>],
+);
 <span class="hljs-comment">// AssertionError</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> }, { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> });
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> },
+  { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> },
+);
 <span class="hljs-comment">// AssertionError</span>
 
-assert.<span class="hljs-title function_">partialDeepStrictEqual</span>({ <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> } }, { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> } });
-<span class="hljs-comment">// AssertionError</span></code><button class="copy-button">copy</button></pre></section>
+assert.<span class="hljs-title function_">partialDeepStrictEqual</span>(
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> } },
+  { <span class="hljs-attr">a</span>: { <span class="hljs-attr">b</span>: <span class="hljs-string">'2'</span> } },
+);
+<span class="hljs-comment">// AssertionError</span></code><button class="copy-button">copy</button></pre></div></section>
         <!-- API END -->
       </div>
     </div>

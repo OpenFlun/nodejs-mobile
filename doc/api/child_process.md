@@ -29,6 +29,7 @@ ls.on('close', (code) => {
 
 ```mjs
 import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 const ls = spawn('ls', ['-lh', '/usr']);
 
 ls.stdout.on('data', (data) => {
@@ -39,16 +40,15 @@ ls.stderr.on('data', (data) => {
   console.error(`stderr: ${data}`);
 });
 
-ls.on('close', (code) => {
-  console.log(`child process exited with code ${code}`);
-});
+const [code] = await once(ls, 'close');
+console.log(`child process exited with code ${code}`);
 ```
 
 By default, pipes for `stdin`, `stdout`, and `stderr` are established between
 the parent Node.js process and the spawned subprocess. These pipes have
 limited (and platform-specific) capacity. If the subprocess writes to
 stdout in excess of that limit without the output being captured, the
-subprocess blocks waiting for the pipe buffer to accept more data. This is
+subprocess blocks, waiting for the pipe buffer to accept more data. This is
 identical to the behavior of pipes in the shell. Use the `{ stdio: 'ignore' }`
 option if the output will not be consumed.
 
@@ -138,7 +138,7 @@ exec('my.bat', (err, stdout, stderr) => {
 });
 
 // Script with spaces in the filename:
-const bat = spawn('"my script.cmd"', ['a', 'b'], { shell: true });
+const bat = spawn('"my script.cmd" a b', { shell: true });
 // or:
 exec('"my script.cmd" a b', (err, stdout, stderr) => {
   // ...
@@ -158,7 +158,7 @@ exec('my.bat', (err, stdout, stderr) => {
 });
 
 // Script with spaces in the filename:
-const bat = spawn('"my script.cmd"', ['a', 'b'], { shell: true });
+const bat = spawn('"my script.cmd" a b', { shell: true });
 // or:
 exec('"my script.cmd" a b', (err, stdout, stderr) => {
   // ...
@@ -348,6 +348,10 @@ controller.abort();
 <!-- YAML
 added: v0.1.91
 changes:
+  - version:
+      - v22.15.0
+    pr-url: https://github.com/nodejs/node/pull/57389
+    description: Passing `args` when `shell` is set to `true` is deprecated.
   - version:
       - v16.4.0
       - v14.18.0
@@ -642,6 +646,10 @@ if (process.argv[2] === 'child') {
 added: v0.1.90
 changes:
   - version:
+      - v22.15.0
+    pr-url: https://github.com/nodejs/node/pull/57389
+    description: Passing `args` when `shell` is set to `true` is deprecated.
+  - version:
       - v16.4.0
       - v14.18.0
     pr-url: https://github.com/nodejs/node/pull/38862
@@ -762,6 +770,7 @@ ls.on('close', (code) => {
 
 ```mjs
 import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 const ls = spawn('ls', ['-lh', '/usr']);
 
 ls.stdout.on('data', (data) => {
@@ -772,9 +781,8 @@ ls.stderr.on('data', (data) => {
   console.error(`stderr: ${data}`);
 });
 
-ls.on('close', (code) => {
-  console.log(`child process exited with code ${code}`);
-});
+const [code] = await once(ls, 'close');
+console.log(`child process exited with code ${code}`);
 ```
 
 Example: A very elaborate way to run `ps ax | grep ssh`
@@ -1068,8 +1076,8 @@ pipes between the parent and child. The value is one of the following:
    them incorrectly (e.g., passing a readable stream where a writable stream is
    expected) can lead to unexpected results or errors. This practice is discouraged
    as it may result in undefined behavior or dropped callbacks if the stream
-   encounters errors. Always ensure that `stdin` is used as writable and
-   `stdout`/`stderr` as readable to maintain the intended flow of data between
+   encounters errors. Always ensure that `stdin` is used as readable and
+   `stdout`/`stderr` as writable to maintain the intended flow of data between
    the parent and child processes.
 7. Positive integer: The integer value is interpreted as a file descriptor
    that is open in the parent process. It is shared with the child
@@ -1438,14 +1446,21 @@ instances of `ChildProcess`.
 added: v0.7.7
 -->
 
-* `code` {number} The exit code if the child process exited on its own.
-* `signal` {string} The signal by which the child process was terminated.
+* `code` {number} The exit code if the child process exited on its own, or
+  `null` if the child process terminated due to a signal.
+* `signal` {string} The signal by which the child process was terminated, or
+  `null` if the child process did not terminated due to a signal.
 
 The `'close'` event is emitted after a process has ended _and_ the stdio
 streams of a child process have been closed. This is distinct from the
 [`'exit'`][] event, since multiple processes might share the same stdio
 streams. The `'close'` event will always emit after [`'exit'`][] was
 already emitted, or [`'error'`][] if the child process failed to spawn.
+
+If the process exited, `code` is the final exit code of the process, otherwise
+`null`. If the process terminated due to receipt of a signal, `signal` is the
+string name of the signal, otherwise `null`. One of the two will always be
+non-`null`.
 
 ```cjs
 const { spawn } = require('node:child_process');
@@ -1466,6 +1481,7 @@ ls.on('exit', (code) => {
 
 ```mjs
 import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 const ls = spawn('ls', ['-lh', '/usr']);
 
 ls.stdout.on('data', (data) => {
@@ -1479,6 +1495,9 @@ ls.on('close', (code) => {
 ls.on('exit', (code) => {
   console.log(`child process exited with code ${code}`);
 });
+
+const [code] = await once(ls, 'close');
+console.log(`child process close all stdio with code ${code}`);
 ```
 
 ### Event: `'disconnect'`
@@ -1516,8 +1535,10 @@ See also [`subprocess.kill()`][] and [`subprocess.send()`][].
 added: v0.1.90
 -->
 
-* `code` {number} The exit code if the child process exited on its own.
-* `signal` {string} The signal by which the child process was terminated.
+* `code` {number} The exit code if the child process exited on its own, or
+  `null` if the child process terminated due to a signal.
+* `signal` {string} The signal by which the child process was terminated, or
+  `null` if the child process did not terminated due to a signal.
 
 The `'exit'` event is emitted after the child process ends. If the process
 exited, `code` is the final exit code of the process, otherwise `null`. If the
@@ -1585,7 +1606,7 @@ changes:
     description: The object no longer accidentally exposes native C++ bindings.
 -->
 
-* {Object} A pipe representing the IPC channel to the child process.
+* Type: {Object} A pipe representing the IPC channel to the child process.
 
 The `subprocess.channel` property is a reference to the child's IPC channel. If
 no IPC channel exists, this property is `undefined`.
@@ -1614,7 +1635,7 @@ running, and lets it finish even while the channel is open.
 added: v0.7.2
 -->
 
-* {boolean} Set to `false` after `subprocess.disconnect()` is called.
+* Type: {boolean} Set to `false` after `subprocess.disconnect()` is called.
 
 The `subprocess.connected` property indicates whether it is still possible to
 send and receive messages from a child process. When `subprocess.connected` is
@@ -1643,7 +1664,7 @@ within the child process to close the IPC channel as well.
 
 ### `subprocess.exitCode`
 
-* {integer}
+* Type: {integer}
 
 The `subprocess.exitCode` property indicates the exit code of the child process.
 If the child process is still running, the field will be `null`.
@@ -1766,7 +1787,7 @@ Calls [`subprocess.kill()`][] with `'SIGTERM'`.
 added: v0.5.10
 -->
 
-* {boolean} Set to `true` after `subprocess.kill()` is used to successfully
+* Type: {boolean} Set to `true` after `subprocess.kill()` is used to successfully
   send a signal to the child process.
 
 The `subprocess.killed` property indicates whether the child process
@@ -1779,7 +1800,7 @@ does not indicate that the child process has been terminated.
 added: v0.1.90
 -->
 
-* {integer|undefined}
+* Type: {integer|undefined}
 
 Returns the process identifier (PID) of the child process. If the child process
 fails to spawn due to errors, then the value is `undefined` and `error` is
@@ -2077,21 +2098,21 @@ connection to the child.
 
 ### `subprocess.signalCode`
 
-* {string|null}
+* Type: {string|null}
 
 The `subprocess.signalCode` property indicates the signal received by
 the child process if any, else `null`.
 
 ### `subprocess.spawnargs`
 
-* {Array}
+* Type: {Array}
 
 The `subprocess.spawnargs` property represents the full list of command-line
 arguments the child process was launched with.
 
 ### `subprocess.spawnfile`
 
-* {string}
+* Type: {string}
 
 The `subprocess.spawnfile` property indicates the executable file name of
 the child process that is launched.
@@ -2109,7 +2130,7 @@ in which the child process is launched.
 added: v0.1.90
 -->
 
-* {stream.Readable|null|undefined}
+* Type: {stream.Readable|null|undefined}
 
 A `Readable Stream` that represents the child process's `stderr`.
 
@@ -2128,7 +2149,7 @@ if the child process could not be successfully spawned.
 added: v0.1.90
 -->
 
-* {stream.Writable|null|undefined}
+* Type: {stream.Writable|null|undefined}
 
 A `Writable Stream` that represents the child process's `stdin`.
 
@@ -2150,7 +2171,7 @@ if the child process could not be successfully spawned.
 added: v0.7.10
 -->
 
-* {Array}
+* Type: {Array}
 
 A sparse array of pipes to the child process, corresponding with positions in
 the [`stdio`][] option passed to [`child_process.spawn()`][] that have been set
@@ -2217,7 +2238,7 @@ not be successfully spawned.
 added: v0.1.90
 -->
 
-* {stream.Readable|null|undefined}
+* Type: {stream.Readable|null|undefined}
 
 A `Readable Stream` that represents the child process's `stdout`.
 

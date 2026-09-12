@@ -188,7 +188,7 @@ try {
     [ 'qmod', 'index.js', 'imp.js', 'commonjs', 'module', 'module', '?k=v'],
     [ 'hmod', 'index.js', 'imp.js', 'commonjs', 'module', 'module', '#Key'],
     [ 'qhmod', 'index.js', 'imp.js', 'commonjs', 'module', 'module', '?k=v#h'],
-    [ 'ts-mod-com', 'index.js', 'imp.ts', 'module', 'commonjs', undefined],
+    [ 'ts-mod-com', 'index.js', 'imp.ts', 'module', 'commonjs', 'commonjs-typescript'],
   ].forEach((testVariant) => {
     const [
       moduleName,
@@ -198,6 +198,10 @@ try {
       subdirPackageType,
       expectedResolvedFormat,
       mainSuffix = '' ] = testVariant;
+    const skip = mainImportScript.endsWith('.ts') && !process.config.variables.node_use_amaro;
+    if (skip) {
+      return;
+    }
 
     const mDir = rel(`node_modules/${moduleName}`);
     const subDir = rel(`node_modules/${moduleName}/subdir`);

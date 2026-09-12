@@ -1,4 +1,3 @@
-#define ANDROID_CPU_FEATURES
 /*
  * Copyright (C) 2010 The Android Open Source Project
  * All rights reserved.

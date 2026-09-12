@@ -179,6 +179,38 @@ added: v22.13.0
 * `value` {any} Any JS value
 * Returns `true` if the `value` is a `net.BlockList`.
 
+### `blockList.fromJSON(value)`
+
+> Stability: 1 - Experimental
+
+ <!-- YAML
+added: v22.19.0
+-->
+
+```js
+const blockList = new net.BlockList();
+const data = [
+  'Subnet: IPv4 192.168.1.0/24',
+  'Address: IPv4 10.0.0.5',
+  'Range: IPv4 192.168.2.1-192.168.2.10',
+  'Range: IPv4 10.0.0.1-10.0.0.10',
+];
+blockList.fromJSON(data);
+blockList.fromJSON(JSON.stringify(data));
+```
+
+* `value` Blocklist.rules
+
+### `blockList.toJSON()`
+
+> Stability: 1 - Experimental
+
+ <!-- YAML
+added: v22.19.0
+-->
+
+* Returns Blocklist.rules
+
 ## Class: `net.SocketAddress`
 
 <!-- YAML
@@ -212,7 +244,7 @@ added:
   - v14.18.0
 -->
 
-* Type {string}
+* Type: {string}
 
 ### `socketaddress.family`
 
@@ -222,7 +254,7 @@ added:
   - v14.18.0
 -->
 
-* Type {string} Either `'ipv4'` or `'ipv6'`.
+* Type: {string} Either `'ipv4'` or `'ipv6'`.
 
 ### `socketaddress.flowlabel`
 
@@ -232,7 +264,7 @@ added:
   - v14.18.0
 -->
 
-* Type {number}
+* Type: {number}
 
 ### `socketaddress.port`
 
@@ -242,7 +274,7 @@ added:
   - v14.18.0
 -->
 
-* Type {number}
+* Type: {number}
 
 ### `SocketAddress.parse(input)`
 
@@ -290,7 +322,7 @@ event is not emitted until all connections are ended.
 added: v0.1.90
 -->
 
-* {net.Socket} The connection object
+* Type: {net.Socket} The connection object
 
 Emitted when a new connection is made. `socket` is an instance of
 `net.Socket`.
@@ -301,7 +333,7 @@ Emitted when a new connection is made. `socket` is an instance of
 added: v0.1.90
 -->
 
-* {Error}
+* Type: {Error}
 
 Emitted when an error occurs. Unlike [`net.Socket`][], the [`'close'`][]
 event will **not** be emitted directly following this event unless
@@ -514,7 +546,8 @@ changes:
     multiple sockets on the same host to bind to the same port. Incoming connections
     are distributed by the operating system to listening sockets. This option is
     available only on some platforms, such as Linux 3.9+, DragonFlyBSD 3.6+, FreeBSD 12.0+,
-    Solaris 11.4, and AIX 7.2.5+. **Default:** `false`.
+    Solaris 11.4, and AIX 7.2.5+. On unsupported platforms, this option raises
+    an error. **Default:** `false`.
   * `path` {string} Will be ignored if `port` is specified. See
     [Identifying paths for IPC connections][].
   * `port` {number}
@@ -616,7 +649,7 @@ may cause the `net.Server` to also listen on the [unspecified IPv4 address][]
 added: v5.7.0
 -->
 
-* {boolean} Indicates whether or not the server is listening for connections.
+* Type: {boolean} Indicates whether or not the server is listening for connections.
 
 ### `server.maxConnections`
 
@@ -629,7 +662,7 @@ changes:
                  connections. Previously, it was interpreted as `Infinity`.
 -->
 
-* {integer}
+* Type: {integer}
 
 When the number of connections reaches the `server.maxConnections` threshold:
 
@@ -646,9 +679,9 @@ with [`child_process.fork()`][].
 added: v22.12.0
 -->
 
-* {boolean}
+* Type: {boolean}
 
-Set this property to `true` to begin closing connections once the number of connections reaches the \[`server.maxConnections`]\[] threshold. This setting is only effective in cluster mode.
+Set this property to `true` to begin closing connections once the number of connections reaches the [`server.maxConnections`][] threshold. This setting is only effective in cluster mode.
 
 ### `server.ref()`
 
@@ -713,8 +746,17 @@ changes:
     automatically end the writable side when the readable side ends. See
     [`net.createServer()`][] and the [`'end'`][] event for details. **Default:**
     `false`.
+  * `blockList` {net.BlockList} `blockList` can be used for disabling outbound
+    access to specific IP addresses, IP ranges, or IP subnets.
   * `fd` {number} If specified, wrap around an existing socket with
     the given file descriptor, otherwise a new socket will be created.
+  * `keepAlive` {boolean} If set to `true`, it enables keep-alive functionality on
+    the socket immediately after the connection is established, similarly on what
+    is done in [`socket.setKeepAlive()`][]. **Default:** `false`.
+  * `keepAliveInitialDelay` {number} If set to a positive number, it sets the
+    initial delay before the first keepalive probe is sent on an idle socket. **Default:** `0`.
+  * `noDelay` {boolean} If set to `true`, it disables the use of Nagle's algorithm
+    immediately after the socket is established. **Default:** `false`.
   * `onread` {Object} If specified, incoming data is stored in a single `buffer`
     and passed to the supplied `callback` when data arrives on the socket.
     This will cause the streaming functionality to not provide any data.
@@ -814,7 +856,7 @@ in [`socket.connect(options)`][].
 added: v0.1.90
 -->
 
-* {Buffer|string}
+* Type: {Buffer|string}
 
 Emitted when data is received. The argument `data` will be a `Buffer` or
 `String`. Encoding of data is set by [`socket.setEncoding()`][].
@@ -855,7 +897,7 @@ FIN packet back).
 added: v0.1.90
 -->
 
-* {Error}
+* Type: {Error}
 
 Emitted when an error occurs. The `'close'` event will be called directly
 following this event.
@@ -926,7 +968,7 @@ added:
  - v18.18.0
 -->
 
-* {string\[]}
+* Type: {string\[]}
 
 This property is only present if the family autoselection algorithm is enabled in
 [`socket.connect(options)`][] and it is an array of the addresses that have been attempted.
@@ -944,7 +986,7 @@ deprecated:
 
 > Stability: 0 - Deprecated: Use [`writable.writableLength`][] instead.
 
-* {integer}
+* Type: {integer}
 
 This property shows the number of characters buffered for writing. The buffer
 may contain strings whose length after encoding is not yet known. So this number
@@ -967,7 +1009,7 @@ Users who experience large or growing `bufferSize` should attempt to
 added: v0.5.3
 -->
 
-* {integer}
+* Type: {integer}
 
 The amount of received bytes.
 
@@ -977,7 +1019,7 @@ The amount of received bytes.
 added: v0.5.3
 -->
 
-* {integer}
+* Type: {integer}
 
 The amount of bytes sent.
 
@@ -1077,20 +1119,10 @@ For TCP connections, available `options` are:
   `0` indicates that both IPv4 and IPv6 addresses are allowed. **Default:** `0`.
 * `hints` {number} Optional [`dns.lookup()` hints][].
 * `host` {string} Host the socket should connect to. **Default:** `'localhost'`.
-* `keepAlive` {boolean} If set to `true`, it enables keep-alive functionality on
-  the socket immediately after the connection is established, similarly on what
-  is done in [`socket.setKeepAlive()`][]. **Default:** `false`.
-* `keepAliveInitialDelay` {number} If set to a positive number, it sets the
-  initial delay before the first keepalive probe is sent on an idle socket.
-  **Default:** `0`.
 * `localAddress` {string} Local address the socket should connect from.
 * `localPort` {number} Local port the socket should connect from.
 * `lookup` {Function} Custom lookup function. **Default:** [`dns.lookup()`][].
-* `noDelay` {boolean} If set to `true`, it disables the use of Nagle's algorithm
-  immediately after the socket is established. **Default:** `false`.
 * `port` {number} Required. Port the socket should connect to.
-* `blockList` {net.BlockList} `blockList` can be used for disabling outbound
-  access to specific IP addresses, IP ranges, or IP subnets.
 
 For [IPC][] connections, available `options` are:
 
@@ -1136,7 +1168,7 @@ called with `{port: port, host: host}` as `options`.
 added: v6.1.0
 -->
 
-* {boolean}
+* Type: {boolean}
 
 If `true`,
 [`socket.connect(options[, connectListener])`][`socket.connect(options)`] was
@@ -1162,7 +1194,7 @@ See [`writable.destroy()`][] for further details.
 
 ### `socket.destroyed`
 
-* {boolean} Indicates if the connection is destroyed or not. Once a
+* Type: {boolean} Indicates if the connection is destroyed or not. Once a
   connection is destroyed no further data can be transferred using it.
 
 See [`writable.destroyed`][] for further details.
@@ -1199,7 +1231,7 @@ See [`writable.end()`][] for further details.
 added: v0.9.6
 -->
 
-* {string}
+* Type: {string}
 
 The string representation of the local IP address the remote client is
 connecting on. For example, in a server listening on `'0.0.0.0'`, if a client
@@ -1212,7 +1244,7 @@ connects on `'192.168.1.1'`, the value of `socket.localAddress` would be
 added: v0.9.6
 -->
 
-* {integer}
+* Type: {integer}
 
 The numeric representation of the local port. For example, `80` or `21`.
 
@@ -1224,7 +1256,7 @@ added:
   - v16.18.0
 -->
 
-* {string}
+* Type: {string}
 
 The string representation of the local IP family. `'IPv4'` or `'IPv6'`.
 
@@ -1243,7 +1275,7 @@ added:
  - v10.16.0
 -->
 
-* {boolean}
+* Type: {boolean}
 
 This is `true` if the socket is not connected yet, either because `.connect()`
 has not yet been called or because it is still in the process of connecting
@@ -1267,7 +1299,7 @@ If the socket is `ref`ed calling `ref` again will have no effect.
 added: v0.5.10
 -->
 
-* {string}
+* Type: {string}
 
 The string representation of the remote IP address. For example,
 `'74.125.127.100'` or `'2001:4860:a005::68'`. Value may be `undefined` if
@@ -1279,7 +1311,7 @@ the socket is destroyed (for example, if the client disconnected).
 added: v0.11.14
 -->
 
-* {string}
+* Type: {string}
 
 The string representation of the remote IP family. `'IPv4'` or `'IPv6'`. Value may be `undefined` if
 the socket is destroyed (for example, if the client disconnected).
@@ -1290,7 +1322,7 @@ the socket is destroyed (for example, if the client disconnected).
 added: v0.5.10
 -->
 
-* {integer}
+* Type: {integer}
 
 The numeric representation of the remote port. For example, `80` or `21`. Value may be `undefined` if
 the socket is destroyed (for example, if the client disconnected).
@@ -1421,7 +1453,7 @@ The optional `callback` parameter will be added as a one-time listener for the
 added: v10.7.0
 -->
 
-* {number|undefined}
+* Type: {number|undefined}
 
 The socket timeout in milliseconds as set by [`socket.setTimeout()`][].
 It is `undefined` if a timeout has not been set.
@@ -1468,7 +1500,7 @@ information.
 added: v0.5.0
 -->
 
-* {string}
+* Type: {string}
 
 This property represents the state of the connection as a string.
 
@@ -1972,6 +2004,7 @@ net.isIPv6('fhqwhgads'); // returns false
 [`server.listen(options)`]: #serverlistenoptions-callback
 [`server.listen(path)`]: #serverlistenpath-backlog-callback
 [`server.listen(port)`]: #serverlistenport-host-backlog-callback
+[`server.maxConnections`]: #servermaxconnections
 [`socket(7)`]: https://man7.org/linux/man-pages/man7/socket.7.html
 [`socket.connect()`]: #socketconnect
 [`socket.connect(options)`]: #socketconnectoptions-connectlistener

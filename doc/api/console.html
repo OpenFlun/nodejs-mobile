@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>Console | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>Console | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console active">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="console" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -204,13 +204,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console active">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -268,12 +268,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/console.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/console.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/console.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/console.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/console.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/console.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/console.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/console.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/console.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/console.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/console.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/console.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/console.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/console.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/console.html">15.x</a></li>
@@ -358,7 +361,7 @@
         <h2>Console<span><a class="mark" href="#console" id="console">#</a></span><a aria-hidden="true" class="legacy" id="console_console"></a></h2>
 
 <p></p><div class="api_stability api_stability_2"><a href="documentation.html#stability-index">Stability: 2</a> - Stable</div><p></p>
-<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.14.0/lib/console.js">lib/console.js</a></p>
+<p><strong>Source Code:</strong> <a href="https://github.com/nodejs/node/blob/v22.23.2/lib/console.js">lib/console.js</a></p>
 <p>The <code>node:console</code> module provides a simple debugging console that is similar to
 the JavaScript console mechanism provided by web browsers.</p>
 <p>The module exports two specific components:</p>
@@ -428,7 +431,9 @@ or <code>console.Console</code> (or their destructured counterparts):</p>
 
 <pre class="with-44-chars"><input class="js-flavor-toggle" type="checkbox" checked aria-label="Show modern ES modules syntax"><code class="language-js mjs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Console</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'node:console'</span>;</code><code class="language-js cjs"><span class="hljs-keyword">const</span> { <span class="hljs-title class_">Console</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'node:console'</span>);</code><button class="copy-button">copy</button></pre>
 <pre><code class="language-js"><span class="hljs-keyword">const</span> { <span class="hljs-title class_">Console</span> } = <span class="hljs-variable language_">console</span>;</code> <button class="copy-button">copy</button></pre>
+<div>
 <h4><code>new Console(stdout[, stderr][, ignoreErrors])</code><span><a class="mark" href="#new-consolestdout-stderr-ignoreerrors" id="new-consolestdout-stderr-ignoreerrors">#</a></span><a aria-hidden="true" class="legacy" id="console_new_console_stdout_stderr_ignoreerrors"></a></h4>
+</div><div>
 <h4><code>new Console(options)</code><span><a class="mark" href="#new-consoleoptions" id="new-consoleoptions">#</a></span><a aria-hidden="true" class="legacy" id="console_new_console_options"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -450,9 +455,9 @@ or <code>console.Console</code> (or their destructured counterparts):</p>
 <ul>
 <li><code>stdout</code> <a href="stream.html#class-streamwritable" class="type">&#x3C;stream.Writable></a></li>
 <li><code>stderr</code> <a href="stream.html#class-streamwritable" class="type">&#x3C;stream.Writable></a></li>
-<li><code>ignoreErrors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Ignore errors when writing to the underlying
+<li><code>ignoreErrors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> Ignore errors when writing to the underlying
 streams. <strong>Default:</strong> <code>true</code>.</li>
-<li><code>colorMode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Set color support for this <code>Console</code> instance.
+<li><code>colorMode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> Set color support for this <code>Console</code> instance.
 Setting to <code>true</code> enables coloring while inspecting values. Setting to
 <code>false</code> disables coloring while inspecting values. Setting to
 <code>'auto'</code> makes color support depend on the value of the <code>isTTY</code> property
@@ -461,7 +466,7 @@ option can not be used, if <code>inspectOptions.colors</code> is set as well.
 <strong>Default:</strong> <code>'auto'</code>.</li>
 <li><code>inspectOptions</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> Specifies options that are passed along to
 <a href="util.html#utilinspectobject-options"><code>util.inspect()</code></a>.</li>
-<li><code>groupIndentation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Set group indentation.
+<li><code>groupIndentation</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> Set group indentation.
 <strong>Default:</strong> <code>2</code>.</li>
 </ul>
 </li>
@@ -498,6 +503,7 @@ logger.<span class="hljs-title function_">log</span>(<span class="hljs-string">'
 <p>The global <code>console</code> is a special <code>Console</code> whose output is sent to
 <a href="process.html#processstdout"><code>process.stdout</code></a> and <a href="process.html#processstderr"><code>process.stderr</code></a>. It is equivalent to calling:</p>
 <pre><code class="language-js"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Console</span>({ <span class="hljs-attr">stdout</span>: process.<span class="hljs-property">stdout</span>, <span class="hljs-attr">stderr</span>: process.<span class="hljs-property">stderr</span> });</code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.assert(value[, ...message])</code><span><a class="mark" href="#consoleassertvalue-message" id="consoleassertvalue-message">#</a></span><a aria-hidden="true" class="legacy" id="console_console_assert_value_message"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -526,6 +532,7 @@ starts with <code>"Assertion failed"</code>. If provided, <code>message</code> i
 
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">assert</span>();
 <span class="hljs-comment">// Assertion failed</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.clear()</code><span><a class="mark" href="#consoleclear" id="consoleclear">#</a></span><a aria-hidden="true" class="legacy" id="console_console_clear"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.3.0</span>
@@ -537,12 +544,13 @@ and terminal types. For most Linux operating systems, <code>console.clear()</cod
 operates similarly to the <code>clear</code> shell command. On Windows, <code>console.clear()</code>
 will clear only the output in the current terminal viewport for the Node.js
 binary.</p>
+</div><div>
 <h4><code>console.count([label])</code><span><a class="mark" href="#consolecountlabel" id="consolecountlabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_count_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.3.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
 </ul>
 <p>Maintains an internal counter specific to <code>label</code> and outputs to <code>stdout</code> the
 number of times <code>console.count()</code> has been called with the given <code>label</code>.</p>
@@ -566,12 +574,13 @@ number of times <code>console.count()</code> has been called with the given <cod
 <span class="hljs-attr">default</span>: <span class="hljs-number">3</span>
 <span class="hljs-literal">undefined</span>
 ></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.countReset([label])</code><span><a class="mark" href="#consolecountresetlabel" id="consolecountresetlabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_countreset_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.3.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
 </ul>
 <p>Resets the internal counter specific to <code>label</code>.</p>
 <!-- eslint-skip -->
@@ -584,6 +593,7 @@ number of times <code>console.count()</code> has been called with the given <cod
 <span class="hljs-attr">abc</span>: <span class="hljs-number">1</span>
 <span class="hljs-literal">undefined</span>
 ></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.debug(data[, ...args])</code><span><a class="mark" href="#consoledebugdata-args" id="consoledebugdata-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_debug_data_args"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -601,6 +611,7 @@ number of times <code>console.count()</code> has been called with the given <cod
 <li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 </ul>
 <p>The <code>console.debug()</code> function is an alias for <a href="#consolelogdata-args"><code>console.log()</code></a>.</p>
+</div><div>
 <h4><code>console.dir(obj[, options])</code><span><a class="mark" href="#consoledirobj-options" id="consoledirobj-options">#</a></span><a aria-hidden="true" class="legacy" id="console_console_dir_obj_options"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.101</span>
@@ -609,12 +620,12 @@ number of times <code>console.count()</code> has been called with the given <cod
 <li><code>obj</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 <li><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a>
 <ul>
-<li><code>showHidden</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code> then the object's non-enumerable and symbol
+<li><code>showHidden</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> If <code>true</code> then the object's non-enumerable and symbol
 properties will be shown too. <strong>Default:</strong> <code>false</code>.</li>
-<li><code>depth</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Tells <a href="util.html#utilinspectobject-options"><code>util.inspect()</code></a> how many times to recurse while
+<li><code>depth</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type" class="type">&#x3C;number></a> Tells <a href="util.html#utilinspectobject-options"><code>util.inspect()</code></a> how many times to recurse while
 formatting the object. This is useful for inspecting large complicated
 objects. To make it recurse indefinitely, pass <code>null</code>. <strong>Default:</strong> <code>2</code>.</li>
-<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, then the output will be styled with ANSI color
+<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, then the output will be styled with ANSI color
 codes. Colors are customizable;
 see <a href="util.html#customizing-utilinspect-colors">customizing <code>util.inspect()</code> colors</a>. <strong>Default:</strong> <code>false</code>.</li>
 </ul>
@@ -622,6 +633,7 @@ see <a href="util.html#customizing-utilinspect-colors">customizing <code>util.in
 </ul>
 <p>Uses <a href="util.html#utilinspectobject-options"><code>util.inspect()</code></a> on <code>obj</code> and prints the resulting string to <code>stdout</code>.
 This function bypasses any custom <code>inspect()</code> function defined on <code>obj</code>.</p>
+</div><div>
 <h4><code>console.dirxml(...data)</code><span><a class="mark" href="#consoledirxmldata" id="consoledirxmldata">#</a></span><a aria-hidden="true" class="legacy" id="console_console_dirxml_data"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -639,6 +651,7 @@ This function bypasses any custom <code>inspect()</code> function defined on <co
 </ul>
 <p>This method calls <code>console.log()</code> passing it the arguments received.
 This method does not produce any XML formatting.</p>
+</div><div>
 <h4><code>console.error([data][, ...args])</code><span><a class="mark" href="#consoleerrordata-args" id="consoleerrordata-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_error_data_args"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.100</span>
@@ -659,6 +672,7 @@ values similar to <a href="http://man7.org/linux/man-pages/man3/printf.3.html"><
 <p>If formatting elements (e.g. <code>%d</code>) are not found in the first string then
 <a href="util.html#utilinspectobject-options"><code>util.inspect()</code></a> is called on each argument and the resulting string
 values are concatenated. See <a href="util.html#utilformatformat-args"><code>util.format()</code></a> for more information.</p>
+</div><div>
 <h4><code>console.group([...label])</code><span><a class="mark" href="#consolegrouplabel" id="consolegrouplabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_group_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.5.0</span>
@@ -670,17 +684,20 @@ values are concatenated. See <a href="util.html#utilformatformat-args"><code>uti
 length.</p>
 <p>If one or more <code>label</code>s are provided, those are printed first without the
 additional indentation.</p>
+</div><div>
 <h4><code>console.groupCollapsed()</code><span><a class="mark" href="#consolegroupcollapsed" id="consolegroupcollapsed">#</a></span><a aria-hidden="true" class="legacy" id="console_console_groupcollapsed"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.5.0</span>
 </div>
 <p>An alias for <a href="#consolegrouplabel"><code>console.group()</code></a>.</p>
+</div><div>
 <h4><code>console.groupEnd()</code><span><a class="mark" href="#consolegroupend" id="consolegroupend">#</a></span><a aria-hidden="true" class="legacy" id="console_console_groupend"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.5.0</span>
 </div>
 <p>Decreases indentation of subsequent lines by spaces for <code>groupIndentation</code>
 length.</p>
+</div><div>
 <h4><code>console.info([data][, ...args])</code><span><a class="mark" href="#consoleinfodata-args" id="consoleinfodata-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_info_data_args"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.100</span>
@@ -690,6 +707,7 @@ length.</p>
 <li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 </ul>
 <p>The <code>console.info()</code> function is an alias for <a href="#consolelogdata-args"><code>console.log()</code></a>.</p>
+</div><div>
 <h4><code>console.log([data][, ...args])</code><span><a class="mark" href="#consolelogdata-args" id="consolelogdata-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_log_data_args"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.100</span>
@@ -708,13 +726,14 @@ values similar to <a href="http://man7.org/linux/man-pages/man3/printf.3.html"><
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'count:'</span>, count);
 <span class="hljs-comment">// Prints: count: 5, to stdout</span></code> <button class="copy-button">copy</button></pre>
 <p>See <a href="util.html#utilformatformat-args"><code>util.format()</code></a> for more information.</p>
+</div><div>
 <h4><code>console.table(tabularData[, properties])</code><span><a class="mark" href="#consoletabletabulardata-properties" id="consoletabletabulardata-properties">#</a></span><a aria-hidden="true" class="legacy" id="console_console_table_tabulardata_properties"></a></h4>
 <div class="api_metadata">
 <span>Added in: v10.0.0</span>
 </div>
 <ul>
 <li><code>tabularData</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
-<li><code>properties</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a> Alternate properties for constructing the table.</li>
+<li><code>properties</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string[]></a> Alternate properties for constructing the table.</li>
 </ul>
 <p>Try to construct a table with the columns of the properties of <code>tabularData</code>
 (or use <code>properties</code>) and rows of <code>tabularData</code> and log it. Falls back to just
@@ -741,18 +760,20 @@ logging the argument if it can't be parsed as tabular.</p>
 <span class="hljs-comment">// │ 0       │ 1   │</span>
 <span class="hljs-comment">// │ 1       │ 'Z' │</span>
 <span class="hljs-comment">// └─────────┴─────┘</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.time([label])</code><span><a class="mark" href="#consoletimelabel" id="consoletimelabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_time_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.104</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
 </ul>
 <p>Starts a timer that can be used to compute the duration of an operation. Timers
 are identified by a unique <code>label</code>. Use the same <code>label</code> when calling
 <a href="#consoletimeendlabel"><code>console.timeEnd()</code></a> to stop the timer and output the elapsed time in
 suitable time units to <code>stdout</code>. For example, if the elapsed
 time is 3869ms, <code>console.timeEnd()</code> displays "3.869s".</p>
+</div><div>
 <h4><code>console.timeEnd([label])</code><span><a class="mark" href="#consoletimeendlabel" id="consoletimeendlabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_timeend_label"></a></h4>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -768,7 +789,7 @@ time is 3869ms, <code>console.timeEnd()</code> displays "3.869s".</p>
 </details>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
 </ul>
 <p>Stops a timer that was previously started by calling <a href="#consoletimelabel"><code>console.time()</code></a> and
 prints the result to <code>stdout</code>:</p>
@@ -776,12 +797,13 @@ prints the result to <code>stdout</code>:</p>
 <span class="hljs-comment">// Do a bunch of stuff.</span>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">timeEnd</span>(<span class="hljs-string">'bunch-of-stuff'</span>);
 <span class="hljs-comment">// Prints: bunch-of-stuff: 225.438ms</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.timeLog([label][, ...data])</code><span><a class="mark" href="#consoletimeloglabel-data" id="consoletimeloglabel-data">#</a></span><a aria-hidden="true" class="legacy" id="console_console_timelog_label_data"></a></h4>
 <div class="api_metadata">
 <span>Added in: v10.7.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
 <li><code>...data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 </ul>
 <p>For a timer that was previously started by calling <a href="#consoletimelabel"><code>console.time()</code></a>, prints
@@ -792,6 +814,7 @@ the elapsed time and other <code>data</code> arguments to <code>stdout</code>:</
 <span class="hljs-comment">// Prints "process: 365.227ms 42".</span>
 <span class="hljs-title function_">doExpensiveProcess2</span>(value);
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">timeEnd</span>(<span class="hljs-string">'process'</span>);</code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.trace([message][, ...args])</code><span><a class="mark" href="#consoletracemessage-args" id="consoletracemessage-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_trace_message_args"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.104</span>
@@ -815,6 +838,7 @@ formatted message and stack trace to the current position in the code.</p>
 <span class="hljs-comment">//    at REPLServer.Interface._onLine (readline.js:210:10)</span>
 <span class="hljs-comment">//    at REPLServer.Interface._line (readline.js:549:8)</span>
 <span class="hljs-comment">//    at REPLServer.Interface._ttyWrite (readline.js:826:14)</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.warn([data][, ...args])</code><span><a class="mark" href="#consolewarndata-args" id="consolewarndata-args">#</a></span><a aria-hidden="true" class="legacy" id="console_console_warn_data_args"></a></h4>
 <div class="api_metadata">
 <span>Added in: v0.1.100</span>
@@ -824,16 +848,18 @@ formatted message and stack trace to the current position in the code.</p>
 <li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
 </ul>
 <p>The <code>console.warn()</code> function is an alias for <a href="#consoleerrordata-args"><code>console.error()</code></a>.</p>
+</div>
 </section><section><h3>Inspector only methods<span><a class="mark" href="#inspector-only-methods" id="inspector-only-methods">#</a></span><a aria-hidden="true" class="legacy" id="console_inspector_only_methods"></a></h3>
 <p>The following methods are exposed by the V8 engine in the general API but do
 not display anything unless used in conjunction with the <a href="debugger.html">inspector</a>
 (<code>--inspect</code> flag).</p>
+<div>
 <h4><code>console.profile([label])</code><span><a class="mark" href="#consoleprofilelabel" id="consoleprofilelabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_profile_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.0.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>This method does not display anything unless used in the inspector. The
 <code>console.profile()</code> method starts a JavaScript CPU profile with an optional
@@ -843,12 +869,13 @@ the <strong>Profile</strong> panel of the inspector.</p>
 <span class="hljs-comment">// Some code</span>
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">profileEnd</span>(<span class="hljs-string">'MyLabel'</span>);
 <span class="hljs-comment">// Adds the profile 'MyLabel' to the Profiles panel of the inspector.</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h4><code>console.profileEnd([label])</code><span><a class="mark" href="#consoleprofileendlabel" id="consoleprofileendlabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_profileend_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.0.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>This method does not display anything unless used in the inspector. Stops the
 current JavaScript CPU profiling session if one has been started and prints
@@ -856,16 +883,17 @@ the report to the <strong>Profiles</strong> panel of the inspector. See
 <a href="#consoleprofilelabel"><code>console.profile()</code></a> for an example.</p>
 <p>If this method is called without a label, the most recently started profile is
 stopped.</p>
+</div><div>
 <h4><code>console.timeStamp([label])</code><span><a class="mark" href="#consoletimestamplabel" id="consoletimestamplabel">#</a></span><a aria-hidden="true" class="legacy" id="console_console_timestamp_label"></a></h4>
 <div class="api_metadata">
 <span>Added in: v8.0.0</span>
 </div>
 <ul>
-<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type" class="type">&#x3C;string></a></li>
 </ul>
 <p>This method does not display anything unless used in the inspector. The
 <code>console.timeStamp()</code> method adds an event with the label <code>'label'</code> to the
-<strong>Timeline</strong> panel of the inspector.</p></section>
+<strong>Timeline</strong> panel of the inspector.</p></div></section>
         <!-- API END -->
       </div>
     </div>

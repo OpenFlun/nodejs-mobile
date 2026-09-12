@@ -13,6 +13,11 @@
 #include <sstream>
 
 namespace node {
+// This forward declaration is required to have the method
+// available in error messages.
+namespace errors {
+const char* errno_string(int errorno);
+}
 
 enum ErrorHandlingMode { CONTEXTIFY_ERROR, FATAL_ERROR, MODULE_ERROR };
 void AppendExceptionLine(Environment* env,
@@ -43,6 +48,9 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   V(ERR_CLOSED_MESSAGE_PORT, Error)                                            \
   V(ERR_CONSTRUCT_CALL_REQUIRED, TypeError)                                    \
   V(ERR_CONSTRUCT_CALL_INVALID, TypeError)                                     \
+  V(ERR_CPU_PROFILE_ALREADY_STARTED, Error)                                    \
+  V(ERR_CPU_PROFILE_NOT_STARTED, Error)                                        \
+  V(ERR_CPU_PROFILE_TOO_MANY, Error)                                           \
   V(ERR_CRYPTO_CUSTOM_ENGINE_NOT_SUPPORTED, Error)                             \
   V(ERR_CRYPTO_INITIALIZATION_FAILED, Error)                                   \
   V(ERR_CRYPTO_INVALID_AUTH_TAG, TypeError)                                    \
@@ -73,7 +81,9 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   V(ERR_FS_CP_EINVAL, Error)                                                   \
   V(ERR_FS_CP_DIR_TO_NON_DIR, Error)                                           \
   V(ERR_FS_CP_NON_DIR_TO_DIR, Error)                                           \
+  V(ERR_FS_CP_SYMLINK_TO_SUBDIRECTORY, Error)                                  \
   V(ERR_FS_EISDIR, Error)                                                      \
+  V(ERR_FS_CP_EEXIST, Error)                                                   \
   V(ERR_FS_CP_SOCKET, Error)                                                   \
   V(ERR_FS_CP_FIFO_PIPE, Error)                                                \
   V(ERR_FS_CP_UNKNOWN, Error)                                                  \
@@ -84,6 +94,7 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   V(ERR_INVALID_ARG_TYPE, TypeError)                                           \
   V(ERR_INVALID_FILE_URL_HOST, TypeError)                                      \
   V(ERR_INVALID_FILE_URL_PATH, TypeError)                                      \
+  V(ERR_INVALID_INVOCATION, TypeError)                                         \
   V(ERR_INVALID_PACKAGE_CONFIG, Error)                                         \
   V(ERR_INVALID_OBJECT_DEFINE_PROPERTY, TypeError)                             \
   V(ERR_INVALID_MODULE, Error)                                                 \
@@ -98,7 +109,9 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   V(ERR_MISSING_PASSPHRASE, TypeError)                                         \
   V(ERR_MISSING_PLATFORM_FOR_WORKER, Error)                                    \
   V(ERR_MODULE_NOT_FOUND, Error)                                               \
+  V(ERR_MODULE_LINK_MISMATCH, TypeError)                                       \
   V(ERR_NON_CONTEXT_AWARE_DISABLED, Error)                                     \
+  V(ERR_OPTIONS_BEFORE_BOOTSTRAPPING, Error)                                   \
   V(ERR_OUT_OF_RANGE, RangeError)                                              \
   V(ERR_REQUIRE_ASYNC_MODULE, Error)                                           \
   V(ERR_SCRIPT_EXECUTION_INTERRUPTED, Error)                                   \
@@ -113,11 +126,21 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   V(ERR_WORKER_INIT_FAILED, Error)                                             \
   V(ERR_PROTO_ACCESS, Error)
 
+// If the macros are used as ERR_*(isolate, message) or
+// THROW_ERR_*(isolate, message) with a single string argument, do run
+// formatter on the message, and allow the caller to pass in a message
+// directly with characters that would otherwise need escaping if used
+// as format string unconditionally.
 #define V(code, type)                                                          \
   template <typename... Args>                                                  \
   inline v8::Local<v8::Object> code(                                           \
-      v8::Isolate* isolate, const char* format, Args&&... args) {              \
-    std::string message = SPrintF(format, std::forward<Args>(args)...);        \
+      v8::Isolate* isolate, std::string_view format, Args&&... args) {         \
+    std::string message;                                                       \
+    if (sizeof...(Args) == 0) {                                                \
+      message = format;                                                        \
+    } else {                                                                   \
+      message = SPrintF(format, std::forward<Args>(args)...);                  \
+    }                                                                          \
     v8::Local<v8::String> js_code = FIXED_ONE_BYTE_STRING(isolate, #code);     \
     v8::Local<v8::String> js_msg =                                             \
         v8::String::NewFromUtf8(isolate,                                       \
@@ -136,17 +159,18 @@ void OOMErrorHandler(const char* location, const v8::OOMDetails& details);
   }                                                                            \
   template <typename... Args>                                                  \
   inline void THROW_##code(                                                    \
-      v8::Isolate* isolate, const char* format, Args&&... args) {              \
+      v8::Isolate* isolate, std::string_view format, Args&&... args) {         \
     isolate->ThrowException(                                                   \
         code(isolate, format, std::forward<Args>(args)...));                   \
   }                                                                            \
   template <typename... Args>                                                  \
   inline void THROW_##code(                                                    \
-      Environment* env, const char* format, Args&&... args) {                  \
+      Environment* env, std::string_view format, Args&&... args) {             \
     THROW_##code(env->isolate(), format, std::forward<Args>(args)...);         \
   }                                                                            \
   template <typename... Args>                                                  \
-  inline void THROW_##code(Realm* realm, const char* format, Args&&... args) { \
+  inline void THROW_##code(                                                    \
+      Realm* realm, std::string_view format, Args&&... args) {                 \
     THROW_##code(realm->isolate(), format, std::forward<Args>(args)...);       \
   }
 ERRORS_WITH_CODE(V)
@@ -188,6 +212,7 @@ ERRORS_WITH_CODE(V)
     "Context not associated with Node.js environment")                         \
   V(ERR_ILLEGAL_CONSTRUCTOR, "Illegal constructor")                            \
   V(ERR_INVALID_ADDRESS, "Invalid socket address")                             \
+  V(ERR_INVALID_INVOCATION, "Invalid invocation")                              \
   V(ERR_INVALID_MODULE, "No such module")                                      \
   V(ERR_INVALID_STATE, "Invalid state")                                        \
   V(ERR_INVALID_THIS, "Value of \"this\" is the wrong type")                   \
@@ -203,10 +228,6 @@ ERRORS_WITH_CODE(V)
     "creating Workers")                                                        \
   V(ERR_NON_CONTEXT_AWARE_DISABLED,                                            \
     "Loading non context-aware native addons has been disabled")               \
-  V(ERR_REQUIRE_ASYNC_MODULE,                                                  \
-    "require() cannot be used on an ESM graph with top-level await. Use "      \
-    "import() instead. To see where the top-level await comes from, use "      \
-    "--experimental-print-required-tla.")                                      \
   V(ERR_SCRIPT_EXECUTION_INTERRUPTED,                                          \
     "Script execution was interrupted by `SIGINT`")                            \
   V(ERR_TLS_PSK_SET_IDENTIY_HINT_FAILED, "Failed to set PSK identity hint")    \
@@ -230,10 +251,30 @@ PREDEFINED_ERROR_MESSAGES(V)
 // Errors with predefined non-static messages
 inline void THROW_ERR_SCRIPT_EXECUTION_TIMEOUT(Environment* env,
                                                int64_t timeout) {
-  std::ostringstream message;
-  message << "Script execution timed out after ";
-  message << timeout << "ms";
-  THROW_ERR_SCRIPT_EXECUTION_TIMEOUT(env, message.str().c_str());
+  THROW_ERR_SCRIPT_EXECUTION_TIMEOUT(
+      env, "Script execution timed out after %dms", timeout);
+}
+
+inline void THROW_ERR_REQUIRE_ASYNC_MODULE(
+    Environment* env,
+    v8::Local<v8::Value> filename,
+    v8::Local<v8::Value> parent_filename) {
+  static constexpr const char* prefix =
+      "require() cannot be used on an ESM graph with top-level await. Use "
+      "import() instead. To see where the top-level await comes from, use "
+      "--experimental-print-required-tla.";
+  std::string message = prefix;
+  if (!parent_filename.IsEmpty() && parent_filename->IsString()) {
+    Utf8Value utf8(env->isolate(), parent_filename);
+    message += "\n  From ";
+    message += utf8.ToStringView();
+  }
+  if (!filename.IsEmpty() && filename->IsString()) {
+    Utf8Value utf8(env->isolate(), filename);
+    message += "\n  Requiring ";
+    message += utf8.ToStringView();
+  }
+  THROW_ERR_REQUIRE_ASYNC_MODULE(env, message);
 }
 
 inline v8::Local<v8::Object> ERR_BUFFER_TOO_LARGE(v8::Isolate* isolate) {
@@ -271,7 +312,7 @@ namespace errors {
 
 class TryCatchScope : public v8::TryCatch {
  public:
-  enum class CatchMode { kNormal, kFatal };
+  enum class CatchMode { kNormal, kFatal, kFatalRethrowStackOverflow };
 
   explicit TryCatchScope(Environment* env, CatchMode mode = CatchMode::kNormal)
       : v8::TryCatch(env->isolate()), env_(env), mode_(mode) {}

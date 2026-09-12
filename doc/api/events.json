@@ -9,7 +9,7 @@
       "stability": 2,
       "stabilityText": "Stable",
       "type": "module",
-      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.14.0/lib/events.js\">lib/events.js</a></p>\n<p>Much of the Node.js core API is built around an idiomatic asynchronous\nevent-driven architecture in which certain kinds of objects (called \"emitters\")\nemit named events that cause <code>Function</code> objects (\"listeners\") to be called.</p>\n<p>For instance: a <a href=\"net.html#class-netserver\"><code>net.Server</code></a> object emits an event each time a peer\nconnects to it; a <a href=\"fs.html#class-fsreadstream\"><code>fs.ReadStream</code></a> emits an event when the file is opened;\na <a href=\"stream.html\">stream</a> emits an event whenever data is available to be read.</p>\n<p>All objects that emit events are instances of the <code>EventEmitter</code> class. These\nobjects expose an <code>eventEmitter.on()</code> function that allows one or more\nfunctions to be attached to named events emitted by the object. Typically,\nevent names are camel-cased strings but any valid JavaScript property key\ncan be used.</p>\n<p>When the <code>EventEmitter</code> object emits an event, all of the functions attached\nto that specific event are called <em>synchronously</em>. Any values returned by the\ncalled listeners are <em>ignored</em> and discarded.</p>\n<p>The following example shows a simple <code>EventEmitter</code> instance with a single\nlistener. The <code>eventEmitter.on()</code> method is used to register listeners, while\nthe <code>eventEmitter.emit()</code> method is used to trigger the event.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n\nclass MyEmitter extends EventEmitter {}\n\nconst myEmitter = new MyEmitter();\nmyEmitter.on('event', () => {\n  console.log('an event occurred!');\n});\nmyEmitter.emit('event');\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n\nclass MyEmitter extends EventEmitter {}\n\nconst myEmitter = new MyEmitter();\nmyEmitter.on('event', () => {\n  console.log('an event occurred!');\n});\nmyEmitter.emit('event');\n</code></pre>",
+      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.23.2/lib/events.js\">lib/events.js</a></p>\n<p>Much of the Node.js core API is built around an idiomatic asynchronous\nevent-driven architecture in which certain kinds of objects (called \"emitters\")\nemit named events that cause <code>Function</code> objects (\"listeners\") to be called.</p>\n<p>For instance: a <a href=\"net.html#class-netserver\"><code>net.Server</code></a> object emits an event each time a peer\nconnects to it; a <a href=\"fs.html#class-fsreadstream\"><code>fs.ReadStream</code></a> emits an event when the file is opened;\na <a href=\"stream.html\">stream</a> emits an event whenever data is available to be read.</p>\n<p>All objects that emit events are instances of the <code>EventEmitter</code> class. These\nobjects expose an <code>eventEmitter.on()</code> function that allows one or more\nfunctions to be attached to named events emitted by the object. Typically,\nevent names are camel-cased strings but any valid JavaScript property key\ncan be used.</p>\n<p>When the <code>EventEmitter</code> object emits an event, all of the functions attached\nto that specific event are called <em>synchronously</em>. Any values returned by the\ncalled listeners are <em>ignored</em> and discarded.</p>\n<p>The following example shows a simple <code>EventEmitter</code> instance with a single\nlistener. The <code>eventEmitter.on()</code> method is used to register listeners, while\nthe <code>eventEmitter.emit()</code> method is used to trigger the event.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n\nclass MyEmitter extends EventEmitter {}\n\nconst myEmitter = new MyEmitter();\nmyEmitter.on('event', () => {\n  console.log('an event occurred!');\n});\nmyEmitter.emit('event');\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n\nclass MyEmitter extends EventEmitter {}\n\nconst myEmitter = new MyEmitter();\nmyEmitter.on('event', () => {\n  console.log('an event occurred!');\n});\nmyEmitter.emit('event');\n</code></pre>",
       "modules": [
         {
           "textRaw": "Passing arguments and `this` to listeners",
@@ -577,8 +577,6 @@
                   }
                 ]
               },
-              "stability": 2,
-              "stabilityText": "Stable",
               "desc": "<ul>\n<li>Extends: <a href=\"events.html#class-event\" class=\"type\">&lt;Event&gt;</a></li>\n</ul>\n<p>The <code>CustomEvent</code> object is an adaptation of the <a href=\"https://dom.spec.whatwg.org/#customevent\"><code>CustomEvent</code> Web API</a>.\nInstances are created internally by Node.js.</p>",
               "properties": [
                 {
@@ -598,8 +596,6 @@
                       }
                     ]
                   },
-                  "stability": 2,
-                  "stabilityText": "Stable",
                   "desc": "<p>Read-only.</p>",
                   "shortDesc": "Returns custom data passed when initializing."
                 }
@@ -996,7 +992,7 @@
               }
             ]
           },
-          "desc": "<p>The <code>EventEmitter</code> class is defined and exposed by the <code>node:events</code> module:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n</code></pre>\n<p>All <code>EventEmitter</code>s emit the event <code>'newListener'</code> when new listeners are\nadded and <code>'removeListener'</code> when existing listeners are removed.</p>\n<p>It supports the following option:</p>\n<ul>\n<li><code>captureRejections</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type\" class=\"type\">&lt;boolean&gt;</a> It enables\n<a href=\"#capture-rejections-of-promises\">automatic capturing of promise rejection</a>.\n<strong>Default:</strong> <code>false</code>.</li>\n</ul>",
+          "desc": "<p>The <code>EventEmitter</code> class is defined and exposed by the <code>node:events</code> module:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n</code></pre>\n<p>All <code>EventEmitter</code>s emit the event <code>'newListener'</code> when new listeners are\nadded and <code>'removeListener'</code> when existing listeners are removed.</p>\n<p>It supports the following option:</p>\n<ul>\n<li><code>captureRejections</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type\" class=\"type\">&lt;boolean&gt;</a> It enables\n<a href=\"#capture-rejections-of-promises\">automatic capturing of promise rejection</a>.\n<strong>Default:</strong> <code>false</code>.</li>\n</ul>",
           "events": [
             {
               "textRaw": "Event: `'newListener'`",
@@ -1135,14 +1131,14 @@
               "signatures": [
                 {
                   "return": {
-                    "textRaw": "Returns: {Array}",
+                    "textRaw": "Returns: {string\\[]|symbol\\[]}",
                     "name": "return",
-                    "type": "Array"
+                    "type": "string\\[]|symbol\\[]"
                   },
                   "params": []
                 }
               ],
-              "desc": "<p>Returns an array listing the events for which the emitter has registered\nlisteners. The values in the array are strings or <code>Symbol</code>s.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n</code></pre>"
+              "desc": "<p>Returns an array listing the events for which the emitter has registered\nlisteners.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter } from 'node:events';\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n</code></pre>\n<pre><code class=\"language-cjs\">const EventEmitter = require('node:events');\n\nconst myEE = new EventEmitter();\nmyEE.on('foo', () => {});\nmyEE.on('bar', () => {});\n\nconst sym = Symbol('symbol');\nmyEE.on(sym, () => {});\n\nconsole.log(myEE.eventNames());\n// Prints: [ 'foo', 'bar', Symbol(symbol) ]\n</code></pre>"
             },
             {
               "textRaw": "`emitter.getMaxListeners()`",
@@ -1555,7 +1551,7 @@
                   }
                 ]
               },
-              "desc": "<ul>\n<li><code>err</code> Error</li>\n<li><code>eventName</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type\" class=\"type\">&lt;string&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type\" class=\"type\">&lt;symbol&gt;</a></li>\n<li><code>...args</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types\" class=\"type\">&lt;any&gt;</a></li>\n</ul>\n<p>The <code>Symbol.for('nodejs.rejection')</code> method is called in case a\npromise rejection happens when emitting an event and\n<a href=\"#capture-rejections-of-promises\"><code>captureRejections</code></a> is enabled on the emitter.\nIt is possible to use <a href=\"#eventscapturerejectionsymbol\"><code>events.captureRejectionSymbol</code></a> in\nplace of <code>Symbol.for('nodejs.rejection')</code>.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, captureRejectionSymbol } from 'node:events';\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, captureRejectionSymbol } = require('node:events');\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n</code></pre>",
+              "desc": "<ul>\n<li><code>err</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error\" class=\"type\">&lt;Error&gt;</a></li>\n<li><code>eventName</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type\" class=\"type\">&lt;string&gt;</a> | <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#symbol_type\" class=\"type\">&lt;symbol&gt;</a></li>\n<li><code>...args</code> <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types\" class=\"type\">&lt;any&gt;</a></li>\n</ul>\n<p>The <code>Symbol.for('nodejs.rejection')</code> method is called in case a\npromise rejection happens when emitting an event and\n<a href=\"#capture-rejections-of-promises\"><code>captureRejections</code></a> is enabled on the emitter.\nIt is possible to use <a href=\"#eventscapturerejectionsymbol\"><code>events.captureRejectionSymbol</code></a> in\nplace of <code>Symbol.for('nodejs.rejection')</code>.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, captureRejectionSymbol } from 'node:events';\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, captureRejectionSymbol } = require('node:events');\n\nclass MyClass extends EventEmitter {\n  constructor() {\n    super({ captureRejections: true });\n  }\n\n  [captureRejectionSymbol](err, event, ...args) {\n    console.log('rejection happened for', event, 'with', err, ...args);\n    this.destroy(err);\n  }\n\n  destroy(err) {\n    // Tear the resource down here.\n  }\n}\n</code></pre>",
               "type": "module",
               "displayName": "`emitter[Symbol.for('nodejs.rejection')](err, eventName[, ...args])`"
             }
@@ -1581,7 +1577,8 @@
               "desc": "The unique `asyncId` assigned to the resource."
             },
             {
-              "textRaw": "`asyncResource` Type: The underlying {AsyncResource}.",
+              "textRaw": "`asyncResource` Type: {AsyncResource} The underlying {AsyncResource}.",
+              "type": "AsyncResource",
               "name": "Type",
               "desc": "<p>The returned <code>AsyncResource</code> object has an additional <code>eventEmitter</code> property\nthat provides a reference to this <code>EventEmitterAsyncResource</code>.</p>",
               "shortDesc": "The underlying {AsyncResource}."
@@ -1675,8 +1672,9 @@
           "desc": "<p>This symbol shall be used to install a listener for only monitoring <code>'error'</code>\nevents. Listeners installed using this symbol are called before the regular\n<code>'error'</code> listeners are called.</p>\n<p>Installing a listener using this symbol does not change the behavior once an\n<code>'error'</code> event is emitted. Therefore, the process will still crash if no\nregular <code>'error'</code> listener is installed.</p>"
         },
         {
-          "textRaw": "`events.captureRejections`",
-          "name": "captureRejections",
+          "textRaw": "`captureRejections` Type: {boolean}",
+          "type": "boolean",
+          "name": "Type",
           "meta": {
             "added": [
               "v13.4.0",
@@ -1693,11 +1691,12 @@
               }
             ]
           },
-          "desc": "<p>Value: <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type\" class=\"type\">&lt;boolean&gt;</a></p>\n<p>Change the default <code>captureRejections</code> option on all new <code>EventEmitter</code> objects.</p>"
+          "desc": "<p>Change the default <code>captureRejections</code> option on all new <code>EventEmitter</code> objects.</p>"
         },
         {
-          "textRaw": "`events.captureRejectionSymbol`",
-          "name": "captureRejectionSymbol",
+          "textRaw": "`captureRejectionSymbol` Type: {symbol} `Symbol.for('nodejs.rejection')`",
+          "type": "symbol",
+          "name": "Type",
           "meta": {
             "added": [
               "v13.4.0",
@@ -1714,7 +1713,8 @@
               }
             ]
           },
-          "desc": "<p>Value: <code>Symbol.for('nodejs.rejection')</code></p>\n<p>See how to write a custom <a href=\"#emittersymbolfornodejsrejectionerr-eventname-args\">rejection handler</a>.</p>"
+          "desc": "<p>See how to write a custom <a href=\"#emittersymbolfornodejsrejectionerr-eventname-args\">rejection handler</a>.</p>",
+          "shortDesc": "`Symbol.for('nodejs.rejection')`"
         }
       ],
       "methods": [
@@ -1835,11 +1835,11 @@
           "desc": "<p>Creates a <code>Promise</code> that is fulfilled when the <code>EventEmitter</code> emits the given\nevent or that is rejected if the <code>EventEmitter</code> emits <code>'error'</code> while waiting.\nThe <code>Promise</code> will resolve with an array of all the arguments emitted to the\ngiven event.</p>\n<p>This method is intentionally generic and works with the web platform\n<a href=\"https://dom.spec.whatwg.org/#interface-eventtarget\">EventTarget</a> interface, which has no special\n<code>'error'</code> event semantics and does not listen to the <code>'error'</code> event.</p>\n<pre><code class=\"language-mjs\">import { once, EventEmitter } from 'node:events';\nimport process from 'node:process';\n\nconst ee = new EventEmitter();\n\nprocess.nextTick(() => {\n  ee.emit('myevent', 42);\n});\n\nconst [value] = await once(ee, 'myevent');\nconsole.log(value);\n\nconst err = new Error('kaboom');\nprocess.nextTick(() => {\n  ee.emit('error', err);\n});\n\ntry {\n  await once(ee, 'myevent');\n} catch (err) {\n  console.error('error happened', err);\n}\n</code></pre>\n<pre><code class=\"language-cjs\">const { once, EventEmitter } = require('node:events');\n\nasync function run() {\n  const ee = new EventEmitter();\n\n  process.nextTick(() => {\n    ee.emit('myevent', 42);\n  });\n\n  const [value] = await once(ee, 'myevent');\n  console.log(value);\n\n  const err = new Error('kaboom');\n  process.nextTick(() => {\n    ee.emit('error', err);\n  });\n\n  try {\n    await once(ee, 'myevent');\n  } catch (err) {\n    console.error('error happened', err);\n  }\n}\n\nrun();\n</code></pre>\n<p>The special handling of the <code>'error'</code> event is only used when <code>events.once()</code>\nis used to wait for another event. If <code>events.once()</code> is used to wait for the\n'<code>error'</code> event itself, then it is treated as any other kind of event without\nspecial handling:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\n\nconst ee = new EventEmitter();\n\nonce(ee, 'error')\n  .then(([err]) => console.log('ok', err.message))\n  .catch((err) => console.error('error', err.message));\n\nee.emit('error', new Error('boom'));\n\n// Prints: ok boom\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst ee = new EventEmitter();\n\nonce(ee, 'error')\n  .then(([err]) => console.log('ok', err.message))\n  .catch((err) => console.error('error', err.message));\n\nee.emit('error', new Error('boom'));\n\n// Prints: ok boom\n</code></pre>\n<p>An <a href=\"globals.html#class-abortsignal\" class=\"type\">&lt;AbortSignal&gt;</a> can be used to cancel waiting for the event:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\n\nconst ee = new EventEmitter();\nconst ac = new AbortController();\n\nasync function foo(emitter, event, signal) {\n  try {\n    await once(emitter, event, { signal });\n    console.log('event emitted!');\n  } catch (error) {\n    if (error.name === 'AbortError') {\n      console.error('Waiting for the event was canceled!');\n    } else {\n      console.error('There was an error', error.message);\n    }\n  }\n}\n\nfoo(ee, 'foo', ac.signal);\nac.abort(); // Prints: Waiting for the event was canceled!\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst ee = new EventEmitter();\nconst ac = new AbortController();\n\nasync function foo(emitter, event, signal) {\n  try {\n    await once(emitter, event, { signal });\n    console.log('event emitted!');\n  } catch (error) {\n    if (error.name === 'AbortError') {\n      console.error('Waiting for the event was canceled!');\n    } else {\n      console.error('There was an error', error.message);\n    }\n  }\n}\n\nfoo(ee, 'foo', ac.signal);\nac.abort(); // Prints: Waiting for the event was canceled!\n</code></pre>",
           "modules": [
             {
-              "textRaw": "Awaiting multiple events emitted on `process.nextTick()`",
-              "name": "awaiting_multiple_events_emitted_on_`process.nexttick()`",
-              "desc": "<p>There is an edge case worth noting when using the <code>events.once()</code> function\nto await multiple events emitted on in the same batch of <code>process.nextTick()</code>\noperations, or whenever multiple events are emitted synchronously. Specifically,\nbecause the <code>process.nextTick()</code> queue is drained before the <code>Promise</code> microtask\nqueue, and because <code>EventEmitter</code> emits all events synchronously, it is possible\nfor <code>events.once()</code> to miss an event.</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\nimport process from 'node:process';\n\nconst myEE = new EventEmitter();\n\nasync function foo() {\n  await once(myEE, 'bar');\n  console.log('bar');\n\n  // This Promise will never resolve because the 'foo' event will\n  // have already been emitted before the Promise is created.\n  await once(myEE, 'foo');\n  console.log('foo');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('bar');\n  myEE.emit('foo');\n});\n\nfoo().then(() => console.log('done'));\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst myEE = new EventEmitter();\n\nasync function foo() {\n  await once(myEE, 'bar');\n  console.log('bar');\n\n  // This Promise will never resolve because the 'foo' event will\n  // have already been emitted before the Promise is created.\n  await once(myEE, 'foo');\n  console.log('foo');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('bar');\n  myEE.emit('foo');\n});\n\nfoo().then(() => console.log('done'));\n</code></pre>\n<p>To catch both events, create each of the Promises <em>before</em> awaiting either\nof them, then it becomes possible to use <code>Promise.all()</code>, <code>Promise.race()</code>,\nor <code>Promise.allSettled()</code>:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\nimport process from 'node:process';\n\nconst myEE = new EventEmitter();\n\nasync function foo() {\n  await Promise.all([once(myEE, 'bar'), once(myEE, 'foo')]);\n  console.log('foo', 'bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('bar');\n  myEE.emit('foo');\n});\n\nfoo().then(() => console.log('done'));\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst myEE = new EventEmitter();\n\nasync function foo() {\n  await Promise.all([once(myEE, 'bar'), once(myEE, 'foo')]);\n  console.log('foo', 'bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('bar');\n  myEE.emit('foo');\n});\n\nfoo().then(() => console.log('done'));\n</code></pre>",
+              "textRaw": "Caveats when awaiting multiple events",
+              "name": "caveats_when_awaiting_multiple_events",
+              "desc": "<p>It is important to be aware of execution order when using the <code>events.once()</code>\nmethod to await multiple events.</p>\n<p>Conventional event listeners are called synchronously when the event is\nemitted. This guarantees that execution will not proceed beyond the emitted\nevent until all listeners have finished executing.</p>\n<p>The same is <em>not</em> true when awaiting Promises returned by <code>events.once()</code>.\nPromise tasks are not handled until after the current execution stack runs to\ncompletion, which means that multiple events could be emitted before\nasynchronous execution continues from the relevant <code>await</code> statement.</p>\n<p>As a result, events can be \"missed\" if a series of <code>await events.once()</code>\nstatements is used to listen to multiple events, since there might be times\nwhere more than one event is emitted during the same phase of the event loop.\n(The same is true when using <code>process.nextTick()</code> to emit events, because the\ntasks queued by <code>process.nextTick()</code> are executed before Promise tasks.)</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\nimport process from 'node:process';\n\nconst myEE = new EventEmitter();\n\nasync function listen() {\n  await once(myEE, 'foo');\n  console.log('foo');\n\n  // This Promise will never resolve, because the 'bar' event will\n  // have already been emitted before the next line is executed.\n  await once(myEE, 'bar');\n  console.log('bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('foo');\n  myEE.emit('bar');\n});\n\nlisten().then(() => console.log('done'));\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst myEE = new EventEmitter();\n\nasync function listen() {\n  await once(myEE, 'foo');\n  console.log('foo');\n\n  // This Promise will never resolve, because the 'bar' event will\n  // have already been emitted before the next line is executed.\n  await once(myEE, 'bar');\n  console.log('bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('foo');\n  myEE.emit('bar');\n});\n\nlisten().then(() => console.log('done'));\n</code></pre>\n<p>To catch multiple events, create all of the Promises <em>before</em> awaiting any of\nthem. This is usually made easier by using <code>Promise.all()</code>, <code>Promise.race()</code>,\nor <code>Promise.allSettled()</code>:</p>\n<pre><code class=\"language-mjs\">import { EventEmitter, once } from 'node:events';\nimport process from 'node:process';\n\nconst myEE = new EventEmitter();\n\nasync function listen() {\n  await Promise.all([\n    once(myEE, 'foo'),\n    once(myEE, 'bar'),\n  ]);\n  console.log('foo', 'bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('foo');\n  myEE.emit('bar');\n});\n\nlisten().then(() => console.log('done'));\n</code></pre>\n<pre><code class=\"language-cjs\">const { EventEmitter, once } = require('node:events');\n\nconst myEE = new EventEmitter();\n\nasync function listen() {\n  await Promise.all([\n    once(myEE, 'bar'),\n    once(myEE, 'foo'),\n  ]);\n  console.log('foo', 'bar');\n}\n\nprocess.nextTick(() => {\n  myEE.emit('foo');\n  myEE.emit('bar');\n});\n\nlisten().then(() => console.log('done'));\n</code></pre>",
               "type": "module",
-              "displayName": "Awaiting multiple events emitted on `process.nextTick()`"
+              "displayName": "Caveats when awaiting multiple events"
             }
           ]
         },
@@ -1934,21 +1934,22 @@
                       "desc": "Can be used to cancel awaiting events."
                     },
                     {
-                      "textRaw": "`close` - {string\\[]} Names of events that will end the iteration.",
+                      "textRaw": "`close` {string\\[]} Names of events that will end the iteration.",
                       "name": "close",
-                      "desc": "{string\\[]} Names of events that will end the iteration."
+                      "type": "string\\[]",
+                      "desc": "Names of events that will end the iteration."
                     },
                     {
-                      "textRaw": "`highWaterMark` - {integer} **Default:** `Number.MAX_SAFE_INTEGER` The high watermark. The emitter is paused every time the size of events being buffered is higher than it. Supported only on emitters implementing `pause()` and `resume()` methods.",
+                      "textRaw": "`highWaterMark` {integer} **Default:** `Number.MAX_SAFE_INTEGER` The high watermark. The emitter is paused every time the size of events being buffered is higher than it. Supported only on emitters implementing `pause()` and `resume()` methods.",
                       "name": "highWaterMark",
-                      "default": "`Number.MAX_SAFE_INTEGER` The high watermark. The emitter is paused every time the size of events being buffered is higher than it. Supported only on emitters implementing `pause()` and `resume()` methods",
-                      "desc": "{integer}"
+                      "type": "integer",
+                      "default": "`Number.MAX_SAFE_INTEGER` The high watermark. The emitter is paused every time the size of events being buffered is higher than it. Supported only on emitters implementing `pause()` and `resume()` methods"
                     },
                     {
-                      "textRaw": "`lowWaterMark` - {integer} **Default:** `1` The low watermark. The emitter is resumed every time the size of events being buffered is lower than it. Supported only on emitters implementing `pause()` and `resume()` methods.",
+                      "textRaw": "`lowWaterMark` {integer} **Default:** `1` The low watermark. The emitter is resumed every time the size of events being buffered is lower than it. Supported only on emitters implementing `pause()` and `resume()` methods.",
                       "name": "lowWaterMark",
-                      "default": "`1` The low watermark. The emitter is resumed every time the size of events being buffered is lower than it. Supported only on emitters implementing `pause()` and `resume()` methods",
-                      "desc": "{integer}"
+                      "type": "integer",
+                      "default": "`1` The low watermark. The emitter is resumed every time the size of events being buffered is lower than it. Supported only on emitters implementing `pause()` and `resume()` methods"
                     }
                   ]
                 }
@@ -1996,10 +1997,14 @@
               "v20.5.0",
               "v18.18.0"
             ],
-            "changes": []
+            "changes": [
+              {
+                "version": "v22.16.0",
+                "pr-url": "https://github.com/nodejs/node/pull/57765",
+                "description": "Change stability index for this feature from Experimental to Stable."
+              }
+            ]
           },
-          "stability": 1,
-          "stabilityText": "Experimental",
           "signatures": [
             {
               "return": {

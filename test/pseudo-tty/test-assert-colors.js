@@ -1,7 +1,6 @@
-// Flags: --no-warnings
 'use strict';
 require('../common');
-const assert = require('assert').strict;
+const assert = require('assert/strict');
 
 function setup() {
   process.env.FORCE_COLOR = '1';

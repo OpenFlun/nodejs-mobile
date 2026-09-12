@@ -11,9 +11,6 @@
 #if OPENSSL_VERSION_MAJOR >= 3
 #include <openssl/provider.h>
 #endif
-#ifdef OPENSSL_IS_BORINGSSL
-#include "dh-primes.h"
-#endif  // OPENSSL_IS_BORINGSSL
 
 namespace ncrypto {
 namespace {
@@ -1240,6 +1237,7 @@ BIOPointer BIOPointer::NewSecMem() {
 }
 
 BIOPointer BIOPointer::New(const BIO_METHOD* method) {
+  if (method == nullptr) return {};
   return BIOPointer(BIO_new(method));
 }
 

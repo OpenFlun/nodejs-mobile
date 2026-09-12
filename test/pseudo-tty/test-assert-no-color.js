@@ -1,7 +1,6 @@
-// Flags: --no-warnings
 'use strict';
 require('../common');
-const assert = require('assert').strict;
+const assert = require('assert/strict');
 
 process.env.NODE_DISABLE_COLORS = true;
 

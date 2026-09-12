@@ -635,7 +635,6 @@ void CipherBase::SetAuthTag(const FunctionCallbackInfo<Value>& args) {
   } else {
     // At this point, the tag length is already known and must match the
     // length of the given authentication tag.
-    CHECK(Cipher::FromCtx(cipher->ctx_).isSupportedAuthenticatedMode());
     CHECK_NE(cipher->auth_tag_len_, kNoAuthTagLength);
     is_valid = cipher->auth_tag_len_ == tag_len;
   }
@@ -793,9 +792,7 @@ CipherBase::UpdateResult CipherBase::Update(
   } else if (static_cast<size_t>(buf_len) != (*out)->ByteLength()) {
     std::unique_ptr<BackingStore> old_out = std::move(*out);
     *out = ArrayBuffer::NewBackingStore(env()->isolate(), buf_len);
-    memcpy(static_cast<char*>((*out)->Data()),
-           static_cast<char*>(old_out->Data()),
-           buf_len);
+    memcpy((*out)->Data(), old_out->Data(), buf_len);
   }
 
   // When in CCM mode, EVP_CipherUpdate will fail if the authentication tag is
@@ -890,9 +887,7 @@ bool CipherBase::Final(std::unique_ptr<BackingStore>* out) {
     } else if (static_cast<size_t>(out_len) != (*out)->ByteLength()) {
       std::unique_ptr<BackingStore> old_out = std::move(*out);
       *out = ArrayBuffer::NewBackingStore(env()->isolate(), out_len);
-      memcpy(static_cast<char*>((*out)->Data()),
-             static_cast<char*>(old_out->Data()),
-             out_len);
+      memcpy((*out)->Data(), old_out->Data(), out_len);
     }
 
     if (ok && kind_ == kCipher && IsAuthenticatedMode()) {
@@ -996,9 +991,7 @@ bool PublicKeyCipher::Cipher(
   } else if (out_len != (*out)->ByteLength()) {
     std::unique_ptr<BackingStore> old_out = std::move(*out);
     *out = ArrayBuffer::NewBackingStore(env->isolate(), out_len);
-    memcpy(static_cast<char*>((*out)->Data()),
-           static_cast<char*>(old_out->Data()),
-           out_len);
+    memcpy((*out)->Data(), old_out->Data(), out_len);
   }
 
   return true;

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="nodejs.org:node-version" content="v22.14.0">
-  <title>Diagnostic report | Node.js v22.14.0 Documentation</title>
+  <meta name="nodejs.org:node-version" content="v22.23.2">
+  <title>Diagnostic report | Node.js v22.23.2 Documentation</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=fallback">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/hljs.css">
@@ -51,13 +51,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -112,7 +112,7 @@
     <div id="column1" data-id="report" class="interior">
       <header class="header">
         <div class="header-container">
-          <h1>Node.js v22.14.0 documentation</h1>
+          <h1>Node.js v22.23.2 documentation</h1>
           <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle dark mode/light mode" aria-label="Toggle dark mode/light mode" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon dark-icon" height="24" width="24">
               <path fill="none" d="M0 0h24v24H0z" />
@@ -127,7 +127,7 @@
         </div>
         <div id="gtoc">
           <ul>
-            <li class="pinned-header">Node.js v22.14.0</li>
+            <li class="pinned-header">Node.js v22.23.2</li>
             
     <li class="picker-header">
       <a href="#toc-picker" aria-controls="toc-picker">
@@ -188,13 +188,13 @@
 <li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
 <li><a href="cli.html" class="nav-cli">Command-line options</a></li>
 <li><a href="console.html" class="nav-console">Console</a></li>
-<li><a href="corepack.html" class="nav-corepack">Corepack</a></li>
 <li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
 <li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
 <li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
 <li><a href="diagnostics_channel.html" class="nav-diagnostics_channel">Diagnostics Channel</a></li>
 <li><a href="dns.html" class="nav-dns">DNS</a></li>
 <li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="environment_variables.html" class="nav-environment_variables">Environment Variables</a></li>
 <li><a href="errors.html" class="nav-errors">Errors</a></li>
 <li><a href="events.html" class="nav-events">Events</a></li>
 <li><a href="fs.html" class="nav-fs">File system</a></li>
@@ -252,12 +252,15 @@
         <span class="picker-arrow"></span>
         Other versions
       </a>
-      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v23.x/api/report.html">23.x</a></li>
+      <div class="picker" tabindex="-1"><ol id="alt-docs"><li><a href="https://nodejs.org/docs/latest-v26.x/api/report.html">26.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v25.x/api/report.html">25.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v24.x/api/report.html">24.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v23.x/api/report.html">23.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v22.x/api/report.html">22.x <b>LTS</b></a></li>
 <li><a href="https://nodejs.org/docs/latest-v21.x/api/report.html">21.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v20.x/api/report.html">20.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v20.x/api/report.html">20.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v19.x/api/report.html">19.x</a></li>
-<li><a href="https://nodejs.org/docs/latest-v18.x/api/report.html">18.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v18.x/api/report.html">18.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v17.x/api/report.html">17.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v16.x/api/report.html">16.x</a></li>
 <li><a href="https://nodejs.org/docs/latest-v15.x/api/report.html">15.x</a></li>
@@ -865,7 +868,9 @@ times for the same Node.js process.</p>
 uniquely representing the report format. The version number is bumped
 when new key is added or removed, or the data type of a value is changed.
 Report version definitions are consistent across LTS releases.</p>
+<div>
 <h4>Version history<span><a class="mark" href="#version-history" id="version-history">#</a></span><a aria-hidden="true" class="legacy" id="report_version_history"></a></h4>
+<div>
 <h5>Version 5<span><a class="mark" href="#version-5" id="version-5">#</a></span><a aria-hidden="true" class="legacy" id="report_version_5"></a></h5>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -898,6 +903,7 @@ respectively in the <code>userLimits</code> section, as these values are given i
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h5>Version 4<span><a class="mark" href="#version-4" id="version-4">#</a></span><a aria-hidden="true" class="legacy" id="report_version_4"></a></h5>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -957,6 +963,7 @@ respectively in the <code>userLimits</code> section, as these values are given i
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">]</span>
 <span class="hljs-punctuation">}</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h5>Version 3<span><a class="mark" href="#version-3" id="version-3">#</a></span><a aria-hidden="true" class="legacy" id="report_version_3"></a></h5>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -977,6 +984,7 @@ respectively in the <code>userLimits</code> section, as these values are given i
     <span class="hljs-attr">"constrained_memory"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"36624662528"</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code> <button class="copy-button">copy</button></pre>
+</div><div>
 <h5>Version 2<span><a class="mark" href="#version-2" id="version-2">#</a></span><a aria-hidden="true" class="legacy" id="report_version_2"></a></h5>
 <div class="api_metadata">
 <details class="changelog"><summary>History</summary>
@@ -988,8 +996,10 @@ respectively in the <code>userLimits</code> section, as these values are given i
 </details>
 </div>
 <p>Added <a href="worker_threads.html"><code>Worker</code></a> support. Refer to <a href="#interaction-with-workers">Interaction with workers</a> section for more details.</p>
+</div><div>
 <h5>Version 1<span><a class="mark" href="#version-1" id="version-1">#</a></span><a aria-hidden="true" class="legacy" id="report_version_1"></a></h5>
 <p>This is the first version of the diagnostic report.</p>
+</div></div>
 </section><section><h3>Configuration<span><a class="mark" href="#configuration" id="configuration">#</a></span><a aria-hidden="true" class="legacy" id="report_configuration"></a></h3>
 <p>Additional runtime configuration of report generation is available via
 the following properties of <code>process.report</code>:</p>

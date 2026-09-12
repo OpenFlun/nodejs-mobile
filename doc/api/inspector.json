@@ -8,19 +8,19 @@
       "introduced_in": "v8.0.0",
       "stability": 2,
       "stabilityText": "Stable",
-      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.14.0/lib/inspector.js\">lib/inspector.js</a></p>\n<p>The <code>node:inspector</code> module provides an API for interacting with the V8\ninspector.</p>\n<p>It can be accessed using:</p>\n<pre><code class=\"language-mjs\">import * as inspector from 'node:inspector/promises';\n</code></pre>\n<pre><code class=\"language-cjs\">const inspector = require('node:inspector/promises');\n</code></pre>\n<p>or</p>\n<pre><code class=\"language-mjs\">import * as inspector from 'node:inspector';\n</code></pre>\n<pre><code class=\"language-cjs\">const inspector = require('node:inspector');\n</code></pre>",
+      "desc": "<p><strong>Source Code:</strong> <a href=\"https://github.com/nodejs/node/blob/v22.23.2/lib/inspector.js\">lib/inspector.js</a></p>\n<p>The <code>node:inspector</code> module provides an API for interacting with the V8\ninspector.</p>\n<p>It can be accessed using:</p>\n<pre><code class=\"language-mjs\">import * as inspector from 'node:inspector/promises';\n</code></pre>\n<pre><code class=\"language-cjs\">const inspector = require('node:inspector/promises');\n</code></pre>\n<p>or</p>\n<pre><code class=\"language-mjs\">import * as inspector from 'node:inspector';\n</code></pre>\n<pre><code class=\"language-cjs\">const inspector = require('node:inspector');\n</code></pre>",
       "modules": [
         {
           "textRaw": "Promises API",
           "name": "promises_api",
-          "stability": 1,
-          "stabilityText": "Experimental",
           "meta": {
             "added": [
               "v19.0.0"
             ],
             "changes": []
           },
+          "stability": 1,
+          "stabilityText": "Experimental",
           "classes": [
             {
               "textRaw": "Class: `inspector.Session`",
@@ -40,7 +40,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "{Object} The notification message object",
+                      "textRaw": "Type: {Object} The notification message object",
+                      "name": "Type",
                       "type": "Object",
                       "desc": "The notification message object"
                     }
@@ -48,9 +49,9 @@
                   "desc": "<p>Emitted when any notification from the V8 Inspector is received.</p>\n<pre><code class=\"language-js\">session.on('inspectorNotification', (message) => console.log(message.method));\n// Debugger.paused\n// Debugger.resumed\n</code></pre>\n<blockquote>\n<p><strong>Caveat</strong> Breakpoints with same-thread session is not recommended, see\n<a href=\"#support-of-breakpoints\">support of breakpoints</a>.</p>\n</blockquote>\n<p>It is also possible to subscribe only to notifications with specific method:</p>"
                 },
                 {
-                  "textRaw": "Event: `<inspector-protocol-method>`;",
+                  "textRaw": "Event: `<inspector-protocol-method>`",
                   "type": "event",
-                  "name": "<inspector-protocol-method>`;",
+                  "name": "<inspector-protocol-method>`",
                   "meta": {
                     "added": [
                       "v8.0.0"
@@ -59,7 +60,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "{Object} The notification message object",
+                      "textRaw": "Type: {Object} The notification message object",
+                      "name": "Type",
                       "type": "Object",
                       "desc": "The notification message object"
                     }
@@ -202,7 +204,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "{Object} The notification message object",
+                      "textRaw": "Type: {Object} The notification message object",
+                      "name": "Type",
                       "type": "Object",
                       "desc": "The notification message object"
                     }
@@ -221,7 +224,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "{Object} The notification message object",
+                      "textRaw": "Type: {Object} The notification message object",
+                      "name": "Type",
                       "type": "Object",
                       "desc": "The notification message object"
                     }
@@ -437,7 +441,7 @@
                   "params": []
                 }
               ],
-              "desc": "<p>Return the URL of the active inspector, or <code>undefined</code> if there is none.</p>\n<pre><code class=\"language-console\">$ node --inspect -p 'inspector.url()'\nDebugger listening on ws://127.0.0.1:9229/166e272e-7a30-4d09-97ce-f1c012b43c34\nFor help, see: https://nodejs.org/en/docs/inspector\nws://127.0.0.1:9229/166e272e-7a30-4d09-97ce-f1c012b43c34\n\n$ node --inspect=localhost:3000 -p 'inspector.url()'\nDebugger listening on ws://localhost:3000/51cf8d0e-3c36-4c59-8efd-54519839e56a\nFor help, see: https://nodejs.org/en/docs/inspector\nws://localhost:3000/51cf8d0e-3c36-4c59-8efd-54519839e56a\n\n$ node -p 'inspector.url()'\nundefined\n</code></pre>"
+              "desc": "<p>Return the URL of the active inspector, or <code>undefined</code> if there is none.</p>\n<pre><code class=\"language-console\">$ node --inspect -p 'inspector.url()'\nDebugger listening on ws://127.0.0.1:9229/166e272e-7a30-4d09-97ce-f1c012b43c34\nFor help, see: https://nodejs.org/learn/getting-started/debugging\nws://127.0.0.1:9229/166e272e-7a30-4d09-97ce-f1c012b43c34\n\n$ node --inspect=localhost:3000 -p 'inspector.url()'\nDebugger listening on ws://localhost:3000/51cf8d0e-3c36-4c59-8efd-54519839e56a\nFor help, see: https://nodejs.org/learn/getting-started/debugging\nws://localhost:3000/51cf8d0e-3c36-4c59-8efd-54519839e56a\n\n$ node -p 'inspector.url()'\nundefined\n</code></pre>"
             },
             {
               "textRaw": "`inspector.waitForDebugger()`",
@@ -459,9 +463,9 @@
           ],
           "properties": [
             {
-              "textRaw": "`console` {Object} An object to send messages to the remote inspector console.",
+              "textRaw": "`console` Type: {Object} An object to send messages to the remote inspector console.",
               "type": "Object",
-              "name": "console",
+              "name": "Type",
               "desc": "<pre><code class=\"language-js\">require('node:inspector').console.log('a message');\n</code></pre>\n<p>The inspector console does not have API parity with Node.js\nconsole.</p>",
               "shortDesc": "An object to send messages to the remote inspector console."
             }
@@ -472,8 +476,56 @@
         {
           "textRaw": "Integration with DevTools",
           "name": "integration_with_devtools",
+          "stability": 1,
+          "stabilityText": ".1 - Active development",
           "desc": "<p>The <code>node:inspector</code> module provides an API for integrating with devtools that support Chrome DevTools Protocol.\nDevTools frontends connected to a running Node.js instance can capture protocol events emitted from the instance\nand display them accordingly to facilitate debugging.\nThe following methods broadcast a protocol event to all connected frontends.\nThe <code>params</code> passed to the methods can be optional, depending on the protocol.</p>\n<pre><code class=\"language-js\">// The `Network.requestWillBeSent` event will be fired.\ninspector.Network.requestWillBeSent({\n  requestId: 'request-id-1',\n  timestamp: Date.now() / 1000,\n  wallTime: Date.now(),\n  request: {\n    url: 'https://nodejs.org/en',\n    method: 'GET',\n  },\n});\n</code></pre>",
           "methods": [
+            {
+              "textRaw": "`inspector.Network.dataReceived([params])`",
+              "type": "method",
+              "name": "dataReceived",
+              "meta": {
+                "added": [
+                  "v22.17.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`params` {Object}",
+                      "name": "params",
+                      "type": "Object"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This feature is only available with the <code>--experimental-network-inspection</code> flag enabled.</p>\n<p>Broadcasts the <code>Network.dataReceived</code> event to connected frontends, or buffers the data if\n<code>Network.streamResourceContent</code> command was not invoked for the given request yet.</p>\n<p>Also enables <code>Network.getResponseBody</code> command to retrieve the response data.</p>"
+            },
+            {
+              "textRaw": "`inspector.Network.dataSent([params])`",
+              "type": "method",
+              "name": "dataSent",
+              "meta": {
+                "added": [
+                  "v22.18.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`params` {Object}",
+                      "name": "params",
+                      "type": "Object"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This feature is only available with the <code>--experimental-network-inspection</code> flag enabled.</p>\n<p>Enables <code>Network.getRequestPostData</code> command to retrieve the request data.</p>"
+            },
             {
               "textRaw": "`inspector.Network.requestWillBeSent([params])`",
               "type": "method",
@@ -484,8 +536,6 @@
                 ],
                 "changes": []
               },
-              "stability": 1,
-              "stabilityText": "Experimental",
               "signatures": [
                 {
                   "params": [
@@ -509,8 +559,6 @@
                 ],
                 "changes": []
               },
-              "stability": 1,
-              "stabilityText": "Experimental",
               "signatures": [
                 {
                   "params": [
@@ -534,8 +582,6 @@
                 ],
                 "changes": []
               },
-              "stability": 1,
-              "stabilityText": "Experimental",
               "signatures": [
                 {
                   "params": [
@@ -559,8 +605,6 @@
                 ],
                 "changes": []
               },
-              "stability": 1,
-              "stabilityText": "Experimental",
               "signatures": [
                 {
                   "params": [
@@ -573,6 +617,21 @@
                 }
               ],
               "desc": "<p>This feature is only available with the <code>--experimental-network-inspection</code> flag enabled.</p>\n<p>Broadcasts the <code>Network.loadingFailed</code> event to connected frontends. This event indicates that\nHTTP request has failed to load.</p>"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "`inspector.NetworkResources.put`",
+              "name": "put",
+              "meta": {
+                "added": [
+                  "v22.19.0"
+                ],
+                "changes": []
+              },
+              "stability": 1,
+              "stabilityText": ".1 - Active Development",
+              "desc": "<p>This feature is only available with the <code>--experimental-inspector-network-resource</code> flag enabled.</p>\n<p>The inspector.NetworkResources.put method is used to provide a response for a loadNetworkResource\nrequest issued via the Chrome DevTools Protocol (CDP).\nThis is typically triggered when a source map is specified by URL, and a DevTools frontend—such as\nChrome—requests the resource to retrieve the source map.</p>\n<p>This method allows developers to predefine the resource content to be served in response to such CDP requests.</p>\n<pre><code class=\"language-js\">const inspector = require('node:inspector');\n// By preemptively calling put to register the resource, a source map can be resolved when\n// a loadNetworkResource request is made from the frontend.\nasync function setNetworkResources() {\n  const mapUrl = 'http://localhost:3000/dist/app.js.map';\n  const tsUrl = 'http://localhost:3000/src/app.ts';\n  const distAppJsMap = await fetch(mapUrl).then((res) => res.text());\n  const srcAppTs = await fetch(tsUrl).then((res) => res.text());\n  inspector.NetworkResources.put(mapUrl, distAppJsMap);\n  inspector.NetworkResources.put(tsUrl, srcAppTs);\n};\nsetNetworkResources().then(() => {\n  require('./dist/app');\n});\n</code></pre>\n<p>For more details, see the official CDP documentation: <a href=\"https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-loadNetworkResource\">Network.loadNetworkResource</a></p>"
             }
           ],
           "type": "module",
