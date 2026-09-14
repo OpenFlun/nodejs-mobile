@@ -1,3 +1,4 @@
+```markdown
 # nodejs-mobile 升级适配完整指南（v18.20.4 → v22.23.2）
 
 **适用环境**：Windows 11 + WSL2 Ubuntu 24.04，项目位于 `/mnt/d/nodejs-mobile-build`
@@ -20,7 +21,7 @@
 ├── node-v22.23.2.tar.gz               # 官方源码包（解压后重命名为 nodejs-mobile）
 ├── nodejs-mobile/
 │   ├── android-configure              # 修改：支持 Python 3.14
-│   ├── android_configure.py           # 修改：添加 android_ndk_path
+│   ├── android_configure.py           # 修改：添加 android_ndk_path；启用 full-icu（Unicode 全字符支持）
 │   ├── android-patches/               # 保留：nodejs-mobile 特有补丁
 │   ├── doc_mobile/                    # 保留：nodejs-mobile 特有文档
 │   ├── node.gyp                       # 修改：添加 deps/zlib、cpu-features.c、符号导出选项
@@ -29,6 +30,8 @@
 │   │   ├── cpu_features.c             # 原 zlib 文件（保留，不修改）
 │   │   ├── cpu-features.c             # 新增：从 NDK 复制
 │   │   └── cpu-features.h             # 新增：从 NDK 复制
+│   ├── deps/icu-tmp/
+│   │   └── icudt78l.dat               # 新增：full-icu 数据文件（约 32M，configure 自动下载）
 │   ├── deps/v8/src/handles/handles.h  # 修改：注释静态断言
 │   ├── deps/v8/src/trap-handler/trap-handler.h          # 修改：强制 V8_TRAP_HANDLER_SUPPORTED false
 │   ├── deps/v8/src/trap-handler/handler-outside.cc      # 修改：添加 TryHandleSignal 桩函数
@@ -150,13 +153,93 @@ sed -i 's/acceptable_pythons = ((3, 11),/acceptable_pythons = ((3, 14), (3, 11),
 sed -i '/GYP_DEFINES += " ANDROID_NDK_SYSROOT=" + toolchain_path + "\/sysroot"/a\    GYP_DEFINES += " android_ndk_path=" + android_ndk_path' android_configure.py
 ```
 
-### 4.6 复制 NDK CPU 特性源文件
+### 4.6 修改 `android_configure.py` 启用 full-icu（Unicode 全字符支持）
+
+#### 4.6.1 背景与问题现象
+
+`nodejs-mobile` 的默认构建配置使用 `--with-intl=none`，不包含完整的 ICU（International Components for Unicode）数据。这会导致 V8 引擎在解析含 **Unicode 属性转义**（`\p{...}`）的正则表达式时直接抛出语法错误：
+
+```js
+const ID_START = /^[$_\p{ID_Start}]$/u;              // SyntaxError
+const ID_CONTINUE = /^[$\u200c\u200d\p{ID_Continue}]$/u;  // SyntaxError
+```
+
+典型报错信息：
+
+```
+Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name in character class
+```
+
+**影响范围**：许多现代 npm 包在源码中直接使用 `\p{...}` 正则，例如：
+
+- `path-to-regexp@8`（Express 5 的核心依赖 `router` 依赖它）
+- `@flun/mailer`
+- 其他大量使用 Unicode 感知校验的包
+
+在 `--with-intl=none` 环境下，这些包一旦被 `require`/`import`，就会因为 V8 无法解析正则而失败，进而导致整个 Node.js 入口脚本（如 `server.js`）加载失败。
+
+#### 4.6.2 修改 `android_configure.py`
+
+将 `--with-intl=none` 改为 `--with-intl=full-icu`：
+
+```bash
+sed -i 's/--with-intl=none/--with-intl=full-icu/' android_configure.py
+grep -n "with-intl" android_configure.py
+```
+
+预期输出：
+
+```
+84:    # nodejs-mobile patch: added --with-intl=full-icu and --shared
+85:    os.system("./configure --dest-cpu=" + DEST_CPU + " --dest-os=android --openssl-no-asm --with-intl=full-icu --cross-compiling --shared")
+```
+
+#### 4.6.3 三种 ICU 配置对比
+
+| 配置        | 含义               | 体积            | `\p{...}` 支持         |
+| ----------- | ------------------ | --------------- | ---------------------- |
+| `none`      | 不含 ICU（原默认） | 最小            | ❌ 完全不支持           |
+| `small-icu` | 仅英文区域数据     | 中等            | ⚠️ 部分支持（可能失败） |
+| `full-icu`  | 完整 ICU 数据      | 最大（约 +30M） | ✅ 完全支持             |
+
+**推荐直接使用 `full-icu`**。编译一次通常需要 30 分钟至 2 小时，使用 `small-icu` 一旦发现不够用就得重新编译，代价太高。
+
+#### 4.6.4 验证 ICU 已启用
+
+configure 完成后运行以下命令：
+
+```bash
+grep -i "intl\|icu" config.gypi | head -20
+ls -d deps/icu* 2>/dev/null
+ls -lh deps/icu-tmp/icudt*l.dat
+```
+
+预期输出应包含：
+
+```
+    "icu_small": "false",
+    "icu_gyp_path": "tools/icu/icu-generic.gyp",
+    "icu_path": "deps/icu-small",
+    "icu_ver_major": "78",
+    ...
+deps/icu-small  deps/icu-tmp
+-rwxrwxrwx 1 flun flun 32M ... deps/icu-tmp/icudt78l.dat
+```
+
+关键判断：
+
+- `icu_small: false` → 表示使用的是 `full-icu`（若为 `true` 则是 `small-icu`）
+- `icudt78l.dat` 存在且约 32M → 完整的 ICU 数据文件已就位
+
+**注意**：`full-icu` 在 configure 阶段会从网络下载 ICU 数据（几百 MB 的源码包，最终生成约 32M 的 `.dat` 文件）。确保 WSL 能访问外网。若下载失败，可手动下载后放入 `deps/icu-tmp/`。
+
+### 4.7 复制 NDK CPU 特性源文件
 ```bash
 cp ../android-ndk-r27/sources/android/cpufeatures/cpu-features.c deps/zlib/
 cp ../android-ndk-r27/sources/android/cpufeatures/cpu-features.h deps/zlib/
 ```
 
-### 4.7 修改 `node.gyp`
+### 4.8 修改 `node.gyp`
 在 `'target_name': '<(node_lib_target_name)'` 部分：
 - `include_dirs` 末尾添加 `'deps/zlib'`
 - `sources` 列表中添加 `'deps/zlib/cpu-features.c'`
@@ -169,7 +252,7 @@ cp ../android-ndk-r27/sources/android/cpufeatures/cpu-features.h deps/zlib/
 }],
 ```
 
-### 4.8 应用 `trap-handler.h` 补丁
+### 4.9 应用 `trap-handler.h` 补丁
 ```bash
 patch -p1 < android-patches/trap-handler.h.patch
 ```
@@ -178,19 +261,19 @@ patch -p1 < android-patches/trap-handler.h.patch
 #define V8_TRAP_HANDLER_SUPPORTED false
 ```
 
-### 4.9 注释 `handles.h` 静态断言
+### 4.10 注释 `handles.h` 静态断言
 ```bash
 sed -i '/^#if defined(__clang__) && __clang_major__ >= 17$/,/^#endif$/c\/* block commented out for Android build *\/' deps/v8/src/handles/handles.h
 ```
 
-### 4.10 确认 `common.gypi` 不含 `ANDROID_CPU_FEATURES`
+### 4.11 确认 `common.gypi` 不含 `ANDROID_CPU_FEATURES`
 确保 `common.gypi` 的 `OS=="android"` 块中 `defines` 不包含 `ANDROID_CPU_FEATURES`。
 （v20 曾需要此宏，v22 中已弃用，添加会导致 V8 编译冲突。）
 
-### 4.11 直接修改 V8 源文件禁用 trap handler 和模拟器
+### 4.12 直接修改 V8 源文件禁用 trap handler 和模拟器
 由于 v22 的 V8 构建已迁移到 GN，通过 GYP 变量设置无效，必须直接修改源文件。
 
-**4.11.1 修改 `deps/v8/src/trap-handler/handler-outside.cc`**
+**4.12.1 修改 `deps/v8/src/trap-handler/handler-outside.cc`**
 ```bash
 cp deps/v8/src/trap-handler/handler-outside.cc deps/v8/src/trap-handler/handler-outside.cc.bak
 sed -i '1i #include <signal.h>' deps/v8/src/trap-handler/handler-outside.cc
@@ -198,15 +281,15 @@ sed -i 's/g_is_trap_handler_enabled = RegisterDefaultTrapHandler();/g_is_trap_ha
 sed -i '/^}  \/\/ namespace trap_handler/i bool TryHandleSignal(int, siginfo_t*, void*) { return false; }' deps/v8/src/trap-handler/handler-outside.cc
 ```
 
-**4.11.2 修改 `deps/v8/src/execution/arm64/simulator-arm64.cc`**
+**4.12.2 修改 `deps/v8/src/execution/arm64/simulator-arm64.cc`**
 ```bash
 cp deps/v8/src/execution/arm64/simulator-arm64.cc deps/v8/src/execution/arm64/simulator-arm64.cc.bak
 echo -e '\nextern "C" bool v8_internal_simulator_ProbeMemory(uintptr_t, uintptr_t) { return false; }' >> deps/v8/src/execution/arm64/simulator-arm64.cc
 ```
 
-### 4.12 修改 Node.js CJS loader 使 `require('rn-bridge')` 可用（编译前必须完成）
+### 4.13 修改 Node.js CJS loader 使 `require('rn-bridge')` 可用（编译前必须完成）
 
-#### 4.12.1 背景与原理
+#### 4.13.1 背景与原理
 
 `rn-bridge` 在 JNI 库中通过 `NODE_MODULE_LINKED(rn_bridge, Init)` 注册为**链接绑定（Linked Binding）**。在 Node.js 18 中，`require('rn-bridge')` 会通过全局注册表回退找到它并加载 `builtin_modules/rn-bridge/index.js`（一个 JS 包装文件，负责把原生绑定封装成 `channel`、`app` 等用户 API）。
 
@@ -218,7 +301,7 @@ echo -e '\nextern "C" bool v8_internal_simulator_ProbeMemory(uintptr_t, uintptr_
 
 因此，正确的修复方式不是让 `require('rn-bridge')` 返回原生绑定，而是让它**加载 JS 包装文件**。
 
-#### 4.12.2 修改 `lib/internal/modules/cjs/loader.js`
+#### 4.13.2 修改 `lib/internal/modules/cjs/loader.js`
 
 **修改位置**：`Module._load` 函数开头（约第 1193 行）
 
@@ -239,7 +322,7 @@ node --check lib/internal/modules/cjs/loader.js && sed -n '1193,1212p' lib/inter
 NODE_MODULE_LINKED(rn_bridge, Init);
 ```
 
-#### 4.12.3 JS 包装文件的位置与作用（供参考）
+#### 4.13.3 JS 包装文件的位置与作用（供参考）
 
 - **构建产物位置**（Android APK 内部 assets）：
   ```
@@ -261,14 +344,14 @@ module.exports = exports = {
 };
 ```
 
-### 4.13 清理并编译（arm64-v8a）
+### 4.14 清理并编译（arm64-v8a）
 ```bash
 rm -rf out config.gypi config.mk config.status
 ./android-configure /mnt/d/nodejs-mobile-build/android-ndk-r27 30 arm64
 make -j4
 ```
 
-### 4.14 验证产物
+### 4.15 验证产物
 ```bash
 ls -lh out/Release/libnode.so
 strings out/Release/libnode.so | grep "v22.23.2"
@@ -277,11 +360,11 @@ strings out/Release/libnode.so | grep NODE_MODULE_VERSION | head -1
 
 预期应显示 `v22.23.2` 和 `NODE_MODULE_VERSION 127`。
 
-### 4.15 剥离调试符号（推荐）
+### 4.16 剥离调试符号（推荐）
 ```bash
 cp out/Release/libnode.so out/Release/libnode.so.bak
 /mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
-ls -lh out/Release/libnode.so out/Release/libnode.so.bak    # 剥离前约 97M，剥离后约 75M
+ls -lh out/Release/libnode.so out/Release/libnode.so.bak    # 剥离前约 97M，剥离后约 75M（含 ICU 会略大）
 ```
 
 验证剥离前后动态符号表是否一致（确保剥离安全）：
@@ -290,7 +373,7 @@ diff <(nm -D out/Release/libnode.so.bak | awk '{print $2, $3}' | sort) <(nm -D o
 ```
 若输出“符号表完全一致”，则剥离安全。
 
-### 4.16 保存 arm64-v8a 产物
+### 4.17 保存 arm64-v8a 产物
 ```bash
 mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
 cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
@@ -339,8 +422,8 @@ ls -lh x86_64.zip
 
 ```
 /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
-├── arm64-v8a.zip              # arm64-v8a 产物（约 75M，剥离后）
-└── x86_64.zip                 # x86_64 产物（约 80M，剥离后）
+├── arm64-v8a.zip              # arm64-v8a 产物（约 75M，剥离后，含 full-icu）
+└── x86_64.zip                 # x86_64 产物（约 80M，剥离后，含 full-icu）
 ```
 
 每个 zip 包内包含对应架构的 `libnode.so`。
@@ -586,10 +669,39 @@ unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/arm64-v8a.zip
 预期应看到 `Node.js v22.23.2` 启动成功，无以下错误：
 - `Cannot find module 'rn-bridge'`
 - `TypeError: Cannot read properties of undefined (reading 'send')`
+- `Invalid regular expression: /^[$_\p{ID_Start}]$/u`
 
-若出现 `TypeError: Cannot read properties of undefined (reading 'send')`，说明加载的是原生绑定而非 JS 包装文件，需检查 4.12 节的 `loader.js` 补丁是否生效，以及设备上 `NODE_PATH` 目录下是否存在 `rn-bridge/index.js`。
+若出现 `TypeError: Cannot read properties of undefined (reading 'send')`，说明加载的是原生绑定而非 JS 包装文件，需检查 4.13 节的 `loader.js` 补丁是否生效，以及设备上 `NODE_PATH` 目录下是否存在 `rn-bridge/index.js`。
 
-### 7.3 环境变量补充（可选，便于自动启动）
+若出现 `Invalid regular expression: /^[$_\p{ID_Start}]$/u`，说明 `libnode.so` 编译时未启用 ICU，需回到 4.6 节确认 `--with-intl=full-icu` 已生效并重新编译。
+
+### 7.3 验证 ICU（Unicode 属性转义）功能
+
+在设备上运行 Node.js 脚本，测试 `\p{...}` 是否能被正确解析。在 `main.js` 顶部临时加入：
+
+```js
+try {
+    const re = /^[$_\p{ID_Start}]$/u;
+    console.log('=== ICU check: \\p{ID_Start} OK');
+} catch (e) {
+    console.log('=== ICU check failed:', e.message);
+}
+```
+
+抓日志：
+```powershell
+adb logcat -c
+adb logcat | Select-String -Pattern "ICU check"
+```
+
+预期输出：
+```
+I NODEJS-MOBILE: === ICU check: \p{ID_Start} OK
+```
+
+若显示 `ICU check failed: Invalid regular expression ...`，说明 ICU 未生效。
+
+### 7.4 环境变量补充（可选，便于自动启动）
 将 adb 所在目录加入 Windows 用户 PATH，避免 `run-android` 最后一步因找不到 adb 而报错（不影响应用安装）：
 ```powershell
 [Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Users\flun\AppData\Local\Android\Sdk\platform-tools", "User")
@@ -604,7 +716,7 @@ unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/arm64-v8a.zip
 修改 `android-configure`，将 `(3, 14)` 添加到 `acceptable_pythons` 列表首位。
 
 ### 8.2 `android_getCpuFeatures` 未定义
-复制 NDK 源文件并添加进 `libnode` 编译（见 4.6、4.7）。
+复制 NDK 源文件并添加进 `libnode` 编译（见 4.7、4.8）。
 
 ### 8.3 重复符号错误（如 `arm_cpu_enable_pmull`）
 确保只添加 NDK 的 `cpu-features.c`，不修改 zlib 自己的编译。
@@ -616,40 +728,58 @@ unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/arm64-v8a.zip
 确保括号、引号、逗号正确。
 
 ### 8.6 `handles.h` 静态断言失败
-注释掉相关代码块（见 4.9）。
+注释掉相关代码块（见 4.10）。
 
 ### 8.7 `trap-handler.h` 补丁应用失败
-手动强制 `V8_TRAP_HANDLER_SUPPORTED false`（见 4.8）。
+手动强制 `V8_TRAP_HANDLER_SUPPORTED false`（见 4.9）。
 
 ### 8.8 编译进程被 `Terminated`
 降低并行任务数，使用 `make -j2`。`nproc` 为 8、内存 7.7Gi 时，推荐 `make -j4`。
 
 ### 8.9 链接错误 `TryHandleSignal`、`RegisterDefaultTrapHandler`、`v8_internal_simulator_ProbeMemory`
-直接修改 V8 源文件提供桩函数（见 4.11）。
+直接修改 V8 源文件提供桩函数（见 4.12）。
 
 ### 8.10 JNI 库链接失败（`v8::Exception::Error` 未导出）
 修改 JNI 头文件与 `libnode.so` ABI 匹配（见 6.2）。
 
 ### 8.11 运行时 `Cannot find module 'rn-bridge'`
-修改 Node.js CJS loader，从 `NODE_PATH` 加载 JS 包装文件（见 4.12）。
+修改 Node.js CJS loader，从 `NODE_PATH` 加载 JS 包装文件（见 4.13）。
 
 ### 8.12 运行时 `TypeError: Cannot read properties of undefined (reading 'send')`
 **原因**：`require('rn-bridge')` 返回的是原生绑定（只有 `sendMessage`/`registerChannel`/`getDataDir`），而不是 JS 包装文件导出的 `{ app, channel }` 对象。
-**解决**：确认 4.12 节的 `loader.js` 补丁已正确应用，并重新编译 `libnode.so`。不要将 `rn-bridge.cpp` 的注册宏改为 `NODE_MODULE_CONTEXT_AWARE`。
+**解决**：确认 4.13 节的 `loader.js` 补丁已正确应用，并重新编译 `libnode.so`。不要将 `rn-bridge.cpp` 的注册宏改为 `NODE_MODULE_CONTEXT_AWARE`。
 
-### 8.13 Windows 平台 `Unsupported operating system`
+### 8.13 运行时 `TypeError: number 116 is not a function`（纯 ESM 加载失败）
+**原因**：`path-to-regexp@8`（Express 5 的 `router` 依赖它）是纯 ESM 包，`router/lib/layer.js` 用 `require('path-to-regexp')` 加载它时，若环境中的 `require(esm)` 未生效或包缺少 `default` 导出条件，会返回非对象值。
+
+**排查步骤**：
+
+1. 检查 `require(esm)` 是否支持（在 `main.js` 顶部加一行 `console.log(process.features.require_module)`），预期输出 `true`。
+2. 若为 `true` 但仍失败，检查报错包的 `package.json` 中 `exports` 是否有 `default` 条件。若只有 `import`，需要补上 `"default": "./dist/index.js"`。
+3. 若补上 `default` 后报 `Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name`，说明 `libnode.so` 未启用 ICU（见 4.6）。
+
+**根治方案**：启用 `--with-intl=full-icu` 重新编译 `libnode.so`（见 4.6）。这样无需 patch 任何 npm 包。
+
+### 8.14 运行时 `Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name in character class`
+**原因**：`libnode.so` 编译时使用了 `--with-intl=none`，V8 缺少完整 ICU 数据，无法识别 Unicode 属性转义 `\p{...}`。
+
+**解决**：修改 `android_configure.py`，将 `--with-intl=none` 改为 `--with-intl=full-icu`，重新编译 `libnode.so`（见 4.6）。
+
+**注意**：不要逐个 patch npm 包中的 `\p{...}`，那样治标不治本，且每次 `npm install` 都会丢失修改。
+
+### 8.15 Windows 平台 `Unsupported operating system`
 修改 `build.gradle`（见 6.4）。
 
-### 8.14 Gradle 9.0 `exec()` 缺失
+### 8.16 Gradle 9.0 `exec()` 缺失
 修改 `build.gradle` 使用 `providers.exec`（见 6.5）。
 
-### 8.15 armeabi-v7a 链接失败
+### 8.17 armeabi-v7a 链接失败
 见 5.4 节，放弃 arm32，只编译 arm64-v8a 和 x86_64（见 6.6）。
 
-### 8.16 Windows 下 `'adb' is not recognized`
-环境变量 PATH 未包含 platform-tools（见 7.3）。不影响应用安装，仅 `run-android` 最后自动启动失败。
+### 8.18 Windows 下 `'adb' is not recognized`
+环境变量 PATH 未包含 platform-tools（见 7.4）。不影响应用安装，仅 `run-android` 最后自动启动失败。
 
-### 8.17 armeabi-v7a 编译失败（Torque 对齐错误）
+### 8.19 armeabi-v7a 编译失败（Torque 对齐错误）
 见 5.4 节。V8 v22 官方不支持在 x64 host 上交叉编译 32 位 arm 目标，放弃 arm32。
 
 ---
@@ -674,6 +804,7 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | --------------- |
 | `android-configure`                              | 支持 Python 3.14                                                                                            | 编译前          |
 | `android_configure.py`                           | 添加 `android_ndk_path`                                                                                     | 编译前          |
+| `android_configure.py`                           | 将 `--with-intl=none` 改为 `--with-intl=full-icu`（Unicode 全字符支持）                                     | 编译前          |
 | `node.gyp`                                       | 添加 `deps/zlib`、`cpu-features.c`、符号导出选项                                                            | 编译前          |
 | `deps/v8/src/trap-handler/trap-handler.h`        | 强制 `V8_TRAP_HANDLER_SUPPORTED false`                                                                      | 编译前          |
 | `deps/v8/src/handles/handles.h`                  | 注释静态断言                                                                                                | 编译前          |
@@ -716,7 +847,12 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
 5. **Node.js 官方 `process._linkedBinding`** 是否仍存在？
    - 若被重命名或移除，需同步更新 `rn-bridge/index.js` 和 `loader.js`。
 
-6. **测试运行**：应用启动后，`main.js` 中 `require('rn-bridge')` 应返回包含 `channel` 和 `app` 属性的对象，而非仅含 `sendMessage` 等原生方法。
+6. **`--with-intl=full-icu`** 在新版本 Node.js 中是否仍是有效选项？
+   - 检查 `./configure --help | grep intl`，确认可选项。
+   - 若 Node.js 官方默认已启用 full-icu（未来版本可能），可移除本补丁。
+   - 若 ICU 数据下载地址变更，需更新 configure 阶段的下载逻辑。
+
+7. **测试运行**：应用启动后，`main.js` 中 `require('rn-bridge')` 应返回包含 `channel` 和 `app` 属性的对象，而非仅含 `sendMessage` 等原生方法。
 
 ### 9.5 长期优化方向
 
@@ -745,15 +881,17 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
 5. 精确修改 `node.gyp` 和 `common.gypi`。
 6. v22 中额外处理 V8 静态断言、trap handler 和模拟器。
 7. 注意编译资源限制，使用 `make -j4`（8 核 / 8G 内存）或 `make -j2`（资源紧张时）。
-8. 编译前修改 `loader.js`，从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件（**不要**直接返回原生绑定）。
-9. 替换后修改 JNI 头文件和源码，解决链接错误；**保持 `NODE_MODULE_LINKED` 注册宏**。
-10. 修改 `build.gradle`，解决 Windows 平台、Gradle 9.0、ABI 限制问题。
-11. 多架构支持：arm64-v8a（主目标）+ x86_64（模拟器）；armeabi-v7a 因 V8 v22 官方限制放弃。
-12. 产物统一保存到 `nodejs-mobile/out_android/`，打包为 `arm64-v8a.zip` 和 `x86_64.zip`。
-13. 将补丁固化，每次升级重新应用，并按 9.4 节的清单逐项检查 `rn-bridge` 相关的适配点。
+8. **启用 `--with-intl=full-icu`**，解决 `\p{ID_Start}` 等 Unicode 属性转义在 V8 中无法解析的问题（这是 Express 5 及其依赖 `path-to-regexp@8` 能正常加载的前提）。
+9. 编译前修改 `loader.js`，从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件（**不要**直接返回原生绑定）。
+10. 替换后修改 JNI 头文件和源码，解决链接错误；**保持 `NODE_MODULE_LINKED` 注册宏**。
+11. 修改 `build.gradle`，解决 Windows 平台、Gradle 9.0、ABI 限制问题。
+12. 多架构支持：arm64-v8a（主目标）+ x86_64（模拟器）；armeabi-v7a 因 V8 v22 官方限制放弃。
+13. 产物统一保存到 `nodejs-mobile/out_android/`，打包为 `arm64-v8a.zip` 和 `x86_64.zip`。
+14. 将补丁固化，每次升级重新应用，并按 9.4 节的清单逐项检查 `rn-bridge` 相关的适配点。
 
 ---
 
-**文档版本**：11.0（产物统一保存到 `nodejs-mobile/out_android/`，打包为 zip）
-**最后更新**：2026-09-12
+**文档版本**：12.0（新增 4.6 节 full-icu 全字符支持；更新产物统一保存到 `nodejs-mobile/out_android/`）
+**最后更新**：2026-09-13
 **作者**：根据实际升级过程整理
+```

@@ -81,5 +81,5 @@ GYP_DEFINES += " v8_trap_handler=0"
 os.environ['GYP_DEFINES'] = GYP_DEFINES
 
 if os.path.exists("./configure"):
-    # nodejs-mobile patch: added --with-intl=none and --shared
-    os.system("./configure --dest-cpu=" + DEST_CPU + " --dest-os=android --openssl-no-asm --with-intl=none --cross-compiling --shared")
+    # nodejs-mobile patch: added --with-intl=full-icu and --shared
+    os.system("./configure --dest-cpu=" + DEST_CPU + " --dest-os=android --openssl-no-asm --with-intl=full-icu --cross-compiling --shared")

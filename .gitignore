@@ -160,6 +160,7 @@ cmake_install.cmake
 install_manifest.txt
 *.cbp
 *.bat
+*.bak
 *.ps1
 # === Global Rules ===
 # Keep last to avoid being excluded
