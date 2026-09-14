@@ -14,16 +14,26 @@
 - NODE_MODULE_VERSION 从 108 升级到 127
 
 ### 新增
-- 支持 Unicode 全字符
+- 支持 Unicode 全字符（`--with-intl=full-icu`），可解析 `\p{...}` 等 Unicode 属性转义
 - 支持 Android `arm64-v8a` 架构
 - 支持 Android `x86_64` 架构（用于模拟器）
-- 编译产物打包为 `arm64-v8a.zip` 和 `x86_64.zip`
-- 符号剥离：`arm64-v8a` 约 75M，`x86_64` 约 80M
+- **唯一发布物 `libnode.zip`**，结构与官方 nodejs-mobile 一致：
+  ```
+  libnode/
+  ├── bin/
+  │   ├── arm64-v8a/libnode.so
+  │   └── x86_64/libnode.so
+  └── include/node/        # 官方 v22 headers（含 ABI 适配，无需手动修改）
+  ```
+- 发布时重命名为 `android-libnode.zip`，为未来的 iOS 等平台扩展预留接口（如 `ios-libnode.zip`）
+- 符号剥离：`arm64-v8a` 约 113M，`x86_64` 约 118M（含 full-icu）
 
 ### 修改
 - **构建配置**
   - `android-configure`：支持 Python 3.14
-  - `android_configure.py`：添加 `android_ndk_path` 到 GYP_DEFINES
+  - `android_configure.py`：
+    - 添加 `android_ndk_path` 到 GYP_DEFINES
+    - 将 `--with-intl=none` 改为 `--with-intl=full-icu`
   - `node.gyp`：
     - 添加 `deps/zlib` 到 include_dirs
     - 添加 `deps/zlib/cpu-features.c` 到 sources
@@ -37,8 +47,6 @@
 - **Node.js 源码**
   - `lib/internal/modules/cjs/loader.js`：修改 `Module._load`，使 `require('rn-bridge')` 从 `NODE_PATH` 加载 JS 包装文件（适配 Node.js 20+ 模块解析机制）
 - **JNI 适配（Android 项目侧）**
-  - `node_modules/nodejs-mobile-react-native/android/libnode/include/node/v8-exception.h`：`Error`/`TypeError` 添加第二参数，匹配 v22 ABI
-  - `node_modules/nodejs-mobile-react-native/android/libnode/include/node/v8-persistent-handle.h`：`GlobalizeReference` 第二参数改为值传递，匹配 v22 ABI
   - `node_modules/nodejs-mobile-react-native/android/src/main/cpp/rn-bridge.cpp`：
     - `v8::Exception::TypeError` → `v8::Exception::Error`
     - `v8::Persistent<v8::Function>` → `v8::Global<v8::Function>`
@@ -46,22 +54,28 @@
   - `node_modules/nodejs-mobile-react-native/android/build.gradle`：
     - 支持 Windows 平台（`windows-x86_64`、`host_os=win32`）
     - 修复 Gradle 9.0 `exec()` 缺失，改用 `providers.exec`
-    - 限制 `abiFilters` 为 `["arm64-v8a"]`（或 `["arm64-v8a", "x86_64"]`）
-  - `android/gradle.properties`：`reactNativeArchitectures=arm64-v8a`（或 `arm64-v8a,x86_64`）
+    - 限制 `abiFilters` 为 `["arm64-v8a", "x86_64"]`
+  - `android/gradle.properties`：`reactNativeArchitectures=arm64-v8a,x86_64`
+
+### 发布产物
+- **`android-libnode.zip`**（约 88M）：完整包，含 `bin/arm64-v8a/libnode.so`、`bin/x86_64/libnode.so`、`include/node/`（官方 v22 headers）。
+- 用户下载后直接替换插件 `android/libnode/` 整个目录，**无需再手动修改头文件**。
+- 单架构 zip（`arm64-v8a.zip`、`x86_64.zip`）已废弃，不再发布。
 
 ### 兼容性说明
 - **armeabi-v7a 已放弃**：V8 v22 官方不支持在 x64 主机上交叉编译 32 位 ARM 目标（`v8config.h:914` 硬性拒绝，且 Torque 工具会报 8 字节对齐错误）。如需 32 位 ARM 支持，请使用 Node.js v18 或 v20。
-- **V8 ABI 与 v18 不兼容**：升级后必须同步修改 JNI 头文件和源码，否则 JNI 库会因符号缺失而链接失败。
+- **V8 ABI 与 v18 不兼容**：使用 `android-libnode.zip` 整目录替换后，插件的 `include/node/` 被替换为官方 v22 headers（已含正确 ABI），但仍需修改 `rn-bridge.cpp` 源码。
 
 ### 已知问题
 - 应用需重新编译所有原生 Node.js 模块（设置 `NODEJS_MOBILE_BUILD_NATIVE_MODULES=1`），否则会因 ABI 不匹配报 `NODE_MODULE_VERSION` 错误。
+- full-icu 是 Express 5 的硬性前提：未启用 ICU 的 `libnode.so` 加载 `path-to-regexp@8`（Express 5 依赖）时会报 `Invalid regular expression` 或 `number 116 is not a function`。
 
 ### 文档
 - 详见 `UPGRADE.md`：完整升级流程、常见问题、长期维护策略
-- 详见 `自定义libnode指南.md`：替换 `libnode.so` 后的 Android 端适配操作
+- 详见 `自定义libnode指南.md`：替换 `libnode.zip` 后的 Android 端适配操作
 
 ---
 
 ## [18.20.4] - 2024-08（历史版本）
 
-初始版本，基于 Node.js v18.20.4 LTS，支持 Android ARM64 平台。
+初始版本，基于 Node.js v18.20.4 LTS。
