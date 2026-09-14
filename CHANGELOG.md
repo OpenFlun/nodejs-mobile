@@ -14,6 +14,7 @@
 - NODE_MODULE_VERSION 从 108 升级到 127
 
 ### 新增
+- 支持 Unicode 全字符
 - 支持 Android `arm64-v8a` 架构
 - 支持 Android `x86_64` 架构（用于模拟器）
 - 编译产物打包为 `arm64-v8a.zip` 和 `x86_64.zip`
