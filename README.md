@@ -60,11 +60,11 @@ libnode/
 
 ### 1. 下载并替换插件目录
 
-从 [Release 页面](https://gitee.com/OpenFlun/nodejs-mobile/releases/latest) 下载 `android-libnode.zip`，解压后**直接替换** `nodejs-mobile-react-native` 插件的 `android/libnode/` 整个目录：
+从 [Release 页面](https://gitee.com/OpenFlun/nodejs-mobile/releases/latest) 下载 `android-libnode.zip`，解压后**直接替换** `@flun/nodejs-mobile-react-native` 插件的 `android/libnode/` 整个目录：
 
 ```bash
 # 备份原有目录（首次升级时）
-cd node_modules/nodejs-mobile-react-native/android
+cd node_modules/@flun/nodejs-mobile-react-native/android
 cp -r libnode libnode.bak
 
 # 替换为新的完整目录
@@ -113,10 +113,10 @@ make -j$(nproc)
 
 ## 集成到 Android 项目
 
-本项目主要面向 [nodejs-mobile-react-native](https://github.com/nodejs-mobile/nodejs-mobile-react-native) 插件集成：
+本项目主要面向 [@flun/nodejs-mobile-react-native](https://github.com/OpenFlun/@flun/nodejs-mobile-react-native) 插件集成：
 
 1. 下载 `android-libnode.zip` 并解压。
-2. 替换插件 `node_modules/nodejs-mobile-react-native/android/libnode/` 整个目录。
+2. 替换插件 `node_modules/@flun/nodejs-mobile-react-native/android/libnode/` 整个目录。
 3. 修改插件 `android/src/main/cpp/rn-bridge.cpp`（`Error` 替代 `TypeError`、`Global` 替代 `Persistent`）。
 4. 修改插件 `android/build.gradle`（Windows 支持、Gradle 9.0 `providers.exec`、ABI 限制）。
 5. 修改 `android/gradle.properties`（`reactNativeArchitectures=arm64-v8a,x86_64`）。

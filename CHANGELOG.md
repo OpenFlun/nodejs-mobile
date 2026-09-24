@@ -7,6 +7,22 @@
 ---
 
 
+## [22.23.2] - 2026-09-25 02:45
+
+### 优化
+- **rn-bridge 入口解析**：CJS loader 补丁从硬编码 `rn-bridge/index.js` 改为传目录路径 `rn-bridge`，让 Node 按该目录 `package.json` 的 `main` 字段解析
+
+### 增强
+- 支持 `rn-bridge` 入口文件名为任意后缀：`.js` / `.cjs` / `.mjs` / 未来任何扩展名
+- 兼容 `type: module` 的包结构（入口可改名 `index.cjs` 而不破坏加载）
+
+### 背景
+- `@flun/nodejs-mobile-react-native` 因 `type: module` 将 rn-bridge 入口从 `index.js` 改名为 `index.cjs`
+- 原先 loader 补丁按 `index.js` 定位；当入口改名后 Node 会回退到 `process._linkedBinding('rn_bridge')` 拿裸 binding（无 `channel` 属性）
+- 触发运行时崩溃：`FORTIFY: pthread_mutex_lock called on a destroyed mutex` + `Fatal signal 6 (SIGABRT)`
+- 本次改动从根源解决：loader 只负责定位 rn-bridge 目录，入口文件名交给 package.json 决定
+
+---
 ## [22.23.2] - 2026-09-12
 
 ### 升级

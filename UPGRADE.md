@@ -1,4 +1,3 @@
-```markdown
 # nodejs-mobile 升级适配完整指南（v18.20.4 → v22.23.2）
 
 **适用环境**：Windows 11 + WSL2 Ubuntu 24.04，项目位于 `/mnt/d/nodejs-mobile-build`
@@ -18,10 +17,17 @@
 │       ├── cpu-features.c             # 源文件：复制到 nodejs-mobile/deps/zlib/
 │       └── cpu-features.h             # 源文件：复制到 nodejs-mobile/deps/zlib/
 ├── node-v18/                          # 旧版本源码（保留备用，无需修改）
-├── node-v22.23.2.tar.gz               # 官方源码包（解压后重命名为 nodejs-mobile）
+├── node-v22.23.2.tar.gz               # 官方源码包
+├── node-v22.23.2-headers.tar.gz       # 官方头文件包（打包 libnode.zip 用）
+├── node-v22.23.2/                     # 官方源码解压目录
+├── node-v22.23.2-headers/             # 官方头文件解压目录
+│   └── include/node/                  # 完整的 Node.js 头文件（v22 ABI，直接打包进 libnode.zip）
+├── libnode-tmp/                       # 中间暂存目录（各架构 .so，切换架构时不丢失）
+│   ├── arm64-v8a/libnode.so
+│   └── x86_64/libnode.so
 ├── nodejs-mobile/
 │   ├── android-configure              # 修改：支持 Python 3.14
-│   ├── android_configure.py           # 修改：添加 android_ndk_path；启用 full-icu（Unicode 全字符支持）
+│   ├── android_configure.py           # 修改：添加 android_ndk_path；启用 full-icu
 │   ├── android-patches/               # 保留：nodejs-mobile 特有补丁
 │   ├── doc_mobile/                    # 保留：nodejs-mobile 特有文档
 │   ├── node.gyp                       # 修改：添加 deps/zlib、cpu-features.c、符号导出选项
@@ -41,29 +47,44 @@
 │   ├── out/Release/
 │   │   ├── libnode.so                 # 编译产物（每次编译会覆盖）
 │   │   └── node                       # 编译产物软链接
-│   ├── out_android/                   # 最终产物集中保存目录（推荐，纳入版本控制）
-│   │   ├── arm64-v8a.zip              # arm64-v8a 产物压缩包（剥离后约 75M）
-│   │   └── x86_64.zip                 # x86_64 产物压缩包（剥离后约 80M）
+│   ├── out_android/                   # 最终产物目录
+│   │   └── libnode.zip                # ★ 唯一发布物（完整包：bin + include，约 88M）
 │   └── ... (其他官方源码)
 └── nodejs-mobile-build-backup/        # 备份目录（可选）
 ```
 
-### 1.2 Android 项目端（`D:\Extend_npm\node-mobile-app\`）
+### 1.2 你的测试项目端（以使用 `@flun/node-mobile-app`包为例）
 
 ```
-D:\Extend_npm\node-mobile-app\
-├── node_modules\nodejs-mobile-react-native\android\libnode\
-│   ├── bin\arm64-v8a\libnode.so       # 替换：编译产物
-│   ├── bin\x86_64\libnode.so          # 替换：编译产物（如支持 x86_64）
-│   └── include\node\
-│       ├── v8-exception.h             # 修改：ABI 匹配（Error/TypeError 添加第二参数）
-│       └── v8-persistent-handle.h     # 修改：ABI 匹配（GlobalizeReference 第二参数改为值传递）
-├── node_modules\nodejs-mobile-react-native\android\
-│   ├── build.gradle                   # 修改：Windows 支持、Gradle 9.0、ABI 限制
-│   └── src\main\cpp\rn-bridge.cpp     # 修改：Error 替代 TypeError、Global 替代 Persistent；保持 NODE_MODULE_LINKED
-├── android\gradle.properties          # 修改：reactNativeArchitectures=arm64-v8a[,x86_64]
-└── nodejs-assets\nodejs-project\      # 无需修改（业务代码），但需重新安装原生模块
+你的项目/
+├── package.json              # 你自己的
+├── mobileAppConfig.js        # CLI 生成的配置（可编辑）
+├── server.js                 # Node 启动脚本（你写的，或 CLI 生成的示例）
+├── node_modules/             # 你的依赖
+│   └── @flun/nodejs-mobile-react-native/android/
+│       ├── libnode/          # ★ 唯一手动替换点（见第七、八章）
+│       │   ├── bin/arm64-v8a/libnode.so
+│       │   ├── bin/x86_64/libnode.so
+│       │   └── include/node/           # 官方 v22 headers（含正确 ABI）
+│       ├── build.gradle                # CLI 自动 patch
+│       └── src/main/cpp/rn-bridge.cpp  # CLI 自动 patch
+├── build/                    # 你的资源（图标、keystore 等）
+│   ├── icon.png
+│   └── release.keystore
+│── 你的其它文件/目录...
+│
+└── node-mobile-app-build/    # CLI 生成的 RN 工程（可整体删除重建）
+    ├── android/  ios/  App.tsx  index.js  ...
+    ├── mobileApp.runtime.ts  # CLI 生成，App.tsx 读
+    └── nodejs-assets/
+        └── nodejs-project/   # 你的 Node 项目副本
+            ├── server.js     # 你的源码
+            ├── main.js       # CLI 生成，桥接代码
+            ├── package.json  # 只保留 dependencies
+            └── node_modules/ # 你的生产依赖
 ```
+
+> **发布物唯一**：只发布 `libnode.zip`，结构与官方 nodejs-mobile 一致（`bin/<arch>/libnode.so` + `include/node/`）。用户下载后直接替换整个插件 `android/libnode/` 目录，无需再手动改头文件。
 
 ---
 
@@ -75,7 +96,7 @@ D:\Extend_npm\node-mobile-app\
 ### 2.2 安装编译依赖
 ```bash
 sudo apt update
-sudo apt install -y cmake ninja-build bison flex gperf libssl-dev git wget
+sudo apt install -y cmake ninja-build bison flex gperf libssl-dev git wget zip
 ```
 
 ### 2.3 安装 Python 3.14.7
@@ -103,6 +124,18 @@ wget https://dl.google.com/android/repository/android-ndk-r27-linux.zip
 unzip android-ndk-r27-linux.zip
 ```
 
+### 2.6 下载官方 v22.23.2 头文件包（打包 libnode.zip 用）
+
+```bash
+cd /mnt/d/nodejs-mobile-build
+wget https://nodejs.org/download/release/v22.23.2/node-v22.23.2-headers.tar.gz
+tar -xzf node-v22.23.2-headers.tar.gz
+mv node-v22.23.2 node-v22.23.2-headers
+ls -d node-v22.23.2-headers && ls node-v22.23.2-headers/include/node/ | head -5
+```
+
+> **注意**：官方源码包和头文件包解压后**目录名相同**（均为 `node-v22.23.2/`）。必须先解压并重命名头文件包，或解压后立即 `mv`，否则与源码目录冲突。
+
 ---
 
 ## 三、编译 v18.20.4（基线验证，可选）
@@ -119,14 +152,16 @@ make -j2
 
 ## 四、升级到 v22.23.2（完整步骤）
 
-> **逻辑链提醒**：本章所有修改均在**编译 `libnode.so` 之前完成**，编译完成后产物直接用于第六章替换。
+> **逻辑链提醒**：本章所有修改均在**编译 `libnode.so` 之前完成**。
 
-### 4.1 下载并解压 v22.23.2
+### 4.1 下载并解压 v22.23.2 源码
 ```bash
 cd /mnt/d/nodejs-mobile-build
 wget https://nodejs.org/dist/v22.23.2/node-v22.23.2.tar.gz
 tar -xzf node-v22.23.2.tar.gz
 ```
+
+> 若已在 2.6 节解压过头文件包并重命名为 `node-v22.23.2-headers/`，此处 `node-v22.23.2/` 是干净的源码目录。若解压顺序颠倒（先源码后头文件），先确认 `node-v22.23.2/` 里有 `node.gyp`、`deps/`、`lib/`，否则重新下载源码。
 
 ### 4.2 重命名旧项目并创建新目录
 ```bash
@@ -296,19 +331,21 @@ echo -e '\nextern "C" bool v8_internal_simulator_ProbeMemory(uintptr_t, uintptr_
 但 Node.js 20+ 收紧了模块解析机制：
 - 链接绑定不再暴露给 `require()`，只能通过 `process._linkedBinding('rn_bridge')` 访问。
 - 直接 `process._linkedBinding('rn_bridge')` 返回的**仅是原生绑定对象**（只有 `sendMessage`、`registerChannel`、`getDataDir` 三个方法），**没有 `channel` 属性**。
-- 用户业务代码（`main.js`）依赖 `rn_bridge.channel.send(...)`，此 API 由 JS 包装文件 `builtin_modules/rn-bridge/index.js` 提供。
-- 该 JS 包装文件由 `nodejs-mobile-react-native` 的 Java 层通过 `copyAssetFolder("builtin_modules", builtinModulesPath)` 复制到设备目录，并在启动时通过 `setenv("NODE_PATH", modulesPath, 1)` 将该目录加入 `NODE_PATH`。
+- 用户业务代码（`main.js`）依赖 `rn_bridge.channel.send(...)`，此 API 由 JS 包装文件 `builtin_modules/rn-bridge/` 目录下的入口提供（由该目录 `package.json` 的 `main` 字段决定）。
+- 该 JS 包装文件由 `@flun/nodejs-mobile-react-native` 的 Java 层通过 `copyAssetFolder("builtin_modules", builtinModulesPath)` 复制到设备目录，并在启动时通过 `setenv("NODE_PATH", modulesPath, 1)` 将该目录加入 `NODE_PATH`。
 
 因此，正确的修复方式不是让 `require('rn-bridge')` 返回原生绑定，而是让它**加载 JS 包装文件**。
 
 #### 4.13.2 修改 `lib/internal/modules/cjs/loader.js`
+
+**说明**：补丁只负责定位 `rn-bridge` 目录，入口文件名交给该目录 `package.json` 的 `main` 字段解析。这样无论入口是 `.js` / `.cjs` / `.mjs` 还是未来任何扩展名，都能正确加载，也不再受 `type: module` 改造影响。
 
 **修改位置**：`Module._load` 函数开头（约第 1193 行）
 
 **操作命令**：
 ```bash
 cp lib/internal/modules/cjs/loader.js lib/internal/modules/cjs/loader.js.bak
-perl -0777 -pi -e 's/(Module\._load = function\(request, parent, isMain, options = kEmptyObject\) \{\n)/$1  \/\/ Nodejs-mobile: load rn-bridge JS wrapper from NODE_PATH\n  if (request === "rn-bridge") {\n    const path = require("path");\n    const fs = require("fs");\n    const nodePath = process.env.NODE_PATH || "";\n    const paths = nodePath.split(path.delimiter);\n    for (let i = 0; i < paths.length; i++) {\n      const p = paths[i];\n      if (p) {\n        const file = path.join(p, "rn-bridge", "index.js");\n        if (fs.existsSync(file)) {\n          return Module._load(file, parent, isMain, options);\n        }\n      }\n    }\n  }\n/' lib/internal/modules/cjs/loader.js
+perl -0777 -pi -e 's/(Module\._load = function\(request, parent, isMain, options = kEmptyObject\) \{\n)/$1  \/\/ Nodejs-mobile: load rn-bridge JS wrapper from NODE_PATH\n  if (request === "rn-bridge") {\n    const path = require("path");\n    const fs = require("fs");\n    const nodePath = process.env.NODE_PATH || "";\n    const paths = nodePath.split(path.delimiter);\n    for (let i = 0; i < paths.length; i++) {\n      const p = paths[i];\n      if (p) {\n        const file = path.join(p, "rn-bridge");\n        if (fs.existsSync(file)) {\n          return Module._load(file, parent, isMain, options);\n        }\n      }\n    }\n  }\n/' lib/internal/modules/cjs/loader.js
 ```
 
 **验证修改**：
@@ -326,11 +363,11 @@ NODE_MODULE_LINKED(rn_bridge, Init);
 
 - **构建产物位置**（Android APK 内部 assets）：
   ```
-  nodejs-mobile-react-native/android/build/intermediates/assets/debug/mergeDebugAssets/builtin_modules/rn-bridge/index.js
+  @flun/nodejs-mobile-react-native/android/build/intermediates/assets/debug/mergeDebugAssets/builtin_modules/rn-bridge/
   ```
 - **设备上的路径**（运行时由 `NODE_PATH` 指向）：
   ```
-  /data/data/<package>/files/nodejs-builtin_modules/rn-bridge/index.js
+  /data/data/<package>/files/nodejs-builtin_modules/rn-bridge/
   ```
 - **作用**：定义 `EventChannel`、`SystemChannel`、`MessageCodec` 等类，导出 `{ app, channel }`。内部通过 `process._linkedBinding('rn_bridge')` 获取原生绑定。
 
@@ -344,57 +381,38 @@ module.exports = exports = {
 };
 ```
 
-### 4.14 清理并编译（arm64-v8a）
+### 4.14 编译 arm64-v8a（第一轮）
 ```bash
 rm -rf out config.gypi config.mk config.status
 ./android-configure /mnt/d/nodejs-mobile-build/android-ndk-r27 30 arm64
 make -j4
 ```
 
-### 4.15 验证产物
+### 4.15 验证 arm64-v8a 产物
 ```bash
 ls -lh out/Release/libnode.so
 strings out/Release/libnode.so | grep "v22.23.2"
 strings out/Release/libnode.so | grep NODE_MODULE_VERSION | head -1
+strings out/Release/libnode.so | grep -c "icudt78l"    # 应输出 4318 左右
 ```
 
-预期应显示 `v22.23.2` 和 `NODE_MODULE_VERSION 127`。
+预期应显示 `v22.23.2`、`NODE_MODULE_VERSION 127`，ICU 符号数约 4318。
 
-### 4.16 剥离调试符号（推荐）
+### 4.16 剥离调试符号并暂存到中间目录
 ```bash
 cp out/Release/libnode.so out/Release/libnode.so.bak
 /mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
-ls -lh out/Release/libnode.so out/Release/libnode.so.bak    # 剥离前约 97M，剥离后约 75M（含 ICU 会略大）
-```
 
-验证剥离前后动态符号表是否一致（确保剥离安全）：
-```bash
+# 验证剥离前后动态符号表一致
 diff <(nm -D out/Release/libnode.so.bak | awk '{print $2, $3}' | sort) <(nm -D out/Release/libnode.so | awk '{print $2, $3}' | sort) && echo "符号表完全一致"
-```
-若输出“符号表完全一致”，则剥离安全。
 
-### 4.17 保存 arm64-v8a 产物
-```bash
-mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
-cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-zip arm64-v8a.zip libnode.so && rm libnode.so
-ls -lh arm64-v8a.zip
+# 暂存到中间目录（不要放 out_android，最终只发布 libnode.zip）
+mkdir -p /mnt/d/nodejs-mobile-build/libnode-tmp/arm64-v8a
+cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-tmp/arm64-v8a/libnode.so
+ls -lh /mnt/d/nodejs-mobile-build/libnode-tmp/arm64-v8a/
 ```
 
----
-
-## 五、多架构编译（arm64-v8a / x86_64 / armeabi-v7a）
-
-### 5.1 支持的架构与现状
-
-| 架构            | 支持状态   | 说明                                                           |
-| --------------- | ---------- | -------------------------------------------------------------- |
-| **arm64-v8a**   | ✅ 完全支持 | 主目标，现代 Android 设备全部支持                              |
-| **x86_64**      | ✅ 完全支持 | 模拟器、部分平板；x64 host 上原生编译，无交叉编译问题          |
-| **armeabi-v7a** | ❌ 不支持   | 见 5.4 节说明；V8 v22 官方不支持 x64 host 上交叉编译 32 位 arm |
-
-### 5.2 编译 x86_64
+### 4.17 编译 x86_64（第二轮）
 
 ```bash
 cd /mnt/d/nodejs-mobile-build/nodejs-mobile
@@ -403,32 +421,58 @@ rm -rf out config.gypi config.mk config.status
 make -j4
 ```
 
-成功后（末尾出现 `ln -fs out/Release/node node`），剥离符号并保存：
+成功后（末尾出现 `ln -fs out/Release/node node`），剥离符号并暂存：
 
 ```bash
 cp out/Release/libnode.so out/Release/libnode.so.bak
 /mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
 diff <(nm -D out/Release/libnode.so.bak | awk '{print $2, $3}' | sort) <(nm -D out/Release/libnode.so | awk '{print $2, $3}' | sort) && echo "符号表完全一致"
-mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
-cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-zip x86_64.zip libnode.so && rm libnode.so
-ls -lh x86_64.zip
+
+mkdir -p /mnt/d/nodejs-mobile-build/libnode-tmp/x86_64
+cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/libnode-tmp/x86_64/libnode.so
+ls -lh /mnt/d/nodejs-mobile-build/libnode-tmp/x86_64/
 ```
 
-### 5.3 最终产物目录结构
+### 4.18 打包最终发布物 `libnode.zip`（唯一产物）
 
-所有架构的产物统一保存在 `nodejs-mobile/out_android/` 下：
+```bash
+cd /mnt/d/nodejs-mobile-build && rm -rf libnode-package && mkdir -p libnode-package/libnode/bin/arm64-v8a libnode-package/libnode/bin/x86_64 libnode-package/libnode/include && \
+cp -r node-v22.23.2-headers/include/node libnode-package/libnode/include/node && \
+cp libnode-tmp/arm64-v8a/libnode.so libnode-package/libnode/bin/arm64-v8a/ && \
+cp libnode-tmp/x86_64/libnode.so libnode-package/libnode/bin/x86_64/ && \
+cd libnode-package && zip -r libnode.zip libnode && \
+mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android && \
+mv libnode.zip /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.zip && \
+ls -lh /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
+```
+
+**最终 `out_android/` 只包含 `libnode.zip`**（约 88M），结构：
 
 ```
-/mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
-├── arm64-v8a.zip              # arm64-v8a 产物（约 75M，剥离后，含 full-icu）
-└── x86_64.zip                 # x86_64 产物（约 80M，剥离后，含 full-icu）
+libnode/
+├── bin/
+│   ├── arm64-v8a/libnode.so
+│   └── x86_64/libnode.so
+└── include/node/
+    ├── v8-exception.h
+    ├── v8-persistent-handle.h
+    ├── cppgc/
+    ├── libplatform/
+    ├── openssl/
+    └── uv/
 ```
 
-每个 zip 包内包含对应架构的 `libnode.so`。
+验证：
 
-### 5.4 为什么放弃 armeabi-v7a
+```bash
+cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android && unzip -l libnode.zip | head -20
+unzip -p libnode.zip libnode/bin/arm64-v8a/libnode.so | strings | grep -c "icudt78l"   # 应约 4318
+unzip -p libnode.zip libnode/bin/x86_64/libnode.so | strings | grep -c "icudt78l"     # 应约 4318
+```
+
+---
+
+## 五、为什么放弃 armeabi-v7a
 
 在 x64 host 上交叉编译 32 位 arm 目标时，会依次遇到以下不可逾越的障碍：
 
@@ -448,42 +492,32 @@ ls -lh x86_64.zip
 
 **结论**：arm64-v8a + x86_64 已覆盖全部主流 Android 设备，无需 arm32。
 
-### 5.5 每次切换架构编译的推荐流程
+---
 
-```bash
-# 1. 切换到目标架构
-cd /mnt/d/nodejs-mobile-build/nodejs-mobile
-rm -rf out config.gypi config.mk config.status
-./android-configure /mnt/d/nodejs-mobile-build/android-ndk-r27 30 <arch>   # <arch>: arm64 / x86_64
-
-# 2. 编译
-make -j4
-
-# 3. 剥离符号
-cp out/Release/libnode.so out/Release/libnode.so.bak
-/mnt/d/nodejs-mobile-build/android-ndk-r27/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip out/Release/libnode.so
-
-# 4. 立即保存产物到 out_android 目录并打包为 zip
-mkdir -p /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-cp out/Release/libnode.so /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.so
-cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-# 根据架构命名 zip（arm64 → arm64-v8a.zip，x86_64 → x86_64.zip）
-zip <arch>.zip libnode.so && rm libnode.so
-```
-
-### 5.6 一键编译所有架构（可选脚本）
+## 六、一键编译脚本（可选）
 
 创建 `/mnt/d/nodejs-mobile-build/build-all-archs.sh`：
 
 ```bash
 #!/bin/bash
+set -e
 NDK=/mnt/d/nodejs-mobile-build/android-ndk-r27
 SRC=/mnt/d/nodejs-mobile-build/nodejs-mobile
+TMP=/mnt/d/nodejs-mobile-build/libnode-tmp
 OUT=$SRC/out_android
 STRIP=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
+HEADERS=/mnt/d/nodejs-mobile-build/node-v22.23.2-headers/include/node
 
-mkdir -p $OUT
+# 编译前检查：确认 full-icu 已启用
+if ! grep -q "with-intl=full-icu" $SRC/android_configure.py; then
+    echo "❌ 错误：android_configure.py 未启用 --with-intl=full-icu"
+    exit 1
+fi
+echo "✅ full-icu 已启用"
 
+mkdir -p $TMP $OUT
+
+# 1. 编译两个架构，暂存 .so
 for ARCH in arm64 x86_64; do
     echo "=== 编译 $ARCH ==="
     cd $SRC
@@ -491,19 +525,33 @@ for ARCH in arm64 x86_64; do
     ./android-configure $NDK 30 $ARCH
     make -j4
     $STRIP out/Release/libnode.so
-    cp out/Release/libnode.so $OUT/libnode.so
-    cd $OUT
     if [ "$ARCH" = "arm64" ]; then
-        ZIP_NAME="arm64-v8a.zip"
+        DIR_NAME="arm64-v8a"
     else
-        ZIP_NAME="$ARCH.zip"
+        DIR_NAME="$ARCH"
     fi
-    zip $ZIP_NAME libnode.so && rm libnode.so
+    mkdir -p $TMP/$DIR_NAME
+    cp out/Release/libnode.so $TMP/$DIR_NAME/libnode.so
+    echo "--- $DIR_NAME ICU 符号数 ---"
+    strings $TMP/$DIR_NAME/libnode.so | grep -c "icudt78l" || echo "0"
 done
-echo "=== 全部完成，产物位于 $OUT ==="
+
+# 2. 打包完整 libnode.zip
+echo "=== 打包 libnode.zip ==="
+cd /mnt/d/nodejs-mobile-build && rm -rf libnode-package
+mkdir -p libnode-package/libnode/bin/arm64-v8a libnode-package/libnode/bin/x86_64 libnode-package/libnode/include
+cp -r $HEADERS libnode-package/libnode/include/node
+cp $TMP/arm64-v8a/libnode.so libnode-package/libnode/bin/arm64-v8a/
+cp $TMP/x86_64/libnode.so libnode-package/libnode/bin/x86_64/
+cd libnode-package && zip -r libnode.zip libnode
+mv libnode.zip $OUT/libnode.zip
+
+echo "=== 完成，产物位于 $OUT ==="
+ls -lh $OUT
 ```
 
 执行：
+
 ```bash
 chmod +x /mnt/d/nodejs-mobile-build/build-all-archs.sh
 /mnt/d/nodejs-mobile-build/build-all-archs.sh
@@ -511,245 +559,205 @@ chmod +x /mnt/d/nodejs-mobile-build/build-all-archs.sh
 
 ---
 
-## 六、替换到 Android 项目并适配 JNI
+## 七、替换到 Android 项目
 
-> **逻辑链提醒**：本章所有修改均在 **`libnode.so` 编译完成之后**、**重新编译 Android 项目之前**完成。
+> 本章 `<你的项目>` 指用 `@flun/node-mobile-app` 测试的项目根目录（含 `mobileAppConfig.js` 那一层）。
+> - WSL 下示例：`/mnt/d/my-project`
+> - Windows 下示例：`D:\my-project`
 
-### 6.1 替换 `libnode.so`
-
-从 `out_android/` 解压 zip 并替换到 Android 项目：
-
-```bash
-# 解压 arm64-v8a
-cd /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android
-unzip -o arm64-v8a.zip -d /tmp/arm64-v8a
-cp /tmp/arm64-v8a/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/arm64-v8a/libnode.so
-
-# 若需支持 x86_64 模拟器
-unzip -o x86_64.zip -d /tmp/x86_64
-cp /tmp/x86_64/libnode.so /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/bin/x86_64/libnode.so
-```
-
-### 6.2 修改 JNI 头文件使其与 v22 ABI 匹配
-
-**原因**：`nodejs-mobile-react-native` 自带的旧头文件（v18 时代）与 v22 的 `libnode.so` ABI 不匹配，导致 JNI 编译时链接错误：
-```
-ld.lld: error: undefined symbol: v8::Exception::Error(v8::Local<v8::String>)
-ld.lld: error: undefined symbol: v8::api_internal::GlobalizeReference(v8::internal::Isolate*, unsigned long*)
-```
-
-**修改 `v8-exception.h`**：
-```bash
-cd /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/libnode/include/node
-cp v8-exception.h v8-exception.h.bak
-sed -i 's/static Local<Value> Error(Local<String> message);/static Local<Value> Error(Local<String> message, Local<Value> options = {});/' v8-exception.h
-sed -i 's/static Local<Value> TypeError(Local<String> message);/static Local<Value> TypeError(Local<String> message, Local<Value> options = {});/' v8-exception.h
-```
-
-**修改 `v8-persistent-handle.h`**：
-```bash
-cp v8-persistent-handle.h v8-persistent-handle.h.bak
-sed -i '/GlobalizeReference/,/handle);/ s/internal::Address\* handle);/internal::Address handle);/' v8-persistent-handle.h
-sed -i 's/reinterpret_cast<internal::Isolate\*>(isolate), p));/reinterpret_cast<internal::Isolate*>(isolate), reinterpret_cast<internal::Address>(p)));/' v8-persistent-handle.h
-```
-
-### 6.3 修改 JNI 源码 `rn-bridge.cpp`
+### 7.1 备份原有 libnode 目录（首次升级时必做）
 
 ```bash
-cd /mnt/d/Extend_npm/node-mobile-app/node_modules/nodejs-mobile-react-native/android/src/main/cpp
-cp rn-bridge.cpp rn-bridge.cpp.bak
-sed -i 's/v8::Exception::TypeError/v8::Exception::Error/g' rn-bridge.cpp
-sed -i 's/v8::Persistent<v8::Function>/v8::Global<v8::Function>/g' rn-bridge.cpp
-```
-确保 `Error` 调用为单参数，删除多余的第二个参数。
-
-**注意**：注册宏**保持** `NODE_MODULE_LINKED(rn_bridge, Init);` 不变（不要改为 `NODE_MODULE_CONTEXT_AWARE`），否则 JS 包装文件无法通过 `process._linkedBinding('rn_bridge')` 获取原生绑定。
-
-### 6.4 修改 `build.gradle` 支持 Windows 平台
-
-**原因**：`nodejs-mobile-react-native` 的 `build.gradle` 硬编码只支持 macOS 和 Linux，Windows 下会抛出 `Unsupported operating system`。
-
-```powershell
-$file = "D:\Extend_npm\node-mobile-app\node_modules\nodejs-mobile-react-native\android\build.gradle"
-Copy-Item $file "$file.bak"
-(Get-Content $file) | ForEach-Object {
-    if ($_ -match 'Unsupported operating system for nodejs-mobile native builds') {
-        "            temp_host_tag = 'windows-x86_64'"
-    } elseif ($_ -match 'Unsupported opperating system for nodejs-mobile native builds') {
-        '            npm_gyp_defines += " host_os=win32 OS=android"'
-    } else {
-        $_
-    }
-} | Set-Content $file
+cd <你的项目>/node_modules/@flun/nodejs-mobile-react-native/android
+cp -r libnode libnode.bak-v18
+echo "备份完成"
 ```
 
-### 6.5 修改 `build.gradle` 修复 Gradle 9.0 `exec()` 缺失
+### 7.2 替换整个 libnode 目录
 
-**原因**：Gradle 9.0 移除了 `exec()` 方法，需改用 `providers.exec()`。
-
-```powershell
-$file = "D:\Extend_npm\node-mobile-app\node_modules\nodejs-mobile-react-native\android\build.gradle"
-Copy-Item $file "$file.bak2"
-(Get-Content $file) | ForEach-Object {
-    if ($_ -match "commandLine 'node', '-p'") {
-        '                commandLine ''node'', ''-p'', "process.versions.node.split(''.'')[0]"'
-    } else {
-        $_
-    }
-} | Set-Content $file
+```bash
+cd <你的项目>/node_modules/@flun/nodejs-mobile-react-native/android
+rm -rf libnode
+unzip -o /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.zip -d /tmp/libnode-new
+mv /tmp/libnode-new/libnode ./libnode
+find libnode -maxdepth 3 -type d
+ls -lh libnode/bin/arm64-v8a/ libnode/bin/x86_64/
 ```
 
-### 6.6 限制编译架构
+**整目录替换包含 `include/node/`**（官方 v22 headers），`rn-bridge.cpp` 编译时会自动用新头文件，**无需手动改 C++ 源码**。
 
-**原因**：若只编译了 arm64-v8a 的 `libnode.so`，需避免 Gradle 构建 armeabi-v7a 导致链接失败。
+### 7.3 声明 ABI（CLI 自动 patch）
 
-**修改 `android/gradle.properties`**：
-```properties
-reactNativeArchitectures=arm64-v8a
+在 `mobileAppConfig.js` 里声明你要打包的架构：
+
+```js
+android: {
+  abiFilters: ['arm64-v8a', 'x86_64'],   // 只编了一个架构就只写一个
+}
 ```
 
-若同时支持 x86_64 模拟器：
-```properties
-reactNativeArchitectures=arm64-v8a,x86_64
+CLI 跑 `test` / `build` 时自动 patch 三处：
+
+| 目标文件                                                                        | 内容                           |
+| ------------------------------------------------------------------------------- | ------------------------------ |
+| `<buildDir>/android/gradle.properties`                                          | `reactNativeArchitectures`     |
+| `<buildDir>/android/app/build.gradle`                                           | `defaultConfig.ndk.abiFilters` |
+| `<你的项目>/node_modules/@flun/nodejs-mobile-react-native/android/build.gradle` | `abiFilters`                   |
+
+**无需手动操作。**
+
+### 7.4 重编原生模块（CLI 自动）
+
+如果 `nodejs-project` 里有原生模块（`bcrypt`、`sqlite3` 等），在 `mobileAppConfig.js` 里设：
+
+```js
+android: {
+  buildNativeModules: true,
+}
 ```
 
-**修改 `nodejs-mobile-react-native/android/build.gradle`**（仅 arm64 时）：
-```powershell
-$file = "D:\Extend_npm\node-mobile-app\node_modules\nodejs-mobile-react-native\android\build.gradle"
-Copy-Item $file "$file.bak5"
-(Get-Content $file) | ForEach-Object {
-    if ($_ -match 'abiFilters = project\(":app"\)') {
-        '            abiFilters = ["arm64-v8a"]'
-    } elseif ($_ -match 'nativeModulesABIs = \["armeabi-v7a", "arm64-v8a", "x86_64"\] as Set<String>;') {
-        '        nativeModulesABIs = ["arm64-v8a"] as Set<String>;'
-    } else {
-        $_
-    }
-} | Set-Content $file
+跑 `npx node-mobile-app test` 时 CLI 自动：
+
+- 写 `<buildDir>/nodejs-assets/BUILD_NATIVE_MODULES.txt = 1`
+- 设环境变量 `NODEJS_MOBILE_BUILD_NATIVE_MODULES=1`
+- 重装依赖时重编原生模块
+
+编完后**改回 `false`**（避免每次构建都重编）。
+
+**没有原生模块（纯 JS 依赖）**：跳过这步。
+
+### 7.5 跑 CLI 完成构建
+
+```bash
+cd <你的项目>
+npx node-mobile-app test
 ```
 
-同时支持 arm64-v8a 和 x86_64 时，将上述 `["arm64-v8a"]` 改为 `["arm64-v8a", "x86_64"]`。
+CLI 的指纹机制会检测 `libnode.so` / `abiFilters` 变化，**自动清 `.cxx` / `android/build` / `app/build`**，无需手动清任何缓存。
 
-### 6.7 清理缓存并重新编译原生模块
-```powershell
-cd D:\Extend_npm\node-mobile-app\android
-.\gradlew clean
-cd ..
-Remove-Item -Recurse -Force D:\Extend_npm\node-mobile-app\android\app\build -ErrorAction SilentlyContinue
-
-cd D:\Extend_npm\node-mobile-app\nodejs-assets\nodejs-project
-$env:NODEJS_MOBILE_BUILD_NATIVE_MODULES = "1"
-Remove-Item -Recurse -Force node_modules, package-lock.json -ErrorAction SilentlyContinue
-npm install
-```
-
-### 6.8 重新编译 Android 项目
-```powershell
-cd D:\Extend_npm\node-mobile-app
-Remove-Item -Recurse -Force node_modules\nodejs-mobile-react-native\android\.cxx -ErrorAction SilentlyContinue
-npx react-native run-android
-```
+**CLI 还会自动**：
+- Patch `@flun/nodejs-mobile-react-native/android/build.gradle`（Windows 平台支持、Gradle 9 `exec()` 兼容）
+- Patch `<buildDir>/android/gradle.properties` 的 `reactNativeArchitectures`
+- Patch 插件的 `abiFilters`
 
 ---
 
-## 七、验证升级成功
+## 八、验证升级成功
 
-### 7.1 检查产物
+### 8.1 检查产物
+
 ```bash
 ls -lh /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/
-unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/arm64-v8a.zip
+unzip -l /mnt/d/nodejs-mobile-build/nodejs-mobile/out_android/libnode.zip | head -20
 ```
 
-### 7.2 手机日志验证
+### 8.2 手机日志验证
+
 ```powershell
-& "C:\Users\$env:USERNAME\AppData\Local\Android\Sdk\platform-tools\adb.exe" logcat -c
-& "C:\Users\$env:USERNAME\AppData\Local\Android\Sdk\platform-tools\adb.exe" logcat | Select-String -Pattern "FATAL|AndroidRuntime|nodejs|NODEJS-MOBILE"
+# adb 路径用环境变量，避免硬编码
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+
+# <你的 appId> 是 mobileAppConfig.js 里 appId 的值
+$appId = "<你的 appId>"
+
+& $adb logcat -c
+& $adb shell am force-stop $appId
+& $adb shell am start -n "$appId/.MainActivity"
+Start-Sleep -Seconds 5
+& $adb logcat -d | Select-String -Pattern "FATAL|AndroidRuntime|nodejs|NODEJS-MOBILE"
 ```
 
 预期应看到 `Node.js v22.23.2` 启动成功，无以下错误：
+
 - `Cannot find module 'rn-bridge'`
 - `TypeError: Cannot read properties of undefined (reading 'send')`
 - `Invalid regular expression: /^[$_\p{ID_Start}]$/u`
 
-若出现 `TypeError: Cannot read properties of undefined (reading 'send')`，说明加载的是原生绑定而非 JS 包装文件，需检查 4.13 节的 `loader.js` 补丁是否生效，以及设备上 `NODE_PATH` 目录下是否存在 `rn-bridge/index.js`。
+### 8.3 验证 ICU（Unicode 属性转义）
 
-若出现 `Invalid regular expression: /^[$_\p{ID_Start}]$/u`，说明 `libnode.so` 编译时未启用 ICU，需回到 4.6 节确认 `--with-intl=full-icu` 已生效并重新编译。
-
-### 7.3 验证 ICU（Unicode 属性转义）功能
-
-在设备上运行 Node.js 脚本，测试 `\p{...}` 是否能被正确解析。在 `main.js` 顶部临时加入：
+**在 `server.js` 顶部临时加入**（重构后用户入口是 `server.js`，不是 `main.js`）：
 
 ```js
 try {
-    const re = /^[$_\p{ID_Start}]$/u;
-    console.log('=== ICU check: \\p{ID_Start} OK');
+  /^[$_\p{ID_Start}]$/u;
+  console.log('=== ICU check: \\p{ID_Start} OK');
 } catch (e) {
-    console.log('=== ICU check failed:', e.message);
+  console.log('=== ICU check failed:', e.message);
 }
 ```
 
 抓日志：
+
 ```powershell
-adb logcat -c
-adb logcat | Select-String -Pattern "ICU check"
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+$appId = "<你的 appId>"
+
+& $adb logcat -c
+& $adb shell am start -n "$appId/.MainActivity"
+Start-Sleep -Seconds 5
+& $adb logcat -d | Select-String 'ICU check'
 ```
 
 预期输出：
+
 ```
 I NODEJS-MOBILE: === ICU check: \p{ID_Start} OK
 ```
 
-若显示 `ICU check failed: Invalid regular expression ...`，说明 ICU 未生效。
+### 8.4 环境变量补充（可选，便于自动启动）
 
-### 7.4 环境变量补充（可选，便于自动启动）
-将 adb 所在目录加入 Windows 用户 PATH，避免 `run-android` 最后一步因找不到 adb 而报错（不影响应用安装）：
 ```powershell
-[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Users\flun\AppData\Local\Android\Sdk\platform-tools", "User")
+[Environment]::SetEnvironmentVariable(
+  "Path",
+  $env:Path + ";$env:LOCALAPPDATA\Android\Sdk\platform-tools",
+  "User"
+)
 ```
+
 设置后需**重启 PowerShell** 才生效。
 
 ---
 
-## 八、常见问题与解决方案
+## 九、常见问题与解决方案
 
-### 8.1 Python 版本不被接受
+### 9.1 Python 版本不被接受
 修改 `android-configure`，将 `(3, 14)` 添加到 `acceptable_pythons` 列表首位。
 
-### 8.2 `android_getCpuFeatures` 未定义
+### 9.2 `android_getCpuFeatures` 未定义
 复制 NDK 源文件并添加进 `libnode` 编译（见 4.7、4.8）。
 
-### 8.3 重复符号错误（如 `arm_cpu_enable_pmull`）
+### 9.3 重复符号错误（如 `arm_cpu_enable_pmull`）
 确保只添加 NDK 的 `cpu-features.c`，不修改 zlib 自己的编译。
 
-### 8.4 路径错误导致 .o 文件找不到
+### 9.4 路径错误导致 .o 文件找不到
 在 `sources` 中使用相对路径。
 
-### 8.5 `common.gypi` 语法错误
+### 9.5 `common.gypi` 语法错误
 确保括号、引号、逗号正确。
 
-### 8.6 `handles.h` 静态断言失败
+### 9.6 `handles.h` 静态断言失败
 注释掉相关代码块（见 4.10）。
 
-### 8.7 `trap-handler.h` 补丁应用失败
+### 9.7 `trap-handler.h` 补丁应用失败
 手动强制 `V8_TRAP_HANDLER_SUPPORTED false`（见 4.9）。
 
-### 8.8 编译进程被 `Terminated`
+### 9.8 编译进程被 `Terminated`
 降低并行任务数，使用 `make -j2`。`nproc` 为 8、内存 7.7Gi 时，推荐 `make -j4`。
 
-### 8.9 链接错误 `TryHandleSignal`、`RegisterDefaultTrapHandler`、`v8_internal_simulator_ProbeMemory`
+### 9.9 链接错误 `TryHandleSignal`、`RegisterDefaultTrapHandler`、`v8_internal_simulator_ProbeMemory`
 直接修改 V8 源文件提供桩函数（见 4.12）。
 
-### 8.10 JNI 库链接失败（`v8::Exception::Error` 未导出）
-修改 JNI 头文件与 `libnode.so` ABI 匹配（见 6.2）。
+### 9.10 JNI 库链接失败（`v8::Exception::Error` 未导出）
+使用 `libnode.zip` 替换整个 `libnode/` 目录（含官方 v22 头文件，无需手动改头文件）。
 
-### 8.11 运行时 `Cannot find module 'rn-bridge'`
+### 9.11 运行时 `Cannot find module 'rn-bridge'`
 修改 Node.js CJS loader，从 `NODE_PATH` 加载 JS 包装文件（见 4.13）。
 
-### 8.12 运行时 `TypeError: Cannot read properties of undefined (reading 'send')`
-**原因**：`require('rn-bridge')` 返回的是原生绑定（只有 `sendMessage`/`registerChannel`/`getDataDir`），而不是 JS 包装文件导出的 `{ app, channel }` 对象。
+### 9.12 运行时 `TypeError: Cannot read properties of undefined (reading 'send')`
+**原因**：`require('rn-bridge')` 返回的是原生绑定，而不是 JS 包装文件导出的 `{ app, channel }` 对象。
 **解决**：确认 4.13 节的 `loader.js` 补丁已正确应用，并重新编译 `libnode.so`。不要将 `rn-bridge.cpp` 的注册宏改为 `NODE_MODULE_CONTEXT_AWARE`。
 
-### 8.13 运行时 `TypeError: number 116 is not a function`（纯 ESM 加载失败）
+### 9.13 运行时 `TypeError: number 116 is not a function`（纯 ESM 加载失败）
 **原因**：`path-to-regexp@8`（Express 5 的 `router` 依赖它）是纯 ESM 包，`router/lib/layer.js` 用 `require('path-to-regexp')` 加载它时，若环境中的 `require(esm)` 未生效或包缺少 `default` 导出条件，会返回非对象值。
 
 **排查步骤**：
@@ -758,76 +766,93 @@ I NODEJS-MOBILE: === ICU check: \p{ID_Start} OK
 2. 若为 `true` 但仍失败，检查报错包的 `package.json` 中 `exports` 是否有 `default` 条件。若只有 `import`，需要补上 `"default": "./dist/index.js"`。
 3. 若补上 `default` 后报 `Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name`，说明 `libnode.so` 未启用 ICU（见 4.6）。
 
-**根治方案**：启用 `--with-intl=full-icu` 重新编译 `libnode.so`（见 4.6）。这样无需 patch 任何 npm 包。
+**根治方案**：启用 `--with-intl=full-icu` 重新编译 `libnode.so`（见 4.6）。
 
-### 8.14 运行时 `Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name in character class`
+### 9.14 运行时 `Invalid regular expression: /^[$_\p{ID_Start}]$/u: Invalid property name in character class`
 **原因**：`libnode.so` 编译时使用了 `--with-intl=none`，V8 缺少完整 ICU 数据，无法识别 Unicode 属性转义 `\p{...}`。
 
 **解决**：修改 `android_configure.py`，将 `--with-intl=none` 改为 `--with-intl=full-icu`，重新编译 `libnode.so`（见 4.6）。
 
-**注意**：不要逐个 patch npm 包中的 `\p{...}`，那样治标不治本，且每次 `npm install` 都会丢失修改。
+### 9.15 Windows 平台 / Gradle 9 相关构建问题
 
-### 8.15 Windows 平台 `Unsupported operating system`
-修改 `build.gradle`（见 6.4）。
+`@flun/node-mobile-app` 已内置 patch：
+- Windows 平台的 `Unsupported operating system for nodejs-mobile native builds`
+- Gradle 9 的 `Could not find method exec()`
 
-### 8.16 Gradle 9.0 `exec()` 缺失
-修改 `build.gradle` 使用 `providers.exec`（见 6.5）。
+跑 `npx node-mobile-app test` 时自动处理，无需手动改 `build.gradle`。
 
-### 8.17 armeabi-v7a 链接失败
-见 5.4 节，放弃 arm32，只编译 arm64-v8a 和 x86_64（见 6.6）。
+**仅当**你不用 CLI、直接跑 `react-native run-android` 时，才需要参考本仓库 `install.js` 的 `patchNodejsMobilePlugin` 逻辑手动 patch。
 
-### 8.18 Windows 下 `'adb' is not recognized`
-环境变量 PATH 未包含 platform-tools（见 7.4）。不影响应用安装，仅 `run-android` 最后自动启动失败。
+### 9.16 armeabi-v7a 链接失败
+见第五章，放弃 arm32，只编译 arm64-v8a 和 x86_64。
 
-### 8.19 armeabi-v7a 编译失败（Torque 对齐错误）
-见 5.4 节。V8 v22 官方不支持在 x64 host 上交叉编译 32 位 arm 目标，放弃 arm32。
+### 9.17 Windows 下 `'adb' is not recognized`
+环境变量 PATH 未包含 platform-tools（见 8.4）。不影响应用安装，仅 `run-android` 最后自动启动失败。
+
+### 9.18 `node-v22.23.2/` 目录名冲突（源码包与 headers 包同名）
+**现象**：解压 `node-v22.23.2.tar.gz` 后再解压 `node-v22.23.2-headers.tar.gz`，两者都解压到 `node-v22.23.2/`，后者会覆盖或污染前者。
+
+**解决**：解压头文件包后立即改名：
+```bash
+tar -xzf node-v22.23.2-headers.tar.gz
+mv node-v22.23.2 node-v22.23.2-headers
+```
+或先解压源码包并 `mv node-v22.23.2 nodejs-mobile`，再解压头文件包。
 
 ---
 
-## 九、长期维护策略
+## 十、长期维护策略
 
-### 9.1 补丁文件化
+### 10.1 补丁文件化
+
 将对 Node.js 源码的所有修改固化为补丁文件，纳入版本控制：
+
 ```bash
 cd /mnt/d/nodejs-mobile-build/nodejs-mobile
 git diff > patches/nodejs-mobile-v22-rn-bridge.patch
 ```
 
 每次升级 Node.js 大版本时：
+
 ```bash
 git apply patches/nodejs-mobile-v22-rn-bridge.patch
 ```
+
 若补丁失败，手动解决冲突后重新生成补丁。
 
-### 9.2 需要固化的补丁列表
-| 文件                                             | 修改内容                                                                                                    | 修改阶段        |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | --------------- |
-| `android-configure`                              | 支持 Python 3.14                                                                                            | 编译前          |
-| `android_configure.py`                           | 添加 `android_ndk_path`                                                                                     | 编译前          |
-| `android_configure.py`                           | 将 `--with-intl=none` 改为 `--with-intl=full-icu`（Unicode 全字符支持）                                     | 编译前          |
-| `node.gyp`                                       | 添加 `deps/zlib`、`cpu-features.c`、符号导出选项                                                            | 编译前          |
-| `deps/v8/src/trap-handler/trap-handler.h`        | 强制 `V8_TRAP_HANDLER_SUPPORTED false`                                                                      | 编译前          |
-| `deps/v8/src/handles/handles.h`                  | 注释静态断言                                                                                                | 编译前          |
-| `deps/v8/src/trap-handler/handler-outside.cc`    | 禁用 trap handler 桩函数                                                                                    | 编译前          |
-| `deps/v8/src/execution/arm64/simulator-arm64.cc` | 模拟器桩函数（仅 arm64）                                                                                    | 编译前          |
-| `lib/internal/modules/cjs/loader.js`             | 从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件                                                                 | 编译前          |
-| `rn-bridge.cpp`                                  | 修改 API 调用（`Error` 替代 `TypeError`、`Global` 替代 `Persistent`），**保持 `NODE_MODULE_LINKED` 注册宏** | 替换 libnode 后 |
-| `v8-exception.h`                                 | ABI 匹配（`Error`/`TypeError` 添加第二参数）                                                                | 替换 libnode 后 |
-| `v8-persistent-handle.h`                         | ABI 匹配（`GlobalizeReference` 第二参数改为值传递）                                                         | 替换 libnode 后 |
-| `build.gradle`                                   | Windows 支持、Gradle 9.0、ABI 限制                                                                          | 替换 libnode 后 |
+### 10.2 需要固化的补丁列表
 
-### 9.3 每次升级 Node.js 大版本的标准流程
+| 文件                                             | 修改内容                                                                                 | 修改阶段        | 谁做                         |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------------- | ---------------------------- |
+| `android-configure`                              | 支持 Python 3.14                                                                         | 编译前          | 编译者                       |
+| `android_configure.py`                           | 添加 `android_ndk_path`                                                                  | 编译前          | 编译者                       |
+| `android_configure.py`                           | 将 `--with-intl=none` 改为 `--with-intl=full-icu`                                        | 编译前          | 编译者                       |
+| `node.gyp`                                       | 添加 `deps/zlib`、`cpu-features.c`、符号导出选项                                         | 编译前          | 编译者                       |
+| `deps/v8/src/trap-handler/trap-handler.h`        | 强制 `V8_TRAP_HANDLER_SUPPORTED false`                                                   | 编译前          | 编译者                       |
+| `deps/v8/src/handles/handles.h`                  | 注释静态断言                                                                             | 编译前          | 编译者                       |
+| `deps/v8/src/trap-handler/handler-outside.cc`    | 禁用 trap handler 桩函数                                                                 | 编译前          | 编译者                       |
+| `deps/v8/src/execution/arm64/simulator-arm64.cc` | 模拟器桩函数（仅 arm64）                                                                 | 编译前          | 编译者                       |
+| `lib/internal/modules/cjs/loader.js`             | 从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件                                              | 编译前          | 编译者                       |
+| `rn-bridge.cpp`                                  | **无需修改**——原版代码在 v22 头文件下直接编译通过（`NODE_MODULE_LINKED` 注册宏保持原样） | —               | 无需处理                     |
+| `build.gradle`                                   | Windows 支持、Gradle 9.0、ABI 限制                                                       | 替换 libnode 后 | **CLI 自动**（`install.js`） |
+
+> 采用整目录替换（`libnode.zip`）时，**不再需要对插件头文件（`v8-exception.h`、`v8-persistent-handle.h`）做补丁**，因为官方 v22 headers 本身就是正确的 ABI。
+
+### 10.3 每次升级 Node.js 大版本的标准流程
+
 1. 下载新版本源码并重命名旧项目。
-2. 复制 nodejs-mobile 特有文件。
-3. 应用固化补丁（编译前补丁）。
-4. 检查补丁是否全部成功；如失败，手动解决并重新生成补丁。
-5. 编译 `libnode.so`（arm64 + x86_64）。
-6. 剥离符号，打包为 `out_android/arm64-v8a.zip` 和 `out_android/x86_64.zip`。
-7. 替换到 Android 项目，应用 Android 侧补丁（JNI、build.gradle）。
-8. 重新编译 Android 项目。
-9. 验证运行。
+2. 下载官方 headers 包，解压后改名为 `<version>-headers/`（避免与源码目录同名）。
+3. 复制 nodejs-mobile 特有文件。
+4. 应用固化补丁（编译前补丁）。
+5. 检查补丁是否全部成功；如失败，手动解决并重新生成补丁。
+6. 编译 arm64 → 剥离 → 暂存到 `libnode-tmp/arm64-v8a/`。
+7. 编译 x86_64 → 剥离 → 暂存到 `libnode-tmp/x86_64/`。
+8. 用 headers 包打包 `out_android/libnode.zip`。
+9. 替换到 Android 项目（整个 `libnode/` 目录），应用 Android 侧补丁（`build.gradle`）。
+10. 重新编译 Android 项目。
+11. 验证运行。
 
-### 9.4 每次升级 Node.js 大版本时对 `rn-bridge` 相关的重点检查清单
+### 10.4 每次升级 Node.js 大版本时对 `rn-bridge` 相关的重点检查清单
 
 升级到 Node.js 24+ 或更高版本时，**必须逐项确认**：
 
@@ -835,63 +860,56 @@ git apply patches/nodejs-mobile-v22-rn-bridge.patch
    - 若 Node.js 官方重构了 CJS loader，需重新定位 `Module._load` 并插入补丁。
    - 若 Node.js 官方已支持链接绑定被 `require()` 解析，可移除本补丁。
 
-2. **`nodejs-mobile-react-native` 的 `builtin_modules/rn-bridge/index.js`** 是否仍通过 `process._linkedBinding('rn_bridge')` 获取原生绑定？
-   - 若插件升级了此文件，需确认导出的 API（`app`、`channel`）未变。
+2. **`@flun/nodejs-mobile-react-native` 的 `builtin_modules/rn-bridge/` 目录** 是否仍通过 `process._linkedBinding('rn_bridge')` 获取原生绑定？
 
 3. **`NODE_PATH` 机制**是否仍由 `native-lib.cpp` 的 `setenv("NODE_PATH", ...)` 设置？
-   - 若插件改为其他机制（如 `BuiltinModule`），需相应调整 `loader.js` 补丁。
 
 4. **`rn-bridge.cpp` 的注册宏**是否仍为 `NODE_MODULE_LINKED`？
-   - 若插件升级为 `NODE_MODULE_CONTEXT_AWARE_INTERNAL` 或其他宏，需重新评估 `loader.js` 补丁是否仍适用。
 
 5. **Node.js 官方 `process._linkedBinding`** 是否仍存在？
-   - 若被重命名或移除，需同步更新 `rn-bridge/index.js` 和 `loader.js`。
 
 6. **`--with-intl=full-icu`** 在新版本 Node.js 中是否仍是有效选项？
-   - 检查 `./configure --help | grep intl`，确认可选项。
-   - 若 Node.js 官方默认已启用 full-icu（未来版本可能），可移除本补丁。
-   - 若 ICU 数据下载地址变更，需更新 configure 阶段的下载逻辑。
 
-7. **测试运行**：应用启动后，`main.js` 中 `require('rn-bridge')` 应返回包含 `channel` 和 `app` 属性的对象，而非仅含 `sendMessage` 等原生方法。
+7. **官方 headers 包**是否需要重新适配？
+   - 检查 `node-vXX/include/node/v8-exception.h` 中 `Error` / `TypeError` 是否为双参数。
+   - 检查 `v8-persistent-handle.h` 中 `GlobalizeReference` 是否为值传递。
+   - 若官方头文件已符合新版本 ABI，则直接可用。
 
-### 9.5 长期优化方向
+8. **测试运行**：应用启动后，`main.js` 中 `require('rn-bridge')` 应返回包含 `channel` 和 `app` 属性的对象。
 
-**方案 A（当前采用）**：修改 `loader.js`，从 `NODE_PATH` 加载 JS 包装文件。
-- 优点：完全保留插件原有的 JS 包装逻辑，业务代码零侵入。
-- 缺点：依赖 Node.js 内部 CJS loader 的实现细节。
+### 10.5 长期优化方向
 
-**方案 B（推荐长期演进）**：将 `rn_bridge` 注册为 Node.js 官方内置模块。
-- 使用 `NODE_MODULE_CONTEXT_AWARE_INTERNAL` 注册原生绑定。
-- 在 Node.js 源码的内置模块列表（如 `node_builtins.cc`）中注册 `rn_bridge`。
-- 将 JS 包装文件作为内置模块的 JS 层实现（类似 `lib/internal/bootstrap/` 中的模块）。
-- 优点：走官方机制，跨 Node.js 版本更稳定。
-- 缺点：需要深入理解 Node.js 内置模块注册机制，初期工作量较大。
+**当前方案**：发布完整 `libnode.zip`，用户下载后直接替换整个 `libnode/` 目录。
+- 优点：与官方 nodejs-mobile 结构一致；官方 v22 头文件已包含 ABI 适配；业务代码零侵入。
+- 缺点：依赖 Node.js 内部 CJS loader 的实现细节（`loader.js` 补丁）。
 
-**建议**：先以方案 A 完成当前升级，后续在时间允许时逐步迁移到方案 B。
+**长期演进**：将 `rn_bridge` 注册为 Node.js 官方内置模块（使用 `NODE_MODULE_CONTEXT_AWARE_INTERNAL` + 内置模块列表），彻底摆脱对 `loader.js` 的修改。
 
 ---
 
-## 十、总结
+## 十一、总结
 
 本指南基于实际成功升级过程编写，涵盖 v18→v22 的完整路径。关键点：
+
 1. 保留 nodejs-mobile 特有文件。
 2. 修改构建配置以支持 Python 3.14。
 3. 解决 `android_getCpuFeatures` 链接问题。
-4. 确认 `common.gypi` 不含 `ANDROID_CPU_FEATURES`（v22 中此宏已弃用）。
+4. 确认 `common.gypi` 不含 `ANDROID_CPU_FEATURES`。
 5. 精确修改 `node.gyp` 和 `common.gypi`。
 6. v22 中额外处理 V8 静态断言、trap handler 和模拟器。
-7. 注意编译资源限制，使用 `make -j4`（8 核 / 8G 内存）或 `make -j2`（资源紧张时）。
-8. **启用 `--with-intl=full-icu`**，解决 `\p{ID_Start}` 等 Unicode 属性转义在 V8 中无法解析的问题（这是 Express 5 及其依赖 `path-to-regexp@8` 能正常加载的前提）。
-9. 编译前修改 `loader.js`，从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件（**不要**直接返回原生绑定）。
-10. 替换后修改 JNI 头文件和源码，解决链接错误；**保持 `NODE_MODULE_LINKED` 注册宏**。
+7. 注意编译资源限制，使用 `make -j4` 或 `make -j2`。
+8. **启用 `--with-intl=full-icu`**。
+9. 编译前修改 `loader.js`，从 `NODE_PATH` 加载 `rn-bridge` JS 包装文件。
+10. 替换 `libnode/` 目录（无需改 `rn-bridge.cpp`）。
 11. 修改 `build.gradle`，解决 Windows 平台、Gradle 9.0、ABI 限制问题。
-12. 多架构支持：arm64-v8a（主目标）+ x86_64（模拟器）；armeabi-v7a 因 V8 v22 官方限制放弃。
-13. 产物统一保存到 `nodejs-mobile/out_android/`，打包为 `arm64-v8a.zip` 和 `x86_64.zip`。
-14. 将补丁固化，每次升级重新应用，并按 9.4 节的清单逐项检查 `rn-bridge` 相关的适配点。
+12. 多架构支持：arm64-v8a + x86_64；armeabi-v7a 放弃。
+13. **唯一发布物**：`out_android/libnode.zip`，含 `bin/<arch>/libnode.so` + `include/node/`（官方 v22 headers）。
+14. 用户下载后直接替换插件 `android/libnode/` 整个目录，无需再手动改头文件。
+15. **官方源码包与 headers 包解压后目录同名**，必须先解压 headers 并改名（`node-v22.23.2-headers/`），避免与源码目录冲突。
+16. 将补丁固化，每次升级重新应用，并按 10.4 节清单逐项检查。
 
 ---
 
-**文档版本**：12.0（新增 4.6 节 full-icu 全字符支持；更新产物统一保存到 `nodejs-mobile/out_android/`）
-**最后更新**：2026-09-13
+**文档版本**：16.1（9.15 + 9.16 合并为一条"CLI 已自动"提示；10.2 表格新增"谁做"列，标注 `rn-bridge.cpp` / `build.gradle` 为 CLI 自动）
+**最后更新**：2026-09-19
 **作者**：根据实际升级过程整理
-```
